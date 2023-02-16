@@ -1,2 +1,4 @@
-package com.group5.stackoverflow.question.mapper;public interface QuestionMapper {
+package com.group5.stackoverflow.question.mapper;
+
+public interface QuestionMapper {
 }
