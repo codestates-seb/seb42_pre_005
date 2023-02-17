@@ -1,11 +1,14 @@
 package com.group5.stackoverflow.question.entity;
 
+import com.group5.stackoverflow.answer.entity.Answer;
 import com.group5.stackoverflow.audit.Auditable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @Getter
@@ -28,4 +31,10 @@ public class Question extends Auditable {
     @Column(nullable = false)
     private int viewed;
 
+    @ManyToOne
+    @JoinColumn(name = "ANSWER_ID")
+    private Answer answer;
+
+    @OneToMany(mappedBy = "question")
+    private List<QuestionTag> questionTags = new ArrayList<>();
 }
