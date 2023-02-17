@@ -27,6 +27,12 @@ public class MemberService {
 //        return repository.save(member);
         return member;
     }
+    public Member updateMember(Member member) {
+//        verifyExistsEmail(member.getEmail());
+
+//        return repository.save(member);
+        return member;
+    }
 //
 //    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
 //    public Question updateQuestion(Question question) {

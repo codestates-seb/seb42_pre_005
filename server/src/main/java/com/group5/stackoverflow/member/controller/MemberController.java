@@ -1,6 +1,5 @@
 package com.group5.stackoverflow.member.controller;
 
-import com.group5.stackoverflow.dto.MultiResponseDto;
 import com.group5.stackoverflow.dto.PageInfo;
 import com.group5.stackoverflow.dto.SingleResponseDto;
 import com.group5.stackoverflow.member.dto.MemberDto;
@@ -8,9 +7,10 @@ import com.group5.stackoverflow.member.entity.Member;
 import com.group5.stackoverflow.member.mapper.MemberMapper;
 import com.group5.stackoverflow.member.service.MemberService;
 import com.group5.stackoverflow.utils.UriCreator;
-import org.springframework.data.domain.Page;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -21,6 +21,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/members")
+@Validated
+@Slf4j
 public class MemberController {
 
     private final MemberService memberService;
@@ -36,12 +38,12 @@ public class MemberController {
 
     // post
     @PostMapping()
-    public ResponseEntity postMember(@RequestBody @Valid MemberDto.Post memberDtoPost){
-        Member member =  mapper.memberDtoPostToMember(memberDtoPost);
+    public ResponseEntity postMember(@Valid  @RequestBody MemberDto.Post memberDtoPost){
+        Member member =  mapper.memberPostToMember(memberDtoPost);
 
         // TODO 서비스 연결
 
-        URI location = UriCreator.createUri(MEMBER_DEFAULT_URL, member.getMemberId());
+        URI location = UriCreator.createUri(MEMBER_DEFAULT_URL, 10000);
 
         return ResponseEntity.created(location).build();
     }
@@ -56,7 +58,21 @@ public class MemberController {
 
 
         return  new ResponseEntity<>(
-                new SingleResponseDto<>(mapper.memberToMemberDtoResponse(findmember)),
+                new SingleResponseDto<>(mapper.memberToMemberResponse(findmember)),
+                HttpStatus.OK);
+    }
+
+    @PatchMapping("/{member-id}")
+    public ResponseEntity patchMember(
+            @PathVariable("member-id") @Positive long memberId,
+            @Valid @RequestBody MemberDto.Patch requestBody) {
+        requestBody.setMemberId(memberId);
+
+        Member member =
+                memberService.updateMember(mapper.memberPatchToMember(requestBody));
+
+        return new ResponseEntity<>(
+                new SingleResponseDto<>(mapper.memberToMemberResponse(member)),
                 HttpStatus.OK);
     }
 
@@ -79,11 +95,11 @@ public class MemberController {
         members.add(findmember1);
         members.add(findmember2);
 
-        MultiResponseDto<Member> memberMultiResponseDto = new MultiResponseDto<>();
-        memberMultiResponseDto.setData(members);
-        memberMultiResponseDto.setPageInfo(pageInfo);
+//        MultiResponseDto<Member> memberMultiResponseDto = new MultiResponseDto<>();
+//        memberMultiResponseDto.setData(members);
+//        memberMultiResponseDto.setPageInfo(pageInfo);
 
-        return new ResponseEntity<>(memberMultiResponseDto, HttpStatus.OK);
+        return new ResponseEntity<>(null, HttpStatus.OK);
 
     }
 
@@ -105,7 +121,7 @@ public class MemberController {
         findmember.setVoteCount(100);
         findmember.setMemberId(memberId);
 
-        return new ResponseEntity<>(new SingleResponseDto<>(mapper.memberToMemberDtoResponse(findmember)),
+        return new ResponseEntity<>(new SingleResponseDto<>(mapper.memberToMemberResponse(findmember)),
                 HttpStatus.OK);
     }
 
