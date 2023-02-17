@@ -26,7 +26,6 @@ public class MemberController {
     private final MemberService memberService;
     private final MemberMapper mapper;
 
-
     public MemberController(MemberService memberService, MemberMapper mapper) {
         this.memberService = memberService;
         this.mapper = mapper;

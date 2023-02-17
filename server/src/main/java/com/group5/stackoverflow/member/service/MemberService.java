@@ -22,54 +22,55 @@ public class MemberService {
     }
 
     public Member createMember(Member member) {
-        verifyExistsEmail(member.getEmail());
+//        verifyExistsEmail(member.getEmail());
 
-        return repository.save(member);
+//        return repository.save(member);
+        return member;
     }
-
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
-    public Question updateQuestion(Question question) {
-        Question findQuestion = findVerifiedQuestion(question.getQuestionId());
-
-        Optional.ofNullable(question.getTitle())
-                .ifPresent(title -> findQuestion.setTitle(title));
-        Optional.ofNullable(question.getContent())
-                .ifPresent(content -> findQuestion.setContent(content));
-
-        return repository.save(findQuestion);
-    }
-
-    @Transactional(readOnly = true)
-    public Question findQuestion(Long questionId) {
-        return findVerifiedQuestion(questionId);
-    }
-
-    public Page<Question> findQuestions(int page, int size) {
-        return repository.findAll(PageRequest.of(
-                page, size, Sort.by("questionId").descending()));
-    }
-
-    public void deleteQuestion(Long questionId) {
-        Question findQuestion = findQuestion(questionId);
-
-        repository.delete(findQuestion);
-    }
-
-    @Transactional(readOnly = true)
-    public Question findVerifiedQuestion(Long questionId) {
-        Optional<Question> optionalQuestion = repository.findById(questionId);
-        Question findQuestion =
-                optionalQuestion.orElseThrow(() -> new RuntimeException());
-        return findQuestion;
-    }
-
-    private void verifyExistsTitle(String title) {
-        Optional<Question> question = repository.findByTitle(title);
-        if (question.isPresent())
-            throw new RuntimeException();
-    }
-}
-
+//
+//    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
+//    public Question updateQuestion(Question question) {
+//        Question findQuestion = findVerifiedQuestion(question.getQuestionId());
+//
+//        Optional.ofNullable(question.getTitle())
+//                .ifPresent(title -> findQuestion.setTitle(title));
+//        Optional.ofNullable(question.getContent())
+//                .ifPresent(content -> findQuestion.setContent(content));
+//
+//        return repository.save(findQuestion);
+//    }
+//
+//    @Transactional(readOnly = true)
+//    public Question findQuestion(Long questionId) {
+//        return findVerifiedQuestion(questionId);
+//    }
+//
+//    public Page<Question> findQuestions(int page, int size) {
+//        return repository.findAll(PageRequest.of(
+//                page, size, Sort.by("questionId").descending()));
+//    }
+//
+//    public void deleteQuestion(Long questionId) {
+//        Question findQuestion = findQuestion(questionId);
+//
+//        repository.delete(findQuestion);
+//    }
+//
+//    @Transactional(readOnly = true)
+//    public Question findVerifiedQuestion(Long questionId) {
+//        Optional<Question> optionalQuestion = repository.findById(questionId);
+//        Question findQuestion =
+//                optionalQuestion.orElseThrow(() -> new RuntimeException());
+//        return findQuestion;
+//    }
+//
+//    private void verifyExistsTitle(String title) {
+//        Optional<Question> question = repository.findByTitle(title);
+//        if (question.isPresent())
+//            throw new RuntimeException();
+//    }
+//}
+//
 
 
 }
