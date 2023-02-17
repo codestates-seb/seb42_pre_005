@@ -20,11 +20,11 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/questions")
+@RequestMapping("/questions")
 @Validated
 @Slf4j
 public class QuestionController {
-    private final static String QUESTION_DEFAULT_URL = "/v1/questions";
+    private final static String QUESTION_DEFAULT_URL = "/questions";
     private final QuestionService questionService;
     private final QuestionMapper mapper;
 
