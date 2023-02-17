@@ -31,10 +31,9 @@ public class Question extends Auditable {
     @Column(nullable = false)
     private int viewed;
 
-    @ManyToOne
-    @JoinColumn(name = "ANSWER_ID")
-    private Answer answer;
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+    private List<Answer> answers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "question")
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
     private List<QuestionTag> questionTags = new ArrayList<>();
 }
