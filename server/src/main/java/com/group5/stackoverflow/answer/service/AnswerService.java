@@ -2,6 +2,7 @@ package com.group5.stackoverflow.answer.service;
 
 import com.group5.stackoverflow.answer.entity.Answer;
 import com.group5.stackoverflow.answer.repository.AnswerRepository;
+import com.group5.stackoverflow.question.service.QuestionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,9 +13,11 @@ import java.util.Optional;
 public class AnswerService {
 
     private final AnswerRepository answerRepository;
+    private final QuestionService questionService;
 
-    public AnswerService(AnswerRepository answerRepository) {
+    public AnswerService(AnswerRepository answerRepository, QuestionService questionService) {
         this.answerRepository = answerRepository;
+        this.questionService = questionService;
     }
 
     public Answer createAnswer(Answer answer) {
@@ -22,7 +25,7 @@ public class AnswerService {
     }
 
     public Answer updateAnswer(Answer answer) {
-        Answer findAnswer = verifiedAnswer(answer.getAnswerId());
+        Answer findAnswer = findVerifiedAnswer(answer.getAnswerId());
 
         Optional.ofNullable(answer.getContent())
                 .ifPresent(content -> findAnswer.setContent(content));
@@ -36,11 +39,11 @@ public class AnswerService {
     }
 
     public void deleteAnswer(Long answerId) {
-        Answer findAnswer = verifiedAnswer(answerId);
+        Answer findAnswer = findVerifiedAnswer(answerId);
         answerRepository.delete(findAnswer);
     }
 
-    public Answer verifiedAnswer(Long answerId) {
+    public Answer findVerifiedAnswer(Long answerId) {
         Optional<Answer> findAnswer = answerRepository.findById(answerId);
         Answer answer = findAnswer.orElseThrow(() -> new RuntimeException("등록된 답변이 없습니다."));
 

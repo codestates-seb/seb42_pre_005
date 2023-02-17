@@ -4,10 +4,12 @@ import com.group5.stackoverflow.answer.mapper.AnswerMapper;
 import com.group5.stackoverflow.answer.repository.AnswerRepository;
 import com.group5.stackoverflow.answer.service.AnswerService;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @Validated
 @RequestMapping("/answers")
