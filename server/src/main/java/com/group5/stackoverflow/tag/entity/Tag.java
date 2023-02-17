@@ -1,5 +1,6 @@
 package com.group5.stackoverflow.tag.entity;
 
+import com.group5.stackoverflow.question.entity.QuestionTag;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,12 +26,7 @@ public class Tag {
     private int askedTotal;
     private LocalDateTime createdAt = LocalDateTime.now();
 
-//    @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL)
-//    private List<QuestionTag> questionTags = new ArrayList<>();
+    @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL)
+    private List<QuestionTag> questionTags = new ArrayList<>();
 
-    public static Tag of(String string) {
-        Tag tag = new Tag();
-        tag.setTagName(string);
-        return tag;
-    }
 }

@@ -28,8 +28,8 @@ public class Answer {
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime modifiedAt = LocalDateTime.now();
 
-//    @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL)
-//    private List<Question> questions = new ArrayList<>();
+    @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL)
+    private List<Question> questions = new ArrayList<>();
 
     public Answer(String content) {
         this.content = content;
