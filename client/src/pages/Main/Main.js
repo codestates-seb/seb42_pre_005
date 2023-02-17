@@ -2,10 +2,10 @@
 
 // ----- 필요 라이브러리
 import styled from "styled-components";
+import LeftSideBar from "../../components/LeftSideBar/LeftSideBar";
+import Questions from "../Questions/Questions";
 
 // ----- 컴포넌트 및 이미지 파일
-import LeftSideBar from "../LeftSideBar/LeftSideBar";
-import Questions from "./Questions/Questions";
 
 const MainBox = styled.div`
   display: flex;
@@ -14,8 +14,8 @@ const MainBox = styled.div`
 function Main() {
   return (
     <MainBox>
-      <LeftSideBar />
-      <Questions />
+      <LeftSideBar/>
+      <Questions/>
     </MainBox>
   )
 }

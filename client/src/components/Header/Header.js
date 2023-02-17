@@ -8,6 +8,7 @@ import { MdSearch, MdInbox } from "react-icons/md";
 // ----- 컴포넌트 및 이미지 파일
 import Logo from "../../icons/Logo.svg";
 import defaultProfile from "../../icons/defaultProfile.png";
+import { useNavigate } from "react-router-dom";
 
 // ----- CSS 영역
 const HeaderBox = styled.div` // 헤더 전체 박스
@@ -96,10 +97,11 @@ const UserBox = styled.div` // 로그인 후 : 유저사진, 아이콘 영역
 // ----- 컴포넌트 영역
 function Header() {
   const [isLogin, setisLogin] = useState(false); // 로그인 여부를 결정짓는 상태
+  const navigate = useNavigate();
 
   return (
     <HeaderBox>
-      <StackoverflowLogo>
+      <StackoverflowLogo onClick={() => navigate("/")}>
         <img src={Logo} alt="logo" />
       </StackoverflowLogo>
       <SearchBox>
@@ -116,8 +118,8 @@ function Header() {
           </UserBox> 
           : // 로그인 하지 않았을 때는 login과 signup 버튼이 보임
           <LoginBox>
-            <LoginButton>Log in</LoginButton>
-            <SignupButton>Sign up</SignupButton>
+            <LoginButton onClick={() => navigate("/login")}>Log in</LoginButton>
+            <SignupButton onClick={() => navigate("/register")}>Sign up</SignupButton>
           </LoginBox>}
       </RightBox>
     </HeaderBox>

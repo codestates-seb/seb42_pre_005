@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 export const RegisterPage = styled.div`
@@ -47,6 +47,8 @@ function Register() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    const navigate = useNavigate();
+
     const displayNameHandler = (e) => {
         setDisplayName(e.target.value);
     }
@@ -90,7 +92,7 @@ function Register() {
                     <button type="submit" onClick={registerHandler}>Sign Up</button>
                 </InputContainer>
                 <Bottom>
-                    <span>Already have an account? <a href="/">Log in</a></span>
+                    <span>Already have an account? <span onClick={() => navigate("/login")}>Log in</span></span>
                 </Bottom>
             </RegisterContainer>
         </RegisterPage>

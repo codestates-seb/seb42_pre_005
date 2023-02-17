@@ -1,11 +1,12 @@
 import { BrowserRouter, Link, Route, Routes, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import LeftSideBar from "../../components/LeftSideBar/LeftSideBar";
 import UsersActivity from "./UsersActivity";
 import UsersProfile from "./UsersProfile";
 
 export const UsersPage = styled.div`
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     /* width: 100vw; */
     background-color: #eee;
 `
@@ -46,6 +47,7 @@ function Users() {
     const navigate = useNavigate();
     return (
         <UsersPage>
+            <LeftSideBar/>
             <UsersTop>
                 USER 기본 정보가 들어갈 곳
             </UsersTop>
