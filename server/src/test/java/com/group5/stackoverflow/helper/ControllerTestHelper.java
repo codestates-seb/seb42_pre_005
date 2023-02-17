@@ -1,4 +1,4 @@
-package com.codestates.helper;
+package com.group5.stackoverflow.helper;
 
 import com.google.gson.Gson;
 import org.springframework.http.MediaType;

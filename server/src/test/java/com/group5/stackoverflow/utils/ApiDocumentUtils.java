@@ -1,4 +1,4 @@
-package com.codestates.util;
+package com.group5.stackoverflow.utils;
 
 import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor;
 import org.springframework.restdocs.operation.preprocess.OperationResponsePreprocessor;
