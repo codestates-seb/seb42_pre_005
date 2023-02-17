@@ -1,48 +1,55 @@
 package com.group5.stackoverflow.member.entity;
 
+import com.group5.stackoverflow.audit.Auditable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.lang.Nullable;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity
-public class Member {
+public class Member extends Auditable {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long memberId;
 
-    @NotNull
+    @Column(nullable = false, length = 50)
     String name;
 
+    @Column(nullable = true)
+    Integer age;
 
-    @Nullable
-    int age;
-
-
-    @Email
+    @Column(nullable = false, updatable = false, unique = true)
     String email;
 
-
+    @Column(nullable = false)
     int voteCount;
 
-    @NotNull
+    @Column(nullable = false)
     String password;
 
-    // 스테이터스
-    MemberStatus memberStatus;
+    @Enumerated(value = EnumType.STRING)
+    @Column(nullable = false)
+    MemberStatus memberStatus = MemberStatus.MEMBER_NEW;
 
-    // 크리에이티드
+    // 연관관계 매핑
+    @OneToMany(mappedBy = "member")
+    @Column(name = "MEMBER_MENTION")
+    List<MemberMention> memberMentions = new ArrayList<>();
 
-    // 모디파이드
+    // TODO Answer 연관관계 매핑
+    // TODO comment 연관관계 매핑
+
 
 
     public enum MemberStatus{
@@ -52,6 +59,7 @@ public class Member {
         MEMBER_SLEEP("휴면 상태"),
         MEMBER_QUIT("탈퇴 상태");
 
+        @Getter
         String status;
 
         MemberStatus(String status) {
