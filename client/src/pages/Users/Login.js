@@ -1,6 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export const LoginPage = styled.div`
     display: flex;
@@ -41,6 +42,8 @@ export const Bottom = styled.div`
 function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();
+
     const emailHandler = (e) => {
         setEmail(e.target.value);
     }
@@ -77,7 +80,7 @@ function Login() {
                     <button type="submit" onClick={loginRequestHandler}>Log in</button>
                 </InputContainer>
                 <Bottom>
-                    <span>Don't have an account? <a href="/">Sign up</a></span>
+                    <span>Don't have an account? <span onClick={() => navigate('/register')}>Sign up</span></span>
                 </Bottom>
             </LoginContainer>
         </LoginPage>
