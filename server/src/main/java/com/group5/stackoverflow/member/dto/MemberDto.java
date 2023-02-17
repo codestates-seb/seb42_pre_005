@@ -47,7 +47,6 @@ public class MemberDto {
         @NotNull
         String name;
 
-
         @Email
         String email;
 
