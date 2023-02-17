@@ -4,11 +4,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // ----- 컴포넌트 및 이미지 파일
 import './App.css';
-import Header from './component/Header/Header';
-import Main from "./component/Main/Main"
-import AskQuestion from "./page/AskQuestion";
-import Tags from './component/Main/Tags/Tags';
-import Users from './component/Main/Users/Users';
+import Header from './components/Header/Header';
+import Main from "./components/Main/Main"
+import AskQuestion from "./pages/AskQuestion";
+import Tags from './components/Main/Tags/Tags';
+import Users from './components/Main/Users/Users';
 
 function App() {
   return (
