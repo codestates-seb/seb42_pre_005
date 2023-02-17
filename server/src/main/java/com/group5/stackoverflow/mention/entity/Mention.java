@@ -16,7 +16,7 @@ public class Mention {
     @Column(nullable = false)
     boolean checked = false;
 
-    @OneToMany(mappedBy = "mention")
+    @OneToMany(mappedBy = "mention", cascade = CascadeType.ALL)
     private List<MemberMention> memberMentions = new ArrayList<>();
 
 

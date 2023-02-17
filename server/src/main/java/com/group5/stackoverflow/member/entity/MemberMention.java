@@ -10,11 +10,11 @@ public class MemberMention {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberMentionId;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "memberId")
     private Member member;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "mentionId")
     private Mention mention;
 }
