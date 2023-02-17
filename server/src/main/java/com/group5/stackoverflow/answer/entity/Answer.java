@@ -7,10 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +25,9 @@ public class Answer {
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime modifiedAt = LocalDateTime.now();
 
-    @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL)
-    private List<Question> questions = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "QUESTION_ID")
+    private Question question;
 
     public Answer(String content) {
         this.content = content;
