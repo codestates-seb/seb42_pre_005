@@ -45,7 +45,7 @@ public class TagService {
     }
 
     // tab = popular, name , new
-    // popular = askedTotal 높은 순 Desc
+    // popular = questionCount 높은 순 Desc
     // name = tagName 기준 Asc
     // new = tagId 기준 Desc
     @Transactional(readOnly = true)
