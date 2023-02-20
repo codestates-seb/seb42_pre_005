@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -24,6 +25,8 @@ import static com.group5.stackoverflow.utils.ApiDocumentUtils.getRequestPreProce
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
@@ -52,13 +55,6 @@ public class QuestionControllerRestDocsTest {
                 "이곳은 질문을 적는 곳입니다.");
         String content = gson.toJson(post);
 
-        QuestionDto.Response response = new QuestionDto.Response(
-                1L,
-                "타이틀입니다.",
-                "이곳은 질문을 적는 곳입니다.",
-                20,
-                30
-        );
 
         given(mapper.questionPostToQuestion(Mockito.any(QuestionDto.Post.class))).willReturn(new Question());
 
@@ -66,8 +62,6 @@ public class QuestionControllerRestDocsTest {
         mockResultQuestion.setQuestionId(1L);
 
         given(questionService.createQuestion(Mockito.any(Question.class))).willReturn(mockResultQuestion);
-
-        given(mapper.questionToQuestionResponse(Mockito.any(Question.class))).willReturn(response);
 
         ResultActions actions =
                 mockMvc.perform(
@@ -79,28 +73,21 @@ public class QuestionControllerRestDocsTest {
 
         actions
                 .andExpect(status().isCreated())
-                .andExpect(header().string("Location", is(startsWith("/questions"))));
-//                .andExpect(jsonPath("$.data.title").value(post.getTitle()))
-//                .andExpect(jsonPath("$.data.content").value(post.getContent()))
-//                .andDo(document("post-question",
-//                        preprocessRequest(prettyPrint()),
-//                        preprocessResponse(prettyPrint()),
-//                        requestFields(
-//                                List.of(
-//                                        fieldWithPath("title").type(JsonFieldType.STRING).description("제목"),
-//                                        fieldWithPath("content").type(JsonFieldType.STRING).description("질문 내용")
-//                                )
-//                        ),
-//                        responseFields(
-//                                List.of(
-//                                        fieldWithPath("data").type(JsonFieldType.OBJECT).description("결과 데이터"),
-//                                        fieldWithPath("data.questionId").type(JsonFieldType.NUMBER).description("질문 식별자"),
-//                                        fieldWithPath("data.title").type(JsonFieldType.STRING).description("제목"),
-//                                        fieldWithPath("data.content").type(JsonFieldType.STRING).description("질문 내용"),
-//                                        fieldWithPath("data.voteCount").type(JsonFieldType.NUMBER).description("추천수"),
-//                                        fieldWithPath("data.viewed").type(JsonFieldType.NUMBER).description("조회수")
-//                                )
-//                        )
-//                ));
+                .andExpect(header().string("Location", is(startsWith("/questions"))))
+                .andExpect(jsonPath("$.data.title").value(post.getTitle()))
+                .andExpect(jsonPath("$.data.content").value(post.getContent()))
+                .andDo(document("post-question",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("title").type(JsonFieldType.STRING).description("제목"),
+                                        fieldWithPath("content").type(JsonFieldType.STRING).description("질문 내용")
+                                )
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.LOCATION).description("Location header. 등록된 리소스의 URI")
+                        )
+                ));
     }
 }
