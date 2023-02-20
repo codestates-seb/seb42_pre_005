@@ -2,11 +2,12 @@
 
 // ----- 필요 라이브러리
 import styled from "styled-components";
-import QuestionHeader from "./QuestionHeader";
+import TopQuestionHeader from "../../components/Header/TopQuestionHeader";
+import RightSideBar from "../../components/Main/RightSideBar";
 
 
 // ----- 컴포넌트 및 이미지 파일
-import QuestionItem from "./QuestionItem";
+import QuestionItem from "../../components/Questions/QuestionItem";
 
 // ----- CSS 영역
 const QuestionsBox = styled.div` // 전체 박스 구성
@@ -18,16 +19,19 @@ const QustionList = styled.div` // 질문 목록 박스
   
 `
 
-function Questions() {
+function TopQuestions() {
 
   return (
+    <>
     <QuestionsBox>
-      <QuestionHeader />
+      <TopQuestionHeader/>
       <QustionList>
         <QuestionItem />
       </QustionList>
     </QuestionsBox>
+    <RightSideBar/>
+    </>
   )
 }
 
-export default Questions;
+export default TopQuestions;
