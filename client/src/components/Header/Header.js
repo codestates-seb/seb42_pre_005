@@ -111,7 +111,7 @@ function Header() {
       <RightBox> 
           <UserBox>
             <img src={defaultProfile} alt="user profile img" onClick={() => navigate("/userdetail")} height="24px" />
-            <MdInbox />
+            {/* <MdInbox /> */}
           </UserBox> 
           <LoginBox>
             <LoginButton onClick={() => navigate("/login")}>Log in</LoginButton>
