@@ -14,6 +14,7 @@ import javax.persistence.*;
 public class QuestionTag {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long questionTagId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -23,4 +24,6 @@ public class QuestionTag {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TAG_ID")
     private Tag tag;
+
+
 }

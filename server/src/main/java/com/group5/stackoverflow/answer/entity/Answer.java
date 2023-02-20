@@ -1,5 +1,7 @@
 package com.group5.stackoverflow.answer.entity;
 
+import com.group5.stackoverflow.audit.Auditable;
+import com.group5.stackoverflow.member.entity.Member;
 import com.group5.stackoverflow.question.entity.Question;
 import com.group5.stackoverflow.tag.entity.Tag;
 import lombok.AllArgsConstructor;
@@ -19,15 +21,22 @@ import java.util.List;
 public class Answer {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long answerId;
     private String content;
     private int voteCount;
-    private LocalDateTime createdAt = LocalDateTime.now();
-    private LocalDateTime modifiedAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
+    private LocalDateTime modifiedAt;
+
+
 
     @ManyToOne
     @JoinColumn(name = "QUESTION_ID")
     private Question question;
+
+    @ManyToOne
+    @JoinColumn(name = "MEMBER_ID")
+    private Member member;
 
     public Answer(String content) {
         this.content = content;
