@@ -21,16 +21,17 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.List;
 
-import static com.group5.stackoverflow.utils.ApiDocumentUtils.getRequestPreProcessor;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(QuestionController.class)
@@ -87,6 +88,65 @@ public class QuestionControllerRestDocsTest {
                         ),
                         responseHeaders(
                                 headerWithName(HttpHeaders.LOCATION).description("Location header. 등록된 리소스의 URI")
+                        )
+                ));
+    }
+
+    @Test
+    public void patchQuestionTest() throws Exception {
+        Long questionId = 1L;
+        QuestionDto.Patch patch = new QuestionDto.Patch(questionId, "타이틀입니다",
+                "이부분은 질문 내용입니다");
+        String content = gson.toJson(patch);
+
+        QuestionDto.Response response =
+                new QuestionDto.Response(1L,
+                        "타이틀입니다.",
+                        "이부분을 수정하겠습니다.",
+                        20,
+                        45);
+
+        given(mapper.questionPatchToQuestion(Mockito.any(QuestionDto.Patch.class))).willReturn(new Question());
+
+        given(questionService.updateQuestion(Mockito.any(Question.class))).willReturn(new Question());
+
+        given(mapper.questionToQuestionResponse(Mockito.any(Question.class))).willReturn(response);
+
+        ResultActions actions =
+                mockMvc.perform(
+                        patch("/questions/{question-id}", questionId)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(content)
+                );
+
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.questionId").value(patch.getQuestionId()))
+                .andExpect(jsonPath("$.data.title").value(patch.getTitle()))
+                .andExpect(jsonPath("$.data.content").value(patch.getContent()))
+                .andDo(document("patch-question",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("question-id").description("질문 식별자")
+                        ),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("questionId").type(JsonFieldType.NUMBER).description("질문 식별자"),
+                                        fieldWithPath("title").type(JsonFieldType.STRING).description("질문 제목"),
+                                        fieldWithPath("content").type(JsonFieldType.STRING).description("질문 내용")
+                                )
+                        ),
+                        responseFields(
+                                List.of(
+                                        fieldWithPath("data").type(JsonFieldType.OBJECT).description("결과 데이터"),
+                                        fieldWithPath("data.questionId").type(JsonFieldType.NUMBER).description("질문 식별자"),
+                                        fieldWithPath("data.title").type(JsonFieldType.STRING).description("질문 제목"),
+                                        fieldWithPath("data.content").type(JsonFieldType.STRING).description("질문 내용"),
+                                        fieldWithPath("data.voteCount").type(JsonFieldType.NUMBER).description("추천수"),
+                                        fieldWithPath("data.views").type(JsonFieldType.NUMBER).description("조회수")
+                                )
                         )
                 ));
     }
