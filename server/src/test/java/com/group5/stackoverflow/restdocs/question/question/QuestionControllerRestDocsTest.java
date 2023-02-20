@@ -1,4 +1,4 @@
-package com.group5.stackoverflow.restdocs.question;
+package com.group5.stackoverflow.restdocs.question.question;
 
 import com.google.gson.Gson;
 import com.group5.stackoverflow.question.controller.QuestionController;

@@ -43,6 +43,6 @@ public class QuestionDto {
         private String title;
         private String content;
         private int voteCount;
-        private int viewed;
+        private int views;
     }
 }

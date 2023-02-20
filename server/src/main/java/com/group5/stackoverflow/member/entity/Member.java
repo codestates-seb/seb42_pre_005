@@ -15,6 +15,7 @@ import java.util.List;
 
 
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @Entity
@@ -54,10 +55,10 @@ public class Member extends Auditable {
 
     public enum MemberStatus{
 
-        MEMBER_NEW("신규 멤버"),
-        MEMBER_ACTIVE("활동중"),
-        MEMBER_SLEEP("휴면 상태"),
-        MEMBER_QUIT("탈퇴 상태");
+        MEMBER_NEW("MEMBER_NEW"),
+        MEMBER_ACTIVE("MEMBER_ACTIVE"),
+        MEMBER_SLEEP("MEMBER_SLEEP"),
+        MEMBER_QUIT("MEMBER_QUIT");
 
         @Getter
         String status;

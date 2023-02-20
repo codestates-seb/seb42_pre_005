@@ -8,9 +8,14 @@ import com.group5.stackoverflow.member.entity.Member;
 import com.group5.stackoverflow.member.mapper.MemberMapper;
 import com.group5.stackoverflow.member.service.MemberService;
 import com.group5.stackoverflow.utils.UriCreator;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -21,6 +26,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/members")
+@Validated
+@Slf4j
 public class MemberController {
 
     private final MemberService memberService;
@@ -36,14 +43,28 @@ public class MemberController {
 
     // post
     @PostMapping()
-    public ResponseEntity postMember(@RequestBody @Valid MemberDto.Post memberDtoPost){
-        Member member =  mapper.memberDtoPostToMember(memberDtoPost);
+    public ResponseEntity postMember(@Valid  @RequestBody MemberDto.Post memberDtoPost){
+        Member member =  mapper.memberPostToMember(memberDtoPost);
 
         // TODO 서비스 연결
 
-        URI location = UriCreator.createUri(MEMBER_DEFAULT_URL, member.getMemberId());
+        URI location = UriCreator.createUri(MEMBER_DEFAULT_URL, 10000);
 
         return ResponseEntity.created(location).build();
+    }
+
+    @PatchMapping("/{member-id}")
+    public ResponseEntity patchMember(
+            @PathVariable("member-id") @Positive long memberId,
+            @Valid @RequestBody MemberDto.Patch requestBody) {
+        requestBody.setMemberId(memberId);
+
+        Member member =
+                memberService.updateMember(mapper.memberPatchToMember(requestBody));
+
+        return new ResponseEntity<>(
+                new SingleResponseDto<>(mapper.memberToMemberResponse(member)),
+                HttpStatus.OK);
     }
 
     // get
@@ -51,39 +72,28 @@ public class MemberController {
     public ResponseEntity getMember(@PathVariable("member-id") @Positive long memberId){
 
         // TODO 서비스 연결
-        Member findmember =  new Member();
-        findmember.setMemberId(7L);
+        Member findmember =
+                memberService.findMember(memberId);
+
 
 
         return  new ResponseEntity<>(
-                new SingleResponseDto<>(mapper.memberToMemberDtoResponse(findmember)),
+                new SingleResponseDto<>(mapper.memberToMemberResponse(findmember)),
                 HttpStatus.OK);
     }
 
 
+
+
     @GetMapping()
-    public ResponseEntity getMembers(@RequestParam @Positive int size,
-                                     @RequestParam @Positive int page){
-
+    public ResponseEntity getMembers(@RequestParam @Positive int page,
+                                     @RequestParam @Positive int size,
+                                     @RequestParam String by){
         // TODO 서비스 연결
-
-        // mock page info
-        PageInfo pageInfo = new PageInfo(4, 4, 40, 40);
-
-        // mock List<T> file
-        List<Member> members = new ArrayList<>();
-        Member findmember1 =  new Member();
-        Member findmember2 =  new Member();
-        findmember1.setMemberId(7L);
-        findmember2.setMemberId(77L);
-        members.add(findmember1);
-        members.add(findmember2);
-
-        MultiResponseDto<Member> memberMultiResponseDto = new MultiResponseDto<>();
-        memberMultiResponseDto.setData(members);
-        memberMultiResponseDto.setPageInfo(pageInfo);
-
-        return new ResponseEntity<>(memberMultiResponseDto, HttpStatus.OK);
+        Page<Member> pageMembers = memberService.findMembers(page-1, size, by);
+        List<Member> members = pageMembers.getContent();
+        return new ResponseEntity<>(new MultiResponseDto<>(mapper.membersToMemberResponses(members), pageMembers),
+                HttpStatus.OK);
 
     }
 
@@ -91,8 +101,7 @@ public class MemberController {
     @DeleteMapping("/{member-id}")
     public ResponseEntity deleteMember(@PathVariable("member-id") @Positive long memberId){
         // TODO 서비스 연결
-
-
+        memberService.deleteMember(memberId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -105,7 +114,7 @@ public class MemberController {
         findmember.setVoteCount(100);
         findmember.setMemberId(memberId);
 
-        return new ResponseEntity<>(new SingleResponseDto<>(mapper.memberToMemberDtoResponse(findmember)),
+        return new ResponseEntity<>(new SingleResponseDto<>(mapper.memberToMemberResponse(findmember)),
                 HttpStatus.OK);
     }
 

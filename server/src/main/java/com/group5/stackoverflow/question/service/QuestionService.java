@@ -1,9 +1,12 @@
 package com.group5.stackoverflow.question.service;
 
+import com.group5.stackoverflow.answer.service.AnswerService;
+import com.group5.stackoverflow.member.service.MemberService;
 import com.group5.stackoverflow.question.entity.Question;
 import com.group5.stackoverflow.question.repository.QuestionRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -16,13 +19,16 @@ import java.util.Optional;
 @Transactional
 public class QuestionService {
     private final QuestionRepository repository;
+    private final MemberService memberService;
 
-    public QuestionService(QuestionRepository repository) {
+    public QuestionService(QuestionRepository repository,
+                           MemberService memberService) {
         this.repository = repository;
+        this.memberService = memberService;
     }
 
     public Question createQuestion(Question question) {
-        verifyExistsTitle(question.getTitle());
+        memberService.findMember(question.getMember().getMemberId());
 
         return repository.save(question);
     }
@@ -41,12 +47,23 @@ public class QuestionService {
 
     @Transactional(readOnly = true)
     public Question findQuestion(Long questionId) {
-        return findVerifiedQuestion(questionId);
+        Question findQuestion = findVerifiedQuestion(questionId);
+
+        int findViews = findQuestion.getViews() + 1;
+        findQuestion.setViews(findViews);
+        repository.save(findQuestion);
+
+        return findQuestion;
     }
 
-    public Page<Question> findQuestions(int page, int size) {
-        return repository.findAll(PageRequest.of(
-                page, size, Sort.by("questionId").descending()));
+    public Page<Question> findQuestions(Pageable pageable) {
+        return repository.findAll(pageable);
+    }
+
+    public Page<Question> searchQuestion(String search, Pageable pageable) {
+        Page<Question> questionPage = repository.findByTitleContainingOrTextContaining(search, search, pageable);
+
+        return questionPage;
     }
 
     public void deleteQuestion(Long questionId) {
@@ -63,9 +80,4 @@ public class QuestionService {
         return findQuestion;
     }
 
-    private void verifyExistsTitle(String title) {
-        Optional<Question> question = repository.findByTitle(title);
-        if (question.isPresent())
-            throw new RuntimeException();
-    }
 }
