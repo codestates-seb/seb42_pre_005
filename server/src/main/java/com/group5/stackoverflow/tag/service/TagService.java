@@ -2,11 +2,14 @@ package com.group5.stackoverflow.tag.service;
 
 import com.group5.stackoverflow.tag.entity.Tag;
 import com.group5.stackoverflow.tag.repository.TagRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class TagService {
 
@@ -24,16 +27,23 @@ public class TagService {
         return null;
     }
 
-    public List<Tag> findTagsPopular() {
-        return null;
+    public List<Tag> findTagsPopular(int page) {
+        Page<Tag> tagPage = tagRepository.findByOrderByAskedTotal(PageRequest.of(page, 36));
+        List<Tag> content = tagPage.getContent();
+        return content;
     }
 
-    public List<Tag> findTagsName() {
-        return null;
+    public List<Tag> findTagsName(int page) {
+        Page<Tag> tagPage = tagRepository.findByOrderByTagNameAsc(PageRequest.of(page, 36));
+        List<Tag> content = tagPage.getContent();
+        return content;
     }
 
-    public List<Tag> findTagsNew() {
-        return null;
+    public List<Tag> findTagsNew(int page) {
+        Page<Tag> tagPage = tagRepository.findByOrderByCreatedAtDesc(PageRequest.of(page, 36));
+        List<Tag> content = tagPage.getContent();
+
+        return content;
     }
 
     public Page<Tag> searchTag() {

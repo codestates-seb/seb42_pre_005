@@ -6,9 +6,13 @@ import com.group5.stackoverflow.question.dto.QuestionDto;
 import com.group5.stackoverflow.question.entity.Question;
 import com.group5.stackoverflow.question.mapper.QuestionMapper;
 import com.group5.stackoverflow.question.service.QuestionService;
+import com.group5.stackoverflow.tag.service.TagService;
 import com.group5.stackoverflow.utils.UriCreator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -20,22 +24,26 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/questions")
+@RequestMapping("/questions")
 @Validated
 @Slf4j
 public class QuestionController {
-    private final static String QUESTION_DEFAULT_URL = "/v1/questions";
+    private final static String QUESTION_DEFAULT_URL = "/questions";
     private final QuestionService questionService;
-    private final QuestionMapper mapper;
+    private final QuestionMapper questionMapper;
+    private final TagService tagService;
 
-    public QuestionController(QuestionService questionService, QuestionMapper mapper) {
+    public QuestionController(QuestionService questionService,
+                              QuestionMapper questionMapper,
+                              TagService tagService) {
         this.questionService = questionService;
-        this.mapper = mapper;
+        this.questionMapper = questionMapper;
+        this.tagService = tagService;
     }
 
     @PostMapping
     public ResponseEntity postQuestion(@Valid @RequestBody QuestionDto.Post requestBody) {
-        Question question = mapper.questionPostToQuestion(requestBody);
+        Question question = questionMapper.questionPostToQuestion(requestBody);
 
         Question createdQuestion = questionService.createQuestion(question);
         URI location = UriCreator.createUri(QUESTION_DEFAULT_URL, createdQuestion.getQuestionId());
@@ -48,10 +56,10 @@ public class QuestionController {
                                         @Valid @RequestBody QuestionDto.Patch requestBody) {
         requestBody.setQuestionId(questionId);
 
-        Question question = questionService.updateQuestion(mapper.questionPatchToQuestion(requestBody));
+        Question question = questionService.updateQuestion(questionMapper.questionPatchToQuestion(requestBody));
 
         return new ResponseEntity<>(
-                new SingleResponseDto<>(mapper.questionToQuestionResponse(question)),
+                new SingleResponseDto<>(questionMapper.questionToQuestionResponse(question)),
                 HttpStatus.OK);
     }
 
@@ -60,17 +68,39 @@ public class QuestionController {
         Question question = questionService.findQuestion(questionId);
 
         return new ResponseEntity<>(
-                new SingleResponseDto<>(mapper.questionToQuestionResponse(question)),
+                new SingleResponseDto<>(questionMapper.questionToQuestionResponse(question)),
                 HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity getQuestions(@Positive @RequestParam int page,
-                                       @Positive @RequestParam int size) {
-        Page<Question> pageQuestions = questionService.findQuestions(page - 1, size);
+    public ResponseEntity getQuestions(
+            @PageableDefault(sort = "question-id", direction = Sort.Direction.DESC)
+                                           Pageable pageable) {
+        Page<Question> pageQuestions = questionService.findQuestions(pageable);
         List<Question> questions = pageQuestions.getContent();
+
         return new ResponseEntity<>(
-                new MultiResponseDto<>(mapper.questionsToQuestionResponses(questions), pageQuestions),
+                new MultiResponseDto<>(questionMapper.questionsToQuestionResponses(questions), pageQuestions),
+                HttpStatus.OK);
+    }
+
+    @GetMapping("/tags")
+    public ResponseEntity getQuestionByTag(@RequestParam String tagName,
+                                           @PageableDefault(sort = "question-id", direction = Sort.Direction.DESC)
+                                           Pageable pageable) {
+        return null;
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity searchQuestion(@RequestParam String search,
+                                         @PageableDefault(sort = "question-id", direction = Sort.Direction.DESC)
+                                         Pageable pageable) {
+        Page<Question> searchQuestionPage = questionService.searchQuestion(search, pageable);
+        List<Question> searchQuestionList = searchQuestionPage.getContent();
+
+        return new ResponseEntity<>(
+                new MultiResponseDto<>(
+                        questionMapper.questionsToQuestionResponses(searchQuestionList), searchQuestionPage),
                 HttpStatus.OK);
     }
 

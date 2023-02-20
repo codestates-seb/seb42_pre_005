@@ -3,22 +3,22 @@ package com.group5.stackoverflow.tag.controller;
 import com.group5.stackoverflow.tag.mapper.TagMapper;
 import com.group5.stackoverflow.tag.repository.TagRepository;
 import com.group5.stackoverflow.tag.service.TagService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequestMapping("/tags")
 public class TagController {
 
     private final TagService tagService;
-    private final TagRepository tagRepository;
     private final TagMapper mapper;
 
-    public TagController(TagService tagService, TagRepository tagRepository, TagMapper mapper) {
+    public TagController(TagService tagService, TagMapper mapper) {
         this.tagService = tagService;
-        this.tagRepository = tagRepository;
         this.mapper = mapper;
     }
 
@@ -32,7 +32,7 @@ public class TagController {
         return null;
     }
 
-    @GetMapping
+    @GetMapping("/sort")
     public ResponseEntity sortTags() {
         return null;
     }

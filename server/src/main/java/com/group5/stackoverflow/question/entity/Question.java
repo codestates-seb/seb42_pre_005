@@ -1,11 +1,17 @@
 package com.group5.stackoverflow.question.entity;
 
+
+import com.group5.stackoverflow.answer.entity.Answer;
 import com.group5.stackoverflow.audit.Auditable;
+import com.group5.stackoverflow.member.entity.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @Getter
@@ -23,9 +29,26 @@ public class Question extends Auditable {
     private String content;
 
     @Column(nullable = false)
-    private int voteCount;
+    private int voteCount = 0;
 
     @Column(nullable = false)
-    private int viewed;
+    private int views = 0;
 
+    @ManyToOne
+    @JoinColumn(name = "MEMBER_ID")
+    private Member member;
+
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+    private List<Answer> answers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+    private List<QuestionTag> questionTags = new ArrayList<>();
+
+    public void setMember(Member member) {
+        this.member = member;
+    }
+
+    public void addAnswer(Answer answer) {
+        answers.add(answer);
+    }
 }
