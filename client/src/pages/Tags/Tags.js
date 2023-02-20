@@ -3,14 +3,28 @@
 import styled from "styled-components";
 import LeftSideBar from "../../components/LeftSideBar/LeftSideBar";
 
+// ----- 필요 컴포넌트
+import TagHeader from "./TagHeader";
+import TagItem from "./TagItem";
+
+// ----- CSS 영역
 const MainBox = styled.div`
-  display: flex;
+  display: flex;  
 `
+const TagBox = styled.div`
+  max-width: 1000px;
+  padding: 40px;
+  /* background-color: beige; */
+`
+// ----- 컴포넌트 영역
 function Tags() {
   return (
     <MainBox>
-      <LeftSideBar/>
-      <div>"모든 태그목록 보기"</div>
+      <LeftSideBar />
+      <TagBox>
+        <TagHeader />
+        <TagItem />
+      </TagBox>
     </MainBox>
   )
 }
