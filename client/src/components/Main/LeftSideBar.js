@@ -39,11 +39,11 @@ function LeftSideBar() {
   return (
     <LeftSideBarBox>
       <TitleBox>
-        <SmallTitle>Home</SmallTitle>
+        <Link to="/"><SmallTitle>Home</SmallTitle></Link>
       </TitleBox>
       <TitleBox>
         <SmallTitle>PUBLIC</SmallTitle>
-          <Link to="/"><BigTitle>Questions</BigTitle></Link>
+          <Link to="/questions"><BigTitle>Questions</BigTitle></Link>
           <Link to="/tags"><BigTitle>Tags</BigTitle></Link>
           <Link to="/users"><BigTitle>Users</BigTitle></Link>
           <BigTitle>Companies</BigTitle>
