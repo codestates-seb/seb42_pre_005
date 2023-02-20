@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -23,15 +25,23 @@ public class MemberService {
 
     public Member createMember(Member member) {
 //        verifyExistsEmail(member.getEmail());
-
 //        return repository.save(member);
         return member;
     }
     public Member updateMember(Member member) {
-//        verifyExistsEmail(member.getEmail());
-
-//        return repository.save(member);
         return member;
+    }
+
+    public Member findMember(Long memberId) {
+        return new Member();
+    }
+
+    public Page<Member> findMembers(int page, int size, String option) {
+        return null;
+    }
+
+    public void deleteMember(Long memberId) {
+
     }
 //
 //    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)

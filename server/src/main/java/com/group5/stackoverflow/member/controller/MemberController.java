@@ -1,5 +1,6 @@
 package com.group5.stackoverflow.member.controller;
 
+import com.group5.stackoverflow.dto.MultiResponseDto;
 import com.group5.stackoverflow.dto.PageInfo;
 import com.group5.stackoverflow.dto.SingleResponseDto;
 import com.group5.stackoverflow.member.dto.MemberDto;
@@ -8,6 +9,10 @@ import com.group5.stackoverflow.member.mapper.MemberMapper;
 import com.group5.stackoverflow.member.service.MemberService;
 import com.group5.stackoverflow.utils.UriCreator;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -48,20 +53,6 @@ public class MemberController {
         return ResponseEntity.created(location).build();
     }
 
-    // get
-    @GetMapping("/{member-id}")
-    public ResponseEntity getMember(@PathVariable("member-id") @Positive long memberId){
-
-        // TODO 서비스 연결
-        Member findmember =  new Member();
-        findmember.setMemberId(7L);
-
-
-        return  new ResponseEntity<>(
-                new SingleResponseDto<>(mapper.memberToMemberResponse(findmember)),
-                HttpStatus.OK);
-    }
-
     @PatchMapping("/{member-id}")
     public ResponseEntity patchMember(
             @PathVariable("member-id") @Positive long memberId,
@@ -76,30 +67,33 @@ public class MemberController {
                 HttpStatus.OK);
     }
 
-
-    @GetMapping()
-    public ResponseEntity getMembers(@RequestParam @Positive int size,
-                                     @RequestParam @Positive int page){
+    // get
+    @GetMapping("/{member-id}")
+    public ResponseEntity getMember(@PathVariable("member-id") @Positive long memberId){
 
         // TODO 서비스 연결
+        Member findmember =
+                memberService.findMember(memberId);
 
-        // mock page info
-        PageInfo pageInfo = new PageInfo(4, 4, 40, 40);
 
-        // mock List<T> file
-        List<Member> members = new ArrayList<>();
-        Member findmember1 =  new Member();
-        Member findmember2 =  new Member();
-        findmember1.setMemberId(7L);
-        findmember2.setMemberId(77L);
-        members.add(findmember1);
-        members.add(findmember2);
 
-//        MultiResponseDto<Member> memberMultiResponseDto = new MultiResponseDto<>();
-//        memberMultiResponseDto.setData(members);
-//        memberMultiResponseDto.setPageInfo(pageInfo);
+        return  new ResponseEntity<>(
+                new SingleResponseDto<>(mapper.memberToMemberResponse(findmember)),
+                HttpStatus.OK);
+    }
 
-        return new ResponseEntity<>(null, HttpStatus.OK);
+
+
+
+    @GetMapping()
+    public ResponseEntity getMembers(@RequestParam @Positive int page,
+                                     @RequestParam @Positive int size,
+                                     @RequestParam String by){
+        // TODO 서비스 연결
+        Page<Member> pageMembers = memberService.findMembers(page-1, size, by);
+        List<Member> members = pageMembers.getContent();
+        return new ResponseEntity<>(new MultiResponseDto<>(mapper.membersToMemberResponses(members), pageMembers),
+                HttpStatus.OK);
 
     }
 
@@ -107,8 +101,7 @@ public class MemberController {
     @DeleteMapping("/{member-id}")
     public ResponseEntity deleteMember(@PathVariable("member-id") @Positive long memberId){
         // TODO 서비스 연결
-
-
+        memberService.deleteMember(memberId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

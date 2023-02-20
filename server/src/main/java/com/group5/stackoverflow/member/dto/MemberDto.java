@@ -79,5 +79,9 @@ public class MemberDto {
 
         Member.MemberStatus memberStatus;
 
+        public String getMemberStatus() {
+            return memberStatus.getStatus();
+        }
+
     }
 }

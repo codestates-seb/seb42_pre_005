@@ -1,13 +1,12 @@
-===== Request Fields // (1)
 |===
-|필드명|타입|필수값|설명
+|Path|Type|Description|Optional|Custom attribute
 
 {{#fields}}
 |{{#tableCellContent}}`+{{path}}+`{{/tableCellContent}}
 |{{#tableCellContent}}`+{{type}}+`{{/tableCellContent}}
-|{{#tableCellContent}}{{^optional}}true{{/optional}}{{/tableCellContent}}  //(2)
 |{{#tableCellContent}}{{description}}{{/tableCellContent}}
+|{{#tableCellContent}}_{{optional}}_{{/tableCellContent}}
+|{{#tableCellContent}}{{validation}}{{/tableCellContent}}
 
 {{/fields}}
-
 |===
