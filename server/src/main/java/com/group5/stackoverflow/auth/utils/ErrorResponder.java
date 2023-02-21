@@ -1,7 +1,7 @@
 package com.group5.stackoverflow.auth.utils;
 
 import com.google.gson.Gson;
-import com.group5.stackoverflow.response.ErrorResponse;
+import com.group5.stackoverflow.exception.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
