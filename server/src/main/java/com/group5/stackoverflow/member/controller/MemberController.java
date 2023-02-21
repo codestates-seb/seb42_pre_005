@@ -56,7 +56,7 @@ public class MemberController {
     @PatchMapping("/{member-id}")
     public ResponseEntity patchMember(
             @PathVariable("member-id") @Positive long memberId,
-            @Valid @RequestBody MemberDto.Patch requestBody) {
+            @Valid @RequestBody MemberDto.Patch requestBody) throws IllegalAccessException {
         requestBody.setMemberId(memberId);
 
         Member member =
@@ -88,9 +88,9 @@ public class MemberController {
     @GetMapping()
     public ResponseEntity getMembers(@RequestParam @Positive int page,
                                      @RequestParam @Positive int size,
-                                     @RequestParam String by){
+                                     @RequestParam(required = false, defaultValue = "base") String mode){
         // TODO 서비스 연결
-        Page<Member> pageMembers = memberService.findMembers(page-1, size, by);
+        Page<Member> pageMembers = memberService.findMembers(page-1, size, mode);
         List<Member> members = pageMembers.getContent();
         return new ResponseEntity<>(new MultiResponseDto<>(mapper.membersToMemberResponses(members), pageMembers),
                 HttpStatus.OK);
