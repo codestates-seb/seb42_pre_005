@@ -42,7 +42,10 @@ public class QuestionDto {
         private Long questionId;
         private String title;
         private String content;
+        private Long memberId;
+        private String name;
         private int voteCount;
         private int views;
+        private String tagName;
     }
 }

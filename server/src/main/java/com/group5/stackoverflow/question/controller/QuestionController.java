@@ -41,6 +41,7 @@ public class QuestionController {
         this.tagService = tagService;
     }
 
+    // 질문 생성
     @PostMapping
     public ResponseEntity postQuestion(@Valid @RequestBody QuestionDto.Post requestBody) {
         Question question = questionMapper.questionPostToQuestion(requestBody);
@@ -51,6 +52,7 @@ public class QuestionController {
         return ResponseEntity.created(location).build();
     }
 
+    // 질문 수정
     @PatchMapping("/{question-id}")
     public ResponseEntity patchQuestion(@PathVariable("question-id") @Positive Long questionId,
                                         @Valid @RequestBody QuestionDto.Patch requestBody) {
@@ -63,6 +65,7 @@ public class QuestionController {
                 HttpStatus.OK);
     }
 
+    // 질문 조회 1건
     @GetMapping("/{question-id}")
     public ResponseEntity getQuestion(@PathVariable("question-id") @Positive Long questionId) {
         Question question = questionService.findQuestion(questionId);
@@ -72,11 +75,11 @@ public class QuestionController {
                 HttpStatus.OK);
     }
 
+    // 질문 전체 조회
     @GetMapping
-    public ResponseEntity getQuestions(
-            @PageableDefault(sort = "question-id", direction = Sort.Direction.DESC)
-                                           Pageable pageable) {
-        Page<Question> pageQuestions = questionService.findQuestions(pageable);
+    public ResponseEntity getQuestions(@RequestParam("page") int page,
+                                       @RequestParam("size") int size) {
+        Page<Question> pageQuestions = questionService.findQuestions(page - 1, size);
         List<Question> questions = pageQuestions.getContent();
 
         return new ResponseEntity<>(
@@ -84,26 +87,29 @@ public class QuestionController {
                 HttpStatus.OK);
     }
 
-    @GetMapping("/tags")
-    public ResponseEntity getQuestionByTag(@RequestParam String tagName,
-                                           @PageableDefault(sort = "question-id", direction = Sort.Direction.DESC)
-                                           Pageable pageable) {
-        return null;
-    }
+    // 질문에 대한 태그 조회
+//    @GetMapping("/tags")
+//    public ResponseEntity getQuestionByTag(@RequestParam String tagName,
+//                                           @PageableDefault(sort = "question-id", direction = Sort.Direction.DESC)
+//                                           Pageable pageable) {
+//        return null;
+//    }
 
-    @GetMapping("/search")
-    public ResponseEntity searchQuestion(@RequestParam String search,
-                                         @PageableDefault(sort = "question-id", direction = Sort.Direction.DESC)
-                                         Pageable pageable) {
-        Page<Question> searchQuestionPage = questionService.searchQuestion(search, pageable);
-        List<Question> searchQuestionList = searchQuestionPage.getContent();
+    // 검색에 의한 질문 조회
+//    @GetMapping("/search")
+//    public ResponseEntity searchQuestion(@RequestParam String search,
+//                                         @PageableDefault(sort = "question-id", direction = Sort.Direction.DESC)
+//                                         Pageable pageable) {
+//        Page<Question> searchQuestionPage = questionService.searchQuestion(search, pageable);
+//        List<Question> searchQuestionList = searchQuestionPage.getContent();
+//
+//        return new ResponseEntity<>(
+//                new MultiResponseDto<>(
+//                        questionMapper.questionsToQuestionResponses(searchQuestionList), searchQuestionPage),
+//                HttpStatus.OK);
+//    }
 
-        return new ResponseEntity<>(
-                new MultiResponseDto<>(
-                        questionMapper.questionsToQuestionResponses(searchQuestionList), searchQuestionPage),
-                HttpStatus.OK);
-    }
-
+    // 질문 삭제
     @DeleteMapping("/{question-id}")
     public ResponseEntity deleteQuestion(@PathVariable("question-id") @Positive Long questionId) {
         questionService.deleteQuestion(questionId);
