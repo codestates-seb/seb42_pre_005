@@ -1,4 +1,4 @@
-package com.group5.stackoverflow.restdocs.question.member;
+package com.group5.stackoverflow.restdocs.member;
 
 import com.google.gson.Gson;
 import com.group5.stackoverflow.member.controller.MemberController;
@@ -305,7 +305,7 @@ public class MemberControllerRestDocsTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .param("page", String.valueOf(page))
                                 .param("size", String.valueOf(size))
-                                .param("by", "base")
+                                .param("mode", "base")
                 );
 
         // then
@@ -334,7 +334,7 @@ public class MemberControllerRestDocsTest {
                                 List.of(
                                         parameterWithName("page").description("페이지 번호"),
                                         parameterWithName("size").description("한번에 볼 페이지"),
-                                        parameterWithName("by").description("다음 중 하나로 정렬 [base | vote]")
+                                        parameterWithName("mode").description("다음 중 하나로 정렬 내림차순 [base | vote]")
                                 )
                         ),
                         responseFields(

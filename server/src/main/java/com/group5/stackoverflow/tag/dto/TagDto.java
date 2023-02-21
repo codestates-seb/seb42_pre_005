@@ -14,7 +14,8 @@ public class TagDto {
     public static class ResponseDto {
 
         private Long tagId;
-        private String tagName = "";
+        private String tagName;
+        private Integer questionCount;
 
     }
 }
