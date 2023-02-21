@@ -24,6 +24,8 @@ public class VoteController {
     @ResponseStatus(HttpStatus.CREATED)
     public VoteDto.QuestionResponse postQuestionUpCount(
             @PathVariable("question-id") @Positive Long questionId) {
+//        member가 맞는지에 대한 확인이 필요함 -> token 구현 완료 되면 구현 가능
+//        return voteService.saveQuestionVote(questionId, , 1);
         return null;
     }
 
@@ -31,20 +33,23 @@ public class VoteController {
     @ResponseStatus(HttpStatus.CREATED)
     public VoteDto.QuestionResponse postQuestionDownCount(
             @PathVariable("question-id") @Positive Long questionId) {
+//        return voteService.saveQuestionVote(questionId, , -1);
         return null;
     }
 
     @PostMapping("/answers/{answer-id}/upcount")
     @ResponseStatus(HttpStatus.CREATED)
     public VoteDto.AnswerResponse postAnswerUpCount(
-            @PathVariable("answer-id") @Positive Long questionId) {
+            @PathVariable("answer-id") @Positive Long answerId) {
+//        return voteService.saveAnswerVote(answerId, , 1);
         return null;
     }
 
     @PostMapping("/answers/{answer-id}/downcount")
     @ResponseStatus(HttpStatus.CREATED)
     public VoteDto.AnswerResponse postAnswerDownCount(
-            @PathVariable("answer-id") @Positive Long questionId) {
+            @PathVariable("answer-id") @Positive Long answerId) {
+//        return voteService.saveAnswerVote(answerId, , -1);
         return null;
     }
 }

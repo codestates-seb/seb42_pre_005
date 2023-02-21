@@ -85,7 +85,41 @@ public class VoteService {
         Member findMember = memberService.findMember(memberId);
         List<Vote> voteList = voteRepository.findAllByMemberAndAnswer(findMember, findAnswer);
 
-        return null;
+        if (voteList.isEmpty()) {
+            Vote createdVote = createVote(findAnswer, findMember, count);
+            voteRepository.save(createdVote);
+
+            int voteCount = voteRepository.findAllByAnswer(findAnswer)
+                    .stream()
+                    .mapToInt(Vote::getCount)
+                    .sum();
+            findAnswer.setVoteCount(voteCount);
+            answerRepository.save(findAnswer);
+
+            return VoteDto.AnswerResponse.builder()
+                    .memberId(memberId)
+                    .voteCount(voteCount)
+                    .upCount(count == 1)
+                    .downCount(count == -1)
+                    .answerId(answerId)
+                    .build();
+        } else {
+            voteRepository.deleteAll(voteList);
+            int voteCount = voteRepository.findAllByAnswer(findAnswer)
+                    .stream()
+                    .mapToInt(Vote::getCount)
+                    .sum();
+            findAnswer.setVoteCount(voteCount);
+            answerRepository.save(findAnswer);
+
+            return VoteDto.AnswerResponse.builder()
+                    .memberId(memberId)
+                    .voteCount(voteCount)
+                    .upCount(false)
+                    .downCount(false)
+                    .answerId(answerId)
+                    .build();
+        }
     }
 
     public Vote createVote(Question question, Member member, int count) {
@@ -95,4 +129,12 @@ public class VoteService {
                 .count(count)
                 .build();
     }
+
+    public Vote createVote(Answer answer, Member member, int count) {
+        return Vote.builder()
+                .member(member)
+                .answer(answer)
+                .count(count)
+                .build();
+}
 }
