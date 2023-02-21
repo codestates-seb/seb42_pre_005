@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface QuestionRepository extends JpaRepository<Question, Long> {
-    Page<Question> findByTitleContainingOrTextContaining(String title, String content, Pageable pageable);
+//    Page<Question> findByTitleContainingOrTextContaining(String title, String content, Pageable pageable);
 }

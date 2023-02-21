@@ -77,10 +77,9 @@ public class QuestionController {
 
     // 질문 전체 조회
     @GetMapping
-    public ResponseEntity getQuestions(
-            @PageableDefault(sort = "question-id", direction = Sort.Direction.DESC)
-                                           Pageable pageable) {
-        Page<Question> pageQuestions = questionService.findQuestions(pageable);
+    public ResponseEntity getQuestions(@RequestParam("page") int page,
+                                       @RequestParam("size") int size) {
+        Page<Question> pageQuestions = questionService.findQuestions(page - 1, size);
         List<Question> questions = pageQuestions.getContent();
 
         return new ResponseEntity<>(
@@ -89,26 +88,26 @@ public class QuestionController {
     }
 
     // 질문에 대한 태그 조회
-    @GetMapping("/tags")
-    public ResponseEntity getQuestionByTag(@RequestParam String tagName,
-                                           @PageableDefault(sort = "question-id", direction = Sort.Direction.DESC)
-                                           Pageable pageable) {
-        return null;
-    }
+//    @GetMapping("/tags")
+//    public ResponseEntity getQuestionByTag(@RequestParam String tagName,
+//                                           @PageableDefault(sort = "question-id", direction = Sort.Direction.DESC)
+//                                           Pageable pageable) {
+//        return null;
+//    }
 
     // 검색에 의한 질문 조회
-    @GetMapping("/search")
-    public ResponseEntity searchQuestion(@RequestParam String search,
-                                         @PageableDefault(sort = "question-id", direction = Sort.Direction.DESC)
-                                         Pageable pageable) {
-        Page<Question> searchQuestionPage = questionService.searchQuestion(search, pageable);
-        List<Question> searchQuestionList = searchQuestionPage.getContent();
-
-        return new ResponseEntity<>(
-                new MultiResponseDto<>(
-                        questionMapper.questionsToQuestionResponses(searchQuestionList), searchQuestionPage),
-                HttpStatus.OK);
-    }
+//    @GetMapping("/search")
+//    public ResponseEntity searchQuestion(@RequestParam String search,
+//                                         @PageableDefault(sort = "question-id", direction = Sort.Direction.DESC)
+//                                         Pageable pageable) {
+//        Page<Question> searchQuestionPage = questionService.searchQuestion(search, pageable);
+//        List<Question> searchQuestionList = searchQuestionPage.getContent();
+//
+//        return new ResponseEntity<>(
+//                new MultiResponseDto<>(
+//                        questionMapper.questionsToQuestionResponses(searchQuestionList), searchQuestionPage),
+//                HttpStatus.OK);
+//    }
 
     // 질문 삭제
     @DeleteMapping("/{question-id}")

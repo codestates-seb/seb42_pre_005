@@ -1,6 +1,5 @@
 package com.group5.stackoverflow.question.service;
 
-import com.group5.stackoverflow.answer.service.AnswerService;
 import com.group5.stackoverflow.exception.BusinessLogicException;
 import com.group5.stackoverflow.exception.ExceptionCode;
 import com.group5.stackoverflow.member.service.MemberService;
@@ -64,16 +63,17 @@ public class QuestionService {
     }
 
     // 질문 전체 찾기
-    public Page<Question> findQuestions(Pageable pageable) {
-        return repository.findAll(pageable);
+    public Page<Question> findQuestions(int page, int size) {
+        return repository.findAll(
+                PageRequest.of(page, size, Sort.by("question-id").descending()));
     }
 
     // 검색에 맞는 질문 찾기
-    public Page<Question> searchQuestion(String search, Pageable pageable) {
-        Page<Question> questionPage = repository.findByTitleContainingOrTextContaining(search, search, pageable);
-
-        return questionPage;
-    }
+//    public Page<Question> searchQuestion(String search, Pageable pageable) {
+//        Page<Question> questionPage = repository.findByTitleContainingOrTextContaining(search, search, pageable);
+//
+//        return questionPage;
+//    }
 
     // 질문 삭제
     public void deleteQuestion(Long questionId) {
