@@ -44,6 +44,10 @@ public class Member extends Auditable {
     @Column(nullable = false)
     MemberStatus memberStatus = MemberStatus.MEMBER_NEW;
 
+    // 멤버 권한
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> roles = new ArrayList<>();
+
     // 연관관계 매핑
     @OneToMany(mappedBy = "member")
     @Column(name = "MEMBER_MENTION")
