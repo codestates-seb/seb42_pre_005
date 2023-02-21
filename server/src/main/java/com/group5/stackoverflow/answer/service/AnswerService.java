@@ -52,7 +52,6 @@ public class AnswerService {
 
         Optional.ofNullable(answer.getContent())
                 .ifPresent(content -> findAnswer.setContent(content));
-        answer.setModifiedAt(LocalDateTime.now());
 
         return answerRepository.save(findAnswer);
     }

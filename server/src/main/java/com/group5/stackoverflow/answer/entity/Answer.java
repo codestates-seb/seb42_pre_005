@@ -17,28 +17,31 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
 public class Answer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long answerId;
+
+    @Column(nullable = false)
     private String content;
+
     private int voteCount;
-    private LocalDateTime createdAt;
-    private LocalDateTime modifiedAt;
 
-
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "QUESTION_ID")
     private Question question;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
-    public Answer(String content) {
-        this.content = content;
+    public void setMember(Member member) {
+        this.member = member;
+        member.getAnswers().add(this);
+    }
+    public void setQuestion(Question question) {
+        this.question = question;
+        question.getAnswers().add(this);
     }
 }

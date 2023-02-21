@@ -38,7 +38,7 @@ public class AnswerController {
         Answer response = answerService.createAnswer(answer, questionId);
 
         return new ResponseEntity(
-                new SingleResponseDto<>(mapper.AnswerToAnswerResponse(response)), HttpStatus.CREATED);
+                new SingleResponseDto<>(mapper.answerToAnswerResponse(response)), HttpStatus.CREATED);
     }
 
     @PatchMapping("/answers/{answer-id}")
@@ -47,7 +47,7 @@ public class AnswerController {
         Answer response = answerService.updateAnswer(answerId, mapper.answerPatchDtoToAnswer(requestBody));
 
         return new ResponseEntity(
-                new SingleResponseDto<>(mapper.AnswerToAnswerResponse(response)), HttpStatus.OK);
+                new SingleResponseDto<>(mapper.answerToAnswerResponse(response)), HttpStatus.OK);
     }
 
     @DeleteMapping("/answers/{answer-id}")
