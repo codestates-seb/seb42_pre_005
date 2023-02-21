@@ -56,7 +56,7 @@ public class TagService {
 
         switch (tab) {
             case "popular" :
-                pageable = PageRequest.of(page, size, Sort.by("askedTotal").descending());
+                pageable = PageRequest.of(page, size, Sort.by("questionCount").descending());
                 break;
             case "name" :
                 pageable = PageRequest.of(page, size, Sort.by("tagName").ascending());

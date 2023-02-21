@@ -1,5 +1,6 @@
 package com.group5.stackoverflow.member.entity;
 
+import com.group5.stackoverflow.answer.entity.Answer;
 import com.group5.stackoverflow.audit.Auditable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -50,6 +51,9 @@ public class Member extends Auditable {
 
     // TODO Answer 연관관계 매핑
     // TODO comment 연관관계 매핑
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    List<Answer> answers = new ArrayList<>();
 
 
 
