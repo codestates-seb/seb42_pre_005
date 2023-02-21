@@ -46,9 +46,8 @@ public class MemberController {
     public ResponseEntity postMember(@Valid  @RequestBody MemberDto.Post memberDtoPost){
         Member member =  mapper.memberPostToMember(memberDtoPost);
 
-        // TODO 서비스 연결
-
-        URI location = UriCreator.createUri(MEMBER_DEFAULT_URL, 10000);
+        memberService.createMember(member);
+        URI location = UriCreator.createUri(MEMBER_DEFAULT_URL, member.getMemberId());
 
         return ResponseEntity.created(location).build();
     }
@@ -71,11 +70,8 @@ public class MemberController {
     @GetMapping("/{member-id}")
     public ResponseEntity getMember(@PathVariable("member-id") @Positive long memberId){
 
-        // TODO 서비스 연결
         Member findmember =
                 memberService.findMember(memberId);
-
-
 
         return  new ResponseEntity<>(
                 new SingleResponseDto<>(mapper.memberToMemberResponse(findmember)),
@@ -89,7 +85,6 @@ public class MemberController {
     public ResponseEntity getMembers(@RequestParam @Positive int page,
                                      @RequestParam @Positive int size,
                                      @RequestParam(required = false, defaultValue = "base") String mode){
-        // TODO 서비스 연결
         Page<Member> pageMembers = memberService.findMembers(page-1, size, mode);
         List<Member> members = pageMembers.getContent();
         return new ResponseEntity<>(new MultiResponseDto<>(mapper.membersToMemberResponses(members), pageMembers),
@@ -100,7 +95,6 @@ public class MemberController {
     // delete
     @DeleteMapping("/{member-id}")
     public ResponseEntity deleteMember(@PathVariable("member-id") @Positive long memberId){
-        // TODO 서비스 연결
         memberService.deleteMember(memberId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -108,8 +102,6 @@ public class MemberController {
     // get voteCount
     @GetMapping("/{member-id}/vote-count")
     public ResponseEntity getMemberVoteCount(@PathVariable("member-id") @Positive long memberId){
-        // TODO 서비스 연결
-
         Member findmember =  new Member();
         findmember.setVoteCount(100);
         findmember.setMemberId(memberId);
@@ -117,6 +109,4 @@ public class MemberController {
         return new ResponseEntity<>(new SingleResponseDto<>(mapper.memberToMemberResponse(findmember)),
                 HttpStatus.OK);
     }
-
-
 }
