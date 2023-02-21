@@ -2,13 +2,22 @@ import { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Logo from "../../icons/Logo.svg";
+
+const StackoverflowLogo = styled.div` // 스택오버플로우 로고 영역
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 30px 0 24px 0;
+  cursor: pointer;
+`
 
 export const LoginPage = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 24px;
-    height: 100vh;
+    height: 93vh;
     background-color: #eee;
 `
 export const LoginContainer = styled.div`
@@ -21,19 +30,52 @@ export const SocialContainer = styled.div`
     display: flex;
     flex-direction: column;
 `
-export const Google = styled.button`
+export const SocialButton = styled.button`
+    width: 278px;
+    height: 37px;
+    text-align: center;
+    margin: 4px 0;
+    border: 1px solid hsl(210deg 8% 85%);
+    border-radius: 5px;
 `
-export const GitHub = styled.button`
+export const Google = styled(SocialButton)`
+    background-color: white;
 `
-export const Facebook = styled.button`
+export const GitHub = styled(SocialButton)`
+    background-color: hsl(210deg 8% 20%);
+    color: white;
 `
-export const InputContainer = styled.div`
+export const Facebook = styled(SocialButton)`
+    background-color: #385499;
+    color: white;
+`
+export const InputContainer = styled.form`
     display: flex;
     flex-direction: column;
     background-color: white;
-    border-radius: 10px;
-    width: 100%;
+    border-radius: 5px;
+    width: 278px;
+    height: 233px;
     padding: 24px;
+    margin: 12px 0 24px 0;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    input {
+        width: 230px;
+        height: 32px;
+        border: 1px solid hsl(210deg 8% 85%);
+        border-radius: 3px;
+        margin: 6px 0;
+        padding: 7px 8px;
+    }
+    button {
+        width: 230px;
+        height: 37px;
+        border: 1px solid hsl(210deg 8% 85%);
+        border-radius: 3px;
+        background-color: #0A95FF;
+        color: white;
+        margin: 12px 0 0 0;
+    }
 `
 export const Bottom = styled.div`
     display: flex;
@@ -61,12 +103,15 @@ function Login() {
         axios.post(``, loginData)
 
     }
+
+    axios.get("/api/")
+    .then(()=> console.log("쉬발"));
     return (
         <LoginPage>
             <LoginContainer>
-                <div>
-                    5조 스택오버플로우
-                </div>
+                <StackoverflowLogo onClick={() => navigate("/")}>
+                    <img src={Logo} alt="logo" />
+                </StackoverflowLogo>
                 <SocialContainer>
                     <Google>Log in with Google</Google>
                     <GitHub>Log in with GitHub</GitHub>
@@ -74,13 +119,13 @@ function Login() {
                 </SocialContainer>
                 <InputContainer onSubmit={(e) => e.preventDefault()}>
                     <span>Email</span>
-                    <input type="text" value={email} onChange={emailHandler} required></input>
+                    <input type="email" value={email} onChange={emailHandler} required></input>
                     <span>Password</span>
                     <input type="password" value={password} onChange={passwordHandler} required></input>
                     <button type="submit" onClick={loginRequestHandler}>Log in</button>
                 </InputContainer>
                 <Bottom>
-                    <span>Don't have an account? <span onClick={() => navigate('/register')}>Sign up</span></span>
+                    <span>Don't have an account? <span style={{color: "#0A95FF", cursor: "pointer"}} onClick={() => navigate('/register')}>Sign up</span></span>
                 </Bottom>
             </LoginContainer>
         </LoginPage>
