@@ -1,6 +1,8 @@
 package com.group5.stackoverflow.restdocs.question.question;
 
 import com.google.gson.Gson;
+import com.group5.stackoverflow.member.mapper.MemberMapper;
+import com.group5.stackoverflow.member.service.MemberService;
 import com.group5.stackoverflow.question.controller.QuestionController;
 import com.group5.stackoverflow.question.dto.QuestionDto;
 import com.group5.stackoverflow.question.entity.Question;
@@ -21,6 +23,8 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.List;
 
+import static com.group5.stackoverflow.utils.ApiDocumentUtils.getRequestPreProcessor;
+import static com.group5.stackoverflow.utils.ApiDocumentUtils.getResponsePreProcessor;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 import static org.mockito.BDDMockito.given;
@@ -45,7 +49,13 @@ public class QuestionControllerRestDocsTest {
     private QuestionService questionService;
 
     @MockBean
-    private QuestionMapper mapper;
+    private QuestionMapper questionMapper;
+
+    @MockBean
+    private MemberService memberService;
+
+    @MockBean
+    private MemberMapper memberMapper;
 
     @Autowired
     private Gson gson;
@@ -57,7 +67,7 @@ public class QuestionControllerRestDocsTest {
         String content = gson.toJson(post);
 
 
-        given(mapper.questionPostToQuestion(Mockito.any(QuestionDto.Post.class))).willReturn(new Question());
+        given(questionMapper.questionPostToQuestion(Mockito.any(QuestionDto.Post.class))).willReturn(new Question());
 
         Question mockResultQuestion = new Question();
         mockResultQuestion.setQuestionId(1L);
@@ -78,8 +88,8 @@ public class QuestionControllerRestDocsTest {
                 .andExpect(jsonPath("$.data.title").value(post.getTitle()))
                 .andExpect(jsonPath("$.data.content").value(post.getContent()))
                 .andDo(document("post-question",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
+                        getRequestPreProcessor(),
+                        getResponsePreProcessor(),
                         requestFields(
                                 List.of(
                                         fieldWithPath("title").type(JsonFieldType.STRING).description("제목"),
@@ -103,14 +113,17 @@ public class QuestionControllerRestDocsTest {
                 new QuestionDto.Response(1L,
                         "타이틀입니다.",
                         "이부분을 수정하겠습니다.",
+                        1L,
+                        "taekie",
                         20,
-                        45);
+                        10,
+                        "JAVA");
 
-        given(mapper.questionPatchToQuestion(Mockito.any(QuestionDto.Patch.class))).willReturn(new Question());
+        given(questionMapper.questionPatchToQuestion(Mockito.any(QuestionDto.Patch.class))).willReturn(new Question());
 
         given(questionService.updateQuestion(Mockito.any(Question.class))).willReturn(new Question());
 
-        given(mapper.questionToQuestionResponse(Mockito.any(Question.class))).willReturn(response);
+        given(questionMapper.questionToQuestionResponse(Mockito.any(Question.class))).willReturn(response);
 
         ResultActions actions =
                 mockMvc.perform(
@@ -126,8 +139,8 @@ public class QuestionControllerRestDocsTest {
                 .andExpect(jsonPath("$.data.title").value(patch.getTitle()))
                 .andExpect(jsonPath("$.data.content").value(patch.getContent()))
                 .andDo(document("patch-question",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
+                        getRequestPreProcessor(),
+                        getResponsePreProcessor(),
                         pathParameters(
                                 parameterWithName("question-id").description("질문 식별자")
                         ),
@@ -144,8 +157,62 @@ public class QuestionControllerRestDocsTest {
                                         fieldWithPath("data.questionId").type(JsonFieldType.NUMBER).description("질문 식별자"),
                                         fieldWithPath("data.title").type(JsonFieldType.STRING).description("질문 제목"),
                                         fieldWithPath("data.content").type(JsonFieldType.STRING).description("질문 내용"),
+                                        fieldWithPath("data.memberId").type(JsonFieldType.STRING).description("회원 식별자"),
+                                        fieldWithPath("data.name").type(JsonFieldType.STRING).description("회원 이름"),
                                         fieldWithPath("data.voteCount").type(JsonFieldType.NUMBER).description("추천수"),
-                                        fieldWithPath("data.views").type(JsonFieldType.NUMBER).description("조회수")
+                                        fieldWithPath("data.views").type(JsonFieldType.NUMBER).description("조회수"),
+                                        fieldWithPath("data.tagName").type(JsonFieldType.STRING).description("태그 이름")
+                                )
+                        )
+                ));
+    }
+
+    @Test
+    public void getQuestionTest() throws Exception {
+        QuestionDto.Response response =
+                new QuestionDto.Response(1L,
+                        "타이틀 입니다.",
+                        "질문 내용입니다.",
+                        1L,
+                        "taekie",
+                        30,
+                        40,
+                        "JAVA");
+
+        given(questionService.findQuestion(Mockito.anyLong())).willReturn(new Question());
+        given(questionMapper.questionToQuestionResponse(Mockito.any(Question.class))).willReturn(response);
+
+        ResultActions actions =
+                mockMvc.perform(
+                        get("/questions/{question-id}", 1L)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                );
+
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.questionId").value(response.getQuestionId()))
+                .andExpect(jsonPath("$.data.title").value(response.getTitle()))
+                .andExpect(jsonPath("$.data.content").value(response.getContent()))
+                .andExpect(jsonPath("$.data.voteCount").value(response.getVoteCount()))
+                .andExpect(jsonPath("$.data.views").value(response.getViews()))
+                .andDo(document("get-question",
+                        getRequestPreProcessor(),
+                        getResponsePreProcessor(),
+                        pathParameters(
+                                parameterWithName("question-id").description("질문 식별자")
+                        ),
+                        responseFields(
+                                List.of(
+                                        fieldWithPath("data").type(JsonFieldType.OBJECT).description("결과 데이터"),
+                                        fieldWithPath("data.questionId").type(JsonFieldType.NUMBER).description("질문 식별자"),
+                                        fieldWithPath("data.title").type(JsonFieldType.STRING).description("질문 제목"),
+                                        fieldWithPath("data.content").type(JsonFieldType.STRING).description("질문 내용"),
+                                        fieldWithPath("data.memberId").type(JsonFieldType.STRING).description("회원 식별자"),
+                                        fieldWithPath("data.name").type(JsonFieldType.STRING).description("회원 이름"),
+                                        fieldWithPath("data.voteCount").type(JsonFieldType.NUMBER).description("추천수"),
+                                        fieldWithPath("data.views").type(JsonFieldType.NUMBER).description("조회수"),
+                                        fieldWithPath("data.tagName").type(JsonFieldType.STRING).description("태그 이름")
                                 )
                         )
                 ));
