@@ -136,5 +136,5 @@ public class VoteService {
                 .answer(answer)
                 .count(count)
                 .build();
-}
+    }
 }
