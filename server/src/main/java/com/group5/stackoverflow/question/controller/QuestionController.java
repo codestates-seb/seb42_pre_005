@@ -31,14 +31,11 @@ public class QuestionController {
     private final static String QUESTION_DEFAULT_URL = "/questions";
     private final QuestionService questionService;
     private final QuestionMapper questionMapper;
-    private final TagService tagService;
 
     public QuestionController(QuestionService questionService,
-                              QuestionMapper questionMapper,
-                              TagService tagService) {
+                              QuestionMapper questionMapper) {
         this.questionService = questionService;
         this.questionMapper = questionMapper;
-        this.tagService = tagService;
     }
 
     // 질문 생성
