@@ -14,7 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @WebMvcTest(VoteController.class)
 @MockBean(JpaMetamodelMappingContext.class)
 @AutoConfigureRestDocs
-public class VoteControllerTest {
+public class VoteControllerRestDocsTest {
     @Autowired
     private MockMvc mockMvc;
 
