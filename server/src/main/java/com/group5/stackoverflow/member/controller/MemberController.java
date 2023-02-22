@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/members")
+@RequestMapping("/members")
 @Validated
 @Slf4j
 public class MemberController {
