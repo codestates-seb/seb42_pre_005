@@ -1,5 +1,6 @@
 package com.group5.stackoverflow.question.controller;
 
+import com.group5.stackoverflow.auth.tokenizer.JwtTokenizer;
 import com.group5.stackoverflow.dto.MultiResponseDto;
 import com.group5.stackoverflow.dto.SingleResponseDto;
 import com.group5.stackoverflow.question.dto.QuestionDto;
@@ -31,22 +32,23 @@ public class QuestionController {
     private final static String QUESTION_DEFAULT_URL = "/questions";
     private final QuestionService questionService;
     private final QuestionMapper questionMapper;
-    private final TagService tagService;
+    private final JwtTokenizer jwtTokenizer;
 
     public QuestionController(QuestionService questionService,
                               QuestionMapper questionMapper,
-                              TagService tagService) {
+                              JwtTokenizer jwtTokenizer) {
         this.questionService = questionService;
         this.questionMapper = questionMapper;
-        this.tagService = tagService;
+        this.jwtTokenizer = jwtTokenizer;
     }
 
     // 질문 생성
     @PostMapping
-    public ResponseEntity postQuestion(@Valid @RequestBody QuestionDto.Post requestBody) {
+    public ResponseEntity postQuestion(@RequestHeader(name = "Authorization") String token,
+                                       @Valid @RequestBody QuestionDto.Post requestBody) {
         Question question = questionMapper.questionPostToQuestion(requestBody);
 
-        Question createdQuestion = questionService.createQuestion(question);
+        Question createdQuestion = questionService.createQuestion(question, jwtTokenizer.getMemberId(token));
         URI location = UriCreator.createUri(QUESTION_DEFAULT_URL, createdQuestion.getQuestionId());
 
         return ResponseEntity.created(location).build();
@@ -55,10 +57,12 @@ public class QuestionController {
     // 질문 수정
     @PatchMapping("/{question-id}")
     public ResponseEntity patchQuestion(@PathVariable("question-id") @Positive Long questionId,
+                                        @RequestHeader(name = "Authorization") String token,
                                         @Valid @RequestBody QuestionDto.Patch requestBody) {
         requestBody.setQuestionId(questionId);
 
-        Question question = questionService.updateQuestion(questionMapper.questionPatchToQuestion(requestBody));
+        Question question = questionService.updateQuestion(questionMapper.questionPatchToQuestion(requestBody),
+                jwtTokenizer.getMemberId(token));
 
         return new ResponseEntity<>(
                 new SingleResponseDto<>(questionMapper.questionToQuestionResponse(question)),
@@ -111,8 +115,9 @@ public class QuestionController {
 
     // 질문 삭제
     @DeleteMapping("/{question-id}")
-    public ResponseEntity deleteQuestion(@PathVariable("question-id") @Positive Long questionId) {
-        questionService.deleteQuestion(questionId);
+    public ResponseEntity deleteQuestion(@PathVariable("question-id") @Positive Long questionId,
+                                         @RequestHeader(name = "Authorization") String token) {
+        questionService.deleteQuestion(questionId, jwtTokenizer.getMemberId(token));
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
