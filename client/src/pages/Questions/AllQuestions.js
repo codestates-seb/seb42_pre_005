@@ -2,11 +2,11 @@
 
 // ----- 필요 라이브러리
 import styled from "styled-components";
-import AllQuestionHeader from "../../components/Header/AllQuestionHeader";
 
 // ----- 컴포넌트 및 이미지 파일
 import QuestionItem from "../../components/Questions/QuestionItem";
 import RightSideBar from "../../components/Main/RightSideBar";
+import AllQuestionHeader from "../../components/Header/AllQuestionHeader";
 
 // ----- CSS 영역
 const QuestionsBox = styled.div`
