@@ -1,6 +1,8 @@
 package com.group5.stackoverflow.tag.entity;
 
+import com.group5.stackoverflow.audit.Auditable;
 import com.group5.stackoverflow.question.entity.QuestionTag;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,7 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Tag {
+public class Tag extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,10 +26,7 @@ public class Tag {
     @Column(unique = true, nullable = false, length = 35)
     private String tagName;
 
-    private Integer questionCount = 0;
-
-    private LocalDateTime createdAt;
-    private LocalDateTime modifiedAt;
+    private int questionCount = 0;
 
     @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL)
     private List<QuestionTag> questionTags = new ArrayList<>();

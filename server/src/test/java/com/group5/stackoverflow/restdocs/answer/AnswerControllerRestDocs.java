@@ -1,4 +1,4 @@
-package com.group5.stackoverflow.restdocs.answer;
+package com.group5.stackoverflow.restdocs.question.answer;
 
 import com.google.gson.Gson;
 import com.group5.stackoverflow.answer.mapper.AnswerMapper;
