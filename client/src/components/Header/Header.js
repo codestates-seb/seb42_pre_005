@@ -96,7 +96,7 @@ const UserBox = styled.div` // 로그인 후 : 유저사진, 아이콘 영역
 
 // ----- 컴포넌트 영역
 function Header() {
-  const [isLogin, setisLogin] = useState(false); // 로그인 여부를 결정짓는 상태
+  // const [isLogin, setisLogin] = useState(false); // 로그인 여부를 결정짓는 상태
   const navigate = useNavigate();
 
   return (
@@ -109,8 +109,16 @@ function Header() {
         <SearchBarInput placeholder="Search..." />
       </SearchBox>
       <RightBox> 
-        {/* 로그인 여부에 따라 보이는 모습이 다릅니다 */}
-        {isLogin 
+          <UserBox>
+            <img src={defaultProfile} alt="user profile img" onClick={() => navigate("/userdetail")} height="24px" />
+            {/* <MdInbox /> */}
+          </UserBox> 
+          <LoginBox>
+            <LoginButton onClick={() => navigate("/login")}>Log in</LoginButton>
+            <SignupButton onClick={() => navigate("/register")}>Sign up</SignupButton>
+          </LoginBox>
+
+        {/* {isLogin 
           ? // 로그인을 했을 때는 유저 프로필 사진과 아이콘들이 보임
           <UserBox>
             <img src={defaultProfile} alt="user profile img" height="24px" />
@@ -120,7 +128,7 @@ function Header() {
           <LoginBox>
             <LoginButton onClick={() => navigate("/login")}>Log in</LoginButton>
             <SignupButton onClick={() => navigate("/register")}>Sign up</SignupButton>
-          </LoginBox>}
+          </LoginBox>} */}
       </RightBox>
     </HeaderBox>
   );
