@@ -1,20 +1,23 @@
 package com.group5.stackoverflow.restdocs.question;
 
 import com.google.gson.Gson;
+import com.group5.stackoverflow.auth.tokenizer.JwtTokenizer;
+import com.group5.stackoverflow.auth.utils.CustomAuthorityUtils;
+import com.group5.stackoverflow.config.SecurityConfiguration;
 import com.group5.stackoverflow.member.entity.Member;
-import com.group5.stackoverflow.member.mapper.MemberMapper;
-import com.group5.stackoverflow.member.service.MemberService;
 import com.group5.stackoverflow.question.controller.QuestionController;
 import com.group5.stackoverflow.question.dto.QuestionDto;
 import com.group5.stackoverflow.question.entity.Question;
 import com.group5.stackoverflow.question.mapper.QuestionMapper;
 import com.group5.stackoverflow.question.service.QuestionService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -34,8 +37,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -43,24 +45,23 @@ import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@Import({SecurityConfiguration.class, JwtTokenizer.class, CustomAuthorityUtils.class})
 @WebMvcTest(QuestionController.class)
 @MockBean(JpaMetamodelMappingContext.class)
 @AutoConfigureRestDocs
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class QuestionControllerRestDocsTest {
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private JwtTokenizer jwtTokenizer;
 
     @MockBean
     private QuestionService questionService;
 
     @MockBean
     private QuestionMapper questionMapper;
-
-    @MockBean
-    private MemberService memberService;
-
-    @MockBean
-    private MemberMapper memberMapper;
 
     @Autowired
     private Gson gson;
@@ -77,11 +78,12 @@ public class QuestionControllerRestDocsTest {
         Question mockResultQuestion = new Question();
         mockResultQuestion.setQuestionId(1L);
 
-        given(questionService.createQuestion(Mockito.any(Question.class))).willReturn(mockResultQuestion);
+        given(questionService.createQuestion(Mockito.any(Question.class), Mockito.anyLong())).willReturn(mockResultQuestion);
 
         ResultActions actions =
                 mockMvc.perform(
                         post("/questions")
+                                .header("Authorization", "Bearer (accessToken)")
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(content)
@@ -93,6 +95,9 @@ public class QuestionControllerRestDocsTest {
                 .andDo(document("post-question",
                         getRequestPreProcessor(),
                         getResponsePreProcessor(),
+                        requestHeaders(
+                                headerWithName("Authorization").description("Bearer (accessToken)")
+                        ),
                         requestFields(
                                 List.of(
                                         fieldWithPath("title").type(JsonFieldType.STRING).description("제목")
@@ -126,13 +131,14 @@ public class QuestionControllerRestDocsTest {
 
         given(questionMapper.questionPatchToQuestion(Mockito.any(QuestionDto.Patch.class))).willReturn(new Question());
 
-        given(questionService.updateQuestion(Mockito.any(Question.class))).willReturn(new Question());
+        given(questionService.updateQuestion(Mockito.any(Question.class), Mockito.anyLong())).willReturn(new Question());
 
         given(questionMapper.questionToQuestionResponse(Mockito.any(Question.class))).willReturn(response);
 
         ResultActions actions =
                 mockMvc.perform(
                         patch("/questions/{question-id}", questionId)
+                                .header("Authorization", "Bearer (accessToken)")
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(content)
@@ -148,6 +154,9 @@ public class QuestionControllerRestDocsTest {
                         getResponsePreProcessor(),
                         pathParameters(
                                 parameterWithName("question-id").description("질문 식별자")
+                        ),
+                        requestHeaders(
+                                headerWithName("Authorization").description("Bearer (accessToken")
                         ),
                         requestFields(
                                 List.of(
@@ -321,12 +330,14 @@ public class QuestionControllerRestDocsTest {
     @Test
     public void deleteQuestion() throws Exception {
         Long questionId = 1L;
+        Long tokenId = 1L;
 
-        doNothing().when(questionService).deleteQuestion(questionId);
+        doNothing().when(questionService).deleteQuestion(questionId, tokenId);
 
         ResultActions actions =
                 mockMvc.perform(
                         delete("/questions/{question-id}", questionId)
+                                .header("Authorization", "Bearer (accessToken)")
                 );
 
         actions
@@ -336,6 +347,9 @@ public class QuestionControllerRestDocsTest {
                         getResponsePreProcessor(),
                         pathParameters(
                                 parameterWithName("question-id").description("질문 식별자")
+                        ),
+                        responseHeaders(
+                                headerWithName("Authorization").description("Bearer (accessToken)")
                         )
                 ));
     }

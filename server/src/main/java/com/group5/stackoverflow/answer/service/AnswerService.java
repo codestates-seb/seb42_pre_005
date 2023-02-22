@@ -4,6 +4,7 @@ import com.group5.stackoverflow.answer.entity.Answer;
 import com.group5.stackoverflow.answer.repository.AnswerRepository;
 import com.group5.stackoverflow.exception.BusinessLogicException;
 import com.group5.stackoverflow.exception.ExceptionCode;
+import com.group5.stackoverflow.member.entity.Member;
 import com.group5.stackoverflow.member.repository.MemberRepository;
 import com.group5.stackoverflow.member.service.MemberService;
 import com.group5.stackoverflow.question.entity.Question;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
