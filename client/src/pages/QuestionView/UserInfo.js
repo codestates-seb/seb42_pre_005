@@ -2,46 +2,47 @@
 
 // ----- 필요 라이브러리
 import styled from "styled-components";
-import Vote from "./Vote";
 
 // ----- 컴포넌트 및 이미지 파일
 
-
 // ----- CSS 영역
 const UserBox = styled.div` // 답변부분 전체 박스
-  background-color: #dceaf6;
+  background-color: ${(props) => (props.color ? props.color : "white")};
   padding: 10px;
   border-radius: 5px;
   width: 200px;
   margin-bottom: 20px;
 `
 const CreateDay = styled.div` // 질문날짜
-  font-size: 14px;
+  font-size: 12px;
+  color: gray;
+  margin-bottom: 5px;
 `
 const UserProfile = styled.div` // 유저사진, 이름
   display: flex;
   align-items: center;
-  
+  font-size: 14px;
   .img {
     width: 32px;
     height: 32px;
-    margin: 8px 8px 0 0;
     background-color: gray;
+    margin-right: 10px;
   }
 `
 
 // ----- 컴포넌트 영역
-function UserInfo() {
+function UserInfo(props) {
   return (
-    <UserBox>
+    <UserBox color={props.color}>
       <CreateDay>
         asked Feb 23, 2018 at 14:32
       </CreateDay>
       <UserProfile>
-        {/* <img src={이미지 가져올 경로} alt="프로필이미지" />
-        <div>{유저이름}</div> */}
         <div className="img">유저사진</div>
-        <div>유저이름</div>
+        <div className="info">
+          <a>유저이름</a>
+          <div>숫자</div>
+        </div>
       </UserProfile>
     </UserBox>
 

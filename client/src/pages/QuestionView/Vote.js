@@ -8,18 +8,18 @@ import { RxBookmark, RxCounterClockwiseClock } from "react-icons/rx"
 
 // ----- 컴포넌트 및 이미지 파일
 const VoteBox = styled.div` // 투표 기능
- display: flex;
- align-items: center;
- flex-direction: column;
- .counticon {
-  font-size: 40px;
- }
- .markicon {
-  font-size: 20px;
-  margin-bottom: 5px;
- }
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin-right: 10px;
+  .counticon {
+    font-size: 40px;
+  }
+  .markicon {
+    font-size: 20px;
+    margin-bottom: 5px;
+  }
 `
-
 // ----- 컴포넌트 영역
 function Vote() {
   return (

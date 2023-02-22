@@ -23,6 +23,7 @@ import Tags from './pages/Tags/Tags';
 import AllQuestions from './pages/Questions/AllQuestions';
 import TopQuestions from './pages/Questions/TopQuestions';
 import AskQuestion from './pages/Questions/AskQuestion';
+import QuestionView from './pages/QuestionView/QuestionView';
 
 
 
@@ -35,6 +36,7 @@ function App() {
           <Route path="/" element={<TopQuestions/>}/>
           <Route path="/questions" element={<AllQuestions/>}/>
           <Route path="/tags" element={<Tags />} />
+          <Route path="/view" element={<QuestionView />} />
           <Route path="/users" element={<Users />}>
             <Route path="profile" element={<Profile/>}/>
             <Route path="activity" element={<Activity/>}>
