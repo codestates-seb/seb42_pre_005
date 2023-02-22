@@ -4,6 +4,7 @@ import com.group5.stackoverflow.exception.BusinessLogicException;
 import com.group5.stackoverflow.exception.ExceptionCode;
 import com.group5.stackoverflow.member.service.MemberService;
 import com.group5.stackoverflow.question.entity.Question;
+import com.group5.stackoverflow.member.entity.Member;
 import com.group5.stackoverflow.question.repository.QuestionRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,17 +29,23 @@ public class QuestionService {
     }
 
     // 질문 생성
-    public Question createQuestion(Question question) {
+    public Question createQuestion(Question question, Long tokenId) {
         // 멤버가 맞는지 확인
-        memberService.findMember(question.getMember().getMemberId());
+        Member member = memberService.findMember(tokenId);
+        question.setMember(member);
 
         return repository.save(question);
     }
 
     // 질문 수정
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
-    public Question updateQuestion(Question question) {
+    public Question updateQuestion(Question question, Long tokenId) {
         Question findQuestion = findVerifiedQuestion(question.getQuestionId());
+        Member findMember = findQuestion.getMember();
+
+        if (findMember.getMemberId() != tokenId) {
+            throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
+        }
 
         Optional.ofNullable(question.getTitle())
                 .ifPresent(title -> findQuestion.setTitle(title));
@@ -75,8 +82,13 @@ public class QuestionService {
 //    }
 
     // 질문 삭제
-    public void deleteQuestion(Long questionId) {
+    public void deleteQuestion(Long questionId, Long tokenId) {
         Question findQuestion = findQuestion(questionId);
+        Member findMember = findQuestion.getMember();
+
+        if (findMember.getMemberId() != tokenId) {
+            throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
+        }
 
         repository.delete(findQuestion);
     }
