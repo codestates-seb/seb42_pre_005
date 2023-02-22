@@ -39,7 +39,7 @@ public class AnswerDto {
 
         private Long answerId;
         private Long questionId;
-        private String memberName;
+        private String name;
         private String content;
         private int voteCount;
     }
