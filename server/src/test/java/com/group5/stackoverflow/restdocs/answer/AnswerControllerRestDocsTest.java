@@ -57,86 +57,6 @@ public class AnswerControllerRestDocsTest {
     @MockBean
     private AnswerService answerService;
 
-//    @Test
-//    public void postAnswerTest() throws Exception {
-//
-//        AnswerDto.Post post = new AnswerDto.Post("content");
-//        String content = gson.toJson(post);
-//
-//        AnswerDto.Response response = new AnswerDto.Response(
-//                1L,
-//                "홍길동",
-//                "content",
-//                0
-//        );
-//
-//        given(mapper.answerPostDtoToAnswer(Mockito.any(AnswerDto.Post.class))).willReturn(new Answer());
-//
-//        Answer mockResultAnswer = new Answer();
-//        mockResultAnswer.setAnswerId(1L);
-//
-//        given(answerService.createAnswer(Mockito.anyLong(), Mockito.any(Answer.class))).willReturn(mockResultAnswer);
-//
-//        given(mapper.answerToAnswerResponse(Mockito.any(Answer.class))).willReturn(response);
-//
-//        Long questionId = 1L;
-//
-//        ResultActions actions =
-//                mockMvc.perform(
-//                    post("/questions/{question-id}/answers", questionId)
-//                            .accept(MediaType.APPLICATION_JSON)
-//                            .contentType(MediaType.APPLICATION_JSON)
-//                            .content(content)
-//        );
-//
-////        actions
-////                .andExpect(status().isCreated())
-////                .andExpect(header().string("Location", is(startsWith("/answers"))))
-////                .andDo(document("post-answer",
-////                        getRequestPreProcessor(),
-////                        getResponsePreProcessor(),
-////                        requestFields(
-////                                List.of(
-////
-////                                        fieldWithPath("content").type(JsonFieldType.STRING).description("답변 내용")
-////                                                .attributes(key("validation").value("Not Null"))
-////                                )
-////                        ),
-////                        responseHeaders(
-////                                headerWithName(HttpHeaders.LOCATION).description("Location header. 등록된 리소스의 URI")
-////                        )
-////                ));
-//
-//        actions
-//                .andExpect(status().isCreated())
-//                .andExpect(jsonPath("$.data.content").value(post.getContent()))
-//                .andDo(document(
-//                                "post-answer",
-//                                getRequestPreProcessor(),
-//                                getResponsePreProcessor(),
-//                                pathParameters(
-//                                        parameterWithName("question-id").description("질문 식별자")
-//                                ),
-//                                requestFields(
-//                                        List.of(
-//                                                fieldWithPath("content").type(JsonFieldType.STRING).description("답변 내용")
-//                                                        .attributes(key("validation").value("Not Null"))
-//                                        )),
-//
-//                                responseFields(
-//                                        List.of(
-//                                                fieldWithPath("data").type(JsonFieldType.OBJECT).description("결과 데이터"),
-//                                                fieldWithPath("data.answerId").type(JsonFieldType.NUMBER).description("답변 식별자"),
-//                                                fieldWithPath("data.memberName").type(JsonFieldType.STRING).description("답변자 이름"),
-//                                                fieldWithPath("data.content").type(JsonFieldType.STRING).description("답변 내용"),
-//                                                fieldWithPath("data.voteCount").type(JsonFieldType.NUMBER).description("추천수")
-//                                        )
-//                                )
-//                        )
-//                );
-//
-//    }
-
     @Test
     public void postAnswerTest() throws Exception {
 
@@ -192,7 +112,7 @@ public class AnswerControllerRestDocsTest {
                                                 fieldWithPath("data").type(JsonFieldType.OBJECT).description("결과 데이터"),
                                                 fieldWithPath("data.answerId").type(JsonFieldType.NUMBER).description("답변 식별자"),
                                                 fieldWithPath("data.questionId").type(JsonFieldType.NUMBER).description("질문 식별자"),
-                                                fieldWithPath("data.memberName").type(JsonFieldType.STRING).description("답변자 이름"),
+                                                fieldWithPath("data.name").type(JsonFieldType.STRING).description("답변자 이름"),
                                                 fieldWithPath("data.content").type(JsonFieldType.STRING).description("답변 내용"),
                                                 fieldWithPath("data.voteCount").type(JsonFieldType.NUMBER).description("추천수")
 
@@ -262,7 +182,7 @@ public class AnswerControllerRestDocsTest {
                                         fieldWithPath("data").type(JsonFieldType.OBJECT).description("결과 데이터"),
                                         fieldWithPath("data.answerId").type(JsonFieldType.NUMBER).description("답변 식별자"),
                                         fieldWithPath("data.questionId").type(JsonFieldType.NUMBER).description("질문 식별자"),
-                                        fieldWithPath("data.memberName").type(JsonFieldType.STRING).description("답변자 이름"),
+                                        fieldWithPath("data.name").type(JsonFieldType.STRING).description("답변자 이름"),
                                         fieldWithPath("data.content").type(JsonFieldType.STRING).description("답변 내용"),
                                         fieldWithPath("data.voteCount").type(JsonFieldType.NUMBER).description("추천수")
                                 )
