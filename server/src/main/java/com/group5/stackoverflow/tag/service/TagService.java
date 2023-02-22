@@ -55,14 +55,14 @@ public class TagService {
         Page<Tag> tags;
 
         switch (tab) {
-            case "popular" :
-                pageable = PageRequest.of(page, size, Sort.by("questionCount").descending());
+            case "new" :
+                pageable = PageRequest.of(page, size, Sort.by("tagId").descending());
                 break;
             case "name" :
                 pageable = PageRequest.of(page, size, Sort.by("tagName").ascending());
                 break;
-            default : // new
-                pageable = PageRequest.of(page, size, Sort.by("tagId").descending());
+            default : // popular
+                pageable = PageRequest.of(page, size, Sort.by("questionCount").descending());
         }
 
         if (keyword.isEmpty()) {

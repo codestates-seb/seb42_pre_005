@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.Positive;
 
-@Slf4j
 @Validated
 @RestController
 @RequestMapping("/tags")
@@ -36,6 +35,7 @@ public class TagController {
                                   @Positive @RequestParam(required = false, defaultValue = "36") int size,
                                   @RequestParam(required = false, defaultValue = "") String keyword,
                                   @RequestParam(required = false, defaultValue = "popular") String tab) {
+
         // tab = popular, name , new
         // popular = questionCount 높은 순 Desc
         // name = tagName 기준 Asc
@@ -43,7 +43,8 @@ public class TagController {
         Page<Tag> pageTags = tagService.findTags(page - 1, size, keyword, tab);
 
         return new ResponseEntity(
-                new MultiResponseDto<>(
-                        mapper.tagsToResponseDtos(pageTags.getContent()), pageTags), HttpStatus.OK);
+                new MultiResponseDto<>(mapper.tagsToResponseDtos(pageTags.getContent()), pageTags),
+                HttpStatus.OK
+        );
     }
 }
