@@ -1,7 +1,7 @@
 package com.group5.stackoverflow.member.service;
 
-import com.group5.stackoverflow.Exception.BusinessLogicException;
-import com.group5.stackoverflow.Exception.ExceptionCode;
+import com.group5.stackoverflow.exception.BusinessLogicException;
+import com.group5.stackoverflow.exception.ExceptionCode;
 import com.group5.stackoverflow.member.entity.Member;
 import com.group5.stackoverflow.member.repository.MemberRepository;
 import com.group5.stackoverflow.question.entity.Question;

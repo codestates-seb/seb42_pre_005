@@ -24,43 +24,46 @@ public class AnswerService {
 
     private final AnswerRepository answerRepository;
     private final QuestionService questionService;
-    private final QuestionRepository questionRepository;
     private final MemberService memberService;
-    private final MemberRepository memberRepository;
 
     public AnswerService(AnswerRepository answerRepository,
-                         QuestionService questionService, QuestionRepository questionRepository,
-                         MemberService memberService, MemberRepository memberRepository) {
+                         QuestionService questionService,
+                         MemberService memberService) {
         this.answerRepository = answerRepository;
         this.questionService = questionService;
-        this.questionRepository = questionRepository;
         this.memberService = memberService;
-        this.memberRepository = memberRepository;
     }
 
-    public Answer createAnswer(Answer answer, Long questionId) {
+    // 답변 생성
+    public Answer createAnswer(Long questionId, Answer answer) {
+        // member, question 추가함.
         Question question = questionService.findVerifiedQuestion(questionId);
-        // question 엔티티에 코드 추가
-//        question.setAnswers(answer);
-        // memberService 회원 검증 코드 추가
-        // 답변 갯수 추가 해야함 (Question 엔티티 answerCount 추가)
+        answer.setQuestion(question);
+        Member member = memberService.findVerifiedMember(answer.getMember().getMemberId());
+        answer.setMember(member);
+
         return answerRepository.save(answer);
     }
 
-    public Answer updateAnswer(Long answerId, Answer answer) {
-        Answer findAnswer = findVerifiedAnswer(answerId);
+    // 답변 수정
+    public Answer updateAnswer(Answer answer) {
+        Answer findAnswer = findVerifiedAnswer(answer.getAnswerId());
 
         Optional.ofNullable(answer.getContent())
                 .ifPresent(content -> findAnswer.setContent(content));
+        findAnswer.setModifiedAt(LocalDateTime.now());
 
         return answerRepository.save(findAnswer);
     }
 
+    // 답변 삭제
     public void deleteAnswer(Long answerId) {
         Answer findAnswer = findVerifiedAnswer(answerId);
         answerRepository.delete(findAnswer);
+
     }
 
+    // 답변 검증
     public Answer findVerifiedAnswer(Long answerId) {
         Optional<Answer> findAnswer = answerRepository.findById(answerId);
         Answer answer = findAnswer.orElseThrow(() ->
@@ -68,4 +71,5 @@ public class AnswerService {
 
         return answer;
     }
+
 }
