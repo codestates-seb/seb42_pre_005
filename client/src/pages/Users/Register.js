@@ -91,6 +91,11 @@ function Register() {
 
     const navigate = useNavigate();
 
+    // const regExPw = "^(?=.*?[A-Za-z](?=.*?\d)[A-Za-z\d]{8,20}$";
+
+    // const regExPw = /^(?=.*[a-zA-Z])((?=.*\d)(?=.*\W)){8,20}$/
+    const regExPw = "^(?=.*[0-9])[a-z0-9]+$"
+
     const displayNameHandler = (e) => {
         setDisplayName(e.target.value);
     }
@@ -110,16 +115,13 @@ function Register() {
             email,
             password
         }
-        // axios.get(`https://1f5e-118-222-121-72.jp.ngrok.io/members`)
-        // axios.get(`/api/`)
-        // .then(res => {
-        //     console.log(res.data);
-        // })
+       
         console.log(registerData);
         axios.post(`/api/members`, registerData)
         .then(res => {
             setLoginUser(res.data);
         })
+        
     }
 
     return (
@@ -144,7 +146,7 @@ function Register() {
                     <span>Email</span>
                     <input type="email" value={email} onChange={(e) => emailHandler(e)} required minLength="6"></input>
                     <span>Password</span>
-                    <input type="password" value={password} minLength="8" onChange={(e) => passwordHandler(e)} required></input>
+                    <input type="password" value={password} minLength="8" maxLength="20" pattern={regExPw} onChange={(e) => passwordHandler(e)} required></input>
                     <span className="pw-explain">Passwords must contain at least eight characters, including at least 1 letter and 1 number.</span>
                     <button type="submit" onClick={registerHandler}>Sign Up</button>
                 </InputContainer>
