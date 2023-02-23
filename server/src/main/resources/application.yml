@@ -20,4 +20,4 @@ mail:
   address:
     admin: ${ADMIN_MAIL}
 config:
-  domain: localhost:3000
+  domain: ${AWS_S3_ENDPOINT}
