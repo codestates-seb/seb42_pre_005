@@ -24,6 +24,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -81,18 +82,29 @@ public class SecurityConfiguration {
     }
 
     // (8)
+//    @Bean
+//    CorsConfigurationSource corsConfigurationSource() {
+//        log.info("cors config");
+//        CorsConfiguration configuration = new CorsConfiguration();
+////        configuration.setAllowedOrigins(Arrays.asList("*"));
+//        configuration.addAllowedOrigin("http://bucket-stackoverflow.s3-website.ap-northeast-2.amazonaws.com");
+//        configuration.setAllowedMethods(Arrays.asList("GET","POST", "PATCH", "DELETE"));
+//
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", configuration);
+//
+//        return source;
+//    }
+
     @Bean
-    CorsConfigurationSource corsConfigurationSource() {
+    public CorsConfigurationSource corsConfigurationSource() {
         log.info("cors config");
         CorsConfiguration configuration = new CorsConfiguration();
 //        configuration.setAllowedOrigins(Arrays.asList("*"));
         configuration.addAllowedOrigin("http://bucket-stackoverflow.s3-website.ap-northeast-2.amazonaws.com");
         configuration.setAllowedMethods(Arrays.asList("GET","POST", "PATCH", "DELETE"));
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-
-        return source;
+        CorsConfigurationSource delegate = new UrlBasedCorsConfigurationSource();
+        return new CustomCorsConfigurationSource(delegate);
     }
 
     public class CustomFilterConfigurer extends AbstractHttpConfigurer<CustomFilterConfigurer, HttpSecurity> {
