@@ -17,6 +17,7 @@ public class LogFilter extends OncePerRequestFilter {
         log.info("Request adr: {}", request.getRemoteAddr());
         log.info("Request header: {}", request.getHeader("Origin"));
         log.info("Request URI: {}", request.getRequestURI());
+
         filterChain.doFilter(request, response);
 
     }
