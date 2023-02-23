@@ -4,12 +4,14 @@ import com.google.gson.Gson;
 import com.group5.stackoverflow.auth.tokenizer.JwtTokenizer;
 import com.group5.stackoverflow.auth.utils.CustomAuthorityUtils;
 import com.group5.stackoverflow.config.SecurityConfiguration;
+import com.group5.stackoverflow.helper.MockSecurity;
 import com.group5.stackoverflow.member.entity.Member;
 import com.group5.stackoverflow.question.controller.QuestionController;
 import com.group5.stackoverflow.question.dto.QuestionDto;
 import com.group5.stackoverflow.question.entity.Question;
 import com.group5.stackoverflow.question.mapper.QuestionMapper;
 import com.group5.stackoverflow.question.service.QuestionService;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mockito;
@@ -66,12 +68,21 @@ public class QuestionControllerRestDocsTest {
     @Autowired
     private Gson gson;
 
+    private String accessTokenForUser;
+    private String accessTokenForAdmin;
+
+    @BeforeAll
+    public void init() {
+        accessTokenForUser = MockSecurity.getValidAccessToken(jwtTokenizer.getSecretKey(), "USER");
+        accessTokenForAdmin = MockSecurity.getValidAccessToken(jwtTokenizer.getSecretKey(), "ADMIN");
+    }
+
     @Test
     public void postQuestionTest() throws Exception {
         QuestionDto.Post post = new QuestionDto.Post("타이틀입니다.",
                 "이곳은 질문을 적는 곳입니다.");
         String content = gson.toJson(post);
-
+        String accessToken = accessTokenForUser;
 
         given(questionMapper.questionPostToQuestion(Mockito.any(QuestionDto.Post.class))).willReturn(new Question());
 
@@ -83,7 +94,7 @@ public class QuestionControllerRestDocsTest {
         ResultActions actions =
                 mockMvc.perform(
                         post("/questions")
-                                .header("Authorization", "Bearer (accessToken)")
+                                .header("Authorization", "Bearer ".concat(accessToken))
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(content)
@@ -118,6 +129,7 @@ public class QuestionControllerRestDocsTest {
         QuestionDto.Patch patch = new QuestionDto.Patch(questionId, "타이틀입니다.",
                 "이부분은 질문 내용입니다.");
         String content = gson.toJson(patch);
+        String accessToken = accessTokenForUser;
 
         QuestionDto.Response response =
                 new QuestionDto.Response(1L,
@@ -138,7 +150,7 @@ public class QuestionControllerRestDocsTest {
         ResultActions actions =
                 mockMvc.perform(
                         patch("/questions/{question-id}", questionId)
-                                .header("Authorization", "Bearer (accessToken)")
+                                .header("Authorization", "Bearer ".concat(accessToken))
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(content)
@@ -186,6 +198,8 @@ public class QuestionControllerRestDocsTest {
 
     @Test
     public void getQuestionTest() throws Exception {
+        String accessToken = accessTokenForAdmin;
+
         QuestionDto.Response response =
                 new QuestionDto.Response(1L,
                         "타이틀 입니다.",
@@ -202,6 +216,7 @@ public class QuestionControllerRestDocsTest {
         ResultActions actions =
                 mockMvc.perform(
                         get("/questions/{question-id}", 1L)
+                                .header("Authorization", "Bearer ".concat(accessToken))
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                 );
@@ -221,6 +236,9 @@ public class QuestionControllerRestDocsTest {
                         getResponsePreProcessor(),
                         pathParameters(
                                 parameterWithName("question-id").description("질문 식별자")
+                        ),
+                        requestHeaders(
+                                headerWithName("Authorization").description("Bearer (accessToken)")
                         ),
                         responseFields(
                                 List.of(
@@ -331,26 +349,24 @@ public class QuestionControllerRestDocsTest {
     public void deleteQuestion() throws Exception {
         Long questionId = 1L;
         Long tokenId = 1L;
+        String accessToken = accessTokenForUser;
 
         doNothing().when(questionService).deleteQuestion(questionId, tokenId);
 
         ResultActions actions =
                 mockMvc.perform(
                         delete("/questions/{question-id}", questionId)
-                                .header("Authorization", "Bearer (accessToken)")
-                );
-
-        actions
-                .andExpect(status().isNoContent())
-                .andDo(document("delete-question",
-                        getRequestPreProcessor(),
-                        getResponsePreProcessor(),
-                        pathParameters(
-                                parameterWithName("question-id").description("질문 식별자")
-                        ),
-                        responseHeaders(
-                                headerWithName("Authorization").description("Bearer (accessToken)")
-                        )
-                ));
+                                .header("Authorization", "Bearer ".concat(accessToken)))
+                        .andExpect(status().isNoContent())
+                        .andDo(document("delete-question",
+                                getRequestPreProcessor(),
+                                getResponsePreProcessor(),
+                                pathParameters(
+                                        parameterWithName("question-id").description("질문 식별자")
+                                ),
+                                requestHeaders(
+                                        headerWithName("Authorization").description("Bearer (accessToken)")
+                                )
+                        ));
     }
 }
