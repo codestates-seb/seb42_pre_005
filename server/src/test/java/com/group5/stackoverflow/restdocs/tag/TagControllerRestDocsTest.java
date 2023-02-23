@@ -48,6 +48,7 @@ public class TagControllerRestDocsTest {
     @MockBean
     private TagMapper tagMapper;
 
+
     @Test
     void getTagsTest() throws Exception {
         //given

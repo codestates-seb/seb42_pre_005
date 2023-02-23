@@ -1,17 +1,25 @@
 package com.group5.stackoverflow.restdocs.member;
 
 import com.google.gson.Gson;
+import com.group5.stackoverflow.auth.tokenizer.JwtTokenizer;
+import com.group5.stackoverflow.auth.utils.CustomAuthorityUtils;
+import com.group5.stackoverflow.config.SecurityConfiguration;
+import com.group5.stackoverflow.helper.MockSecurity;
 import com.group5.stackoverflow.member.controller.MemberController;
 import com.group5.stackoverflow.member.dto.MemberDto;
 import com.group5.stackoverflow.member.entity.Member;
 import com.group5.stackoverflow.member.mapper.MemberMapper;
+import com.group5.stackoverflow.member.repository.MemberRepository;
 import com.group5.stackoverflow.member.service.MemberService;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -24,6 +32,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.group5.stackoverflow.utils.ApiDocumentUtils.getRequestPreProcessor;
@@ -31,8 +40,7 @@ import static com.group5.stackoverflow.utils.ApiDocumentUtils.getResponsePreProc
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -40,9 +48,12 @@ import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+
+@Import({SecurityConfiguration.class, JwtTokenizer.class, CustomAuthorityUtils.class})
 @WebMvcTest(MemberController.class)
 @MockBean(JpaMetamodelMappingContext.class)
 @AutoConfigureRestDocs
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class MemberControllerRestDocsTest {
     @Autowired
     private MockMvc mockMvc;
@@ -55,9 +66,24 @@ public class MemberControllerRestDocsTest {
     @MockBean
     private MemberMapper mapper;
 
+    @MockBean
+    private MemberRepository memberRepository;
+
 
     @Autowired
     private Gson gson;
+
+    @Autowired
+    private JwtTokenizer jwtTokenizer;
+
+    private String accessTokenForUser;
+    private String accessTokenForAdmin;
+
+    @BeforeAll
+    public void init() {
+        accessTokenForUser = MockSecurity.getValidAccessToken(jwtTokenizer.getSecretKey(), "USER");
+        accessTokenForAdmin = MockSecurity.getValidAccessToken(jwtTokenizer.getSecretKey(), "ADMIN");
+    }
 
     @Test
     public void postMemberTest() throws Exception {
@@ -72,6 +98,8 @@ public class MemberControllerRestDocsTest {
         Member mockResultMember = new Member();
         mockResultMember.setMemberId(1L);
         given(memberService.createMember(Mockito.any(Member.class))).willReturn(mockResultMember);
+        // Todo MemberRepository 어디서 사용되는지
+//        given(memberRepository.findByEmail(Mockito.anyString())).willReturn(Optional.of(mockResultMember));
 
         // (6) when
         ResultActions actions =
@@ -79,6 +107,7 @@ public class MemberControllerRestDocsTest {
                         post("/members")
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
+//                                .header("Authorization", "Bearer ".concat(accessTokenForAdmin))
                                 .content(content)
                 );
 
@@ -139,6 +168,8 @@ public class MemberControllerRestDocsTest {
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(content)
+                                .header("Authorization", "Bearer ".concat(accessTokenForUser))
+
                 );
 
         // then
@@ -172,6 +203,9 @@ public class MemberControllerRestDocsTest {
                                         fieldWithPath("memberStatus").type(JsonFieldType.STRING).description("회원 상태: MEMBER_NEW / MEMBER_ACTIVE / MEMBER_SLEEP / MEMBER_QUIT")
                                                 .attributes(key("validation").value("Not Space")).optional()
                                 )
+                        ),
+                        requestHeaders(
+                                headerWithName("Authorization").description("USER JWT token")
                         ),
                         responseFields(      // (4)
                                 List.of(
@@ -210,6 +244,7 @@ public class MemberControllerRestDocsTest {
                         get("/members/{member-id}", 1L)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
+                                .header("Authorization", "Bearer ".concat(accessTokenForUser))
                 );
 
         // then
@@ -226,6 +261,9 @@ public class MemberControllerRestDocsTest {
                         getResponsePreProcessor(),
                         pathParameters(              // (1)
                                 parameterWithName("member-id").description("회원 식별자")
+                        ),
+                        requestHeaders(
+                                headerWithName("Authorization").description("USER JWT token")
                         ),
                         responseFields(      // (4)
                                 List.of(
@@ -371,6 +409,19 @@ public class MemberControllerRestDocsTest {
                         delete("/members/{member-id}", 1L)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
+                                .header("Authorization", "Bearer ".concat(accessTokenForUser))
+                );
+
+        // then
+        actions
+                .andExpect(status().isNoContent());
+
+        actions =
+                mockMvc.perform(
+                        delete("/members/{member-id}", 1L)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("Authorization", "Bearer ".concat(accessTokenForAdmin))
                 );
 
         // then
@@ -381,7 +432,11 @@ public class MemberControllerRestDocsTest {
                                 getResponsePreProcessor(),
                                 pathParameters(              // (1)
                                         parameterWithName("member-id").description("회원 식별자")
+                                ),
+                                requestHeaders(
+                                        headerWithName("Authorization").description("[USER | ADMIN] JWT token")
                                 )
+
                         )
                 );
     }
