@@ -28,7 +28,7 @@ import java.util.List;
 @RequestMapping("/members")
 @Validated
 @Slf4j
-@CrossOrigin
+@CrossOrigin(value = "*")
 public class MemberController {
 
     private final MemberService memberService;
