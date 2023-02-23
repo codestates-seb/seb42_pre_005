@@ -352,10 +352,10 @@ public class QuestionControllerRestDocsTest {
     @Test
     public void deleteQuestion() throws Exception {
         Long questionId = 1L;
-        Long tokenId = 1L;
+        Long memberId = 1L;
         String accessToken = accessTokenForUser;
 
-        doNothing().when(questionService).deleteQuestion(questionId, tokenId);
+        doNothing().when(questionService).deleteQuestion(questionId, memberId);
 
         ResultActions actions =
                 mockMvc.perform(
