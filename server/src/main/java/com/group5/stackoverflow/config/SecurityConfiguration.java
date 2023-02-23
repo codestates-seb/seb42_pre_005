@@ -2,6 +2,7 @@ package com.group5.stackoverflow.config;
 
 import com.group5.stackoverflow.auth.filter.JwtAuthenticationFilter;
 import com.group5.stackoverflow.auth.filter.JwtVerificationFilter;
+import com.group5.stackoverflow.auth.filter.LogFilter;
 import com.group5.stackoverflow.auth.handler.MemberAccessDeniedHandler;
 import com.group5.stackoverflow.auth.handler.MemberAuthenticationEntryPoint;
 import com.group5.stackoverflow.auth.handler.MemberAuthenticationFailureHandler;
@@ -20,6 +21,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -121,6 +123,7 @@ public class SecurityConfiguration {
             JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtTokenizer, authorityUtils);
 
             builder
+                .addFilterBefore(new LogFilter(), ChannelProcessingFilter.class)
                 .addFilter(jwtAuthenticationFilter)
                 .addFilterAfter(jwtVerificationFilter, JwtAuthenticationFilter.class);   // (3)추가
         }
