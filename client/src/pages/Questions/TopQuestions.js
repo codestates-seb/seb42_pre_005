@@ -26,7 +26,7 @@ function TopQuestions() {
     <QuestionsBox>
       <TopQuestionHeader/>
       <QustionList>
-        <QuestionItem />
+        {/* <QuestionItem /> */}
       </QustionList>
     </QuestionsBox>
     <RightSideBar/>
