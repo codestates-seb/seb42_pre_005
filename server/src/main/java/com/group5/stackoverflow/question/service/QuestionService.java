@@ -40,7 +40,7 @@ public class QuestionService {
     // 질문 수정
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
     public Question updateQuestion(Question question) {
-        Question findQuestion = findQuestion(question.getQuestionId());
+        Question findQuestion = findVerifiedQuestion(question.getQuestionId());
 
         Optional.ofNullable(question.getTitle())
                 .ifPresent(title -> findQuestion.setTitle(title));
@@ -53,10 +53,7 @@ public class QuestionService {
     // 질문 찾기(1개에 대한)
     @Transactional(readOnly = true)
     public Question findQuestion(Long questionId) {
-        Question findQuestion =
-                repository.findById(questionId).orElseThrow(() ->
-                        new BusinessLogicException(ExceptionCode.QUESTION_NOT_FOUND));
-
+        Question findQuestion = findVerifiedQuestion(questionId);
         // view 카운트 로직
         int findViews = findQuestion.getViews() + 1;
         findQuestion.setViews(findViews);
@@ -77,6 +74,17 @@ public class QuestionService {
 //
 //        return questionPage;
 //    }
+
+    @Transactional(readOnly = true)
+    public Question findVerifiedQuestion(long questionId) {
+        Optional<Question> optionalQuestion =
+                repository.findById(questionId);
+        Question findQuestion =
+                optionalQuestion.orElseThrow(() ->
+                        new BusinessLogicException(ExceptionCode.QUESTION_NOT_FOUND));
+
+        return findQuestion;
+    }
 
     // 질문 삭제
     public void deleteQuestion(Long questionId) {
