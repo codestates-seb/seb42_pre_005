@@ -6,12 +6,20 @@ import com.group5.stackoverflow.answer.dto.AnswerDto;
 import com.group5.stackoverflow.answer.entity.Answer;
 import com.group5.stackoverflow.answer.mapper.AnswerMapper;
 import com.group5.stackoverflow.answer.service.AnswerService;
+import com.group5.stackoverflow.auth.tokenizer.JwtTokenizer;
+import com.group5.stackoverflow.auth.utils.CustomAuthorityUtils;
+import com.group5.stackoverflow.config.SecurityConfiguration;
+import com.group5.stackoverflow.helper.MockSecurity;
+import com.group5.stackoverflow.member.repository.MemberRepository;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -28,8 +36,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
@@ -39,14 +46,18 @@ import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-
+@Import({SecurityConfiguration.class, JwtTokenizer.class, CustomAuthorityUtils.class})
 @WebMvcTest(AnswerController.class)
 @MockBean(JpaMetamodelMappingContext.class)
 @AutoConfigureRestDocs
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AnswerControllerRestDocsTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private JwtTokenizer jwtTokenizer;
 
     @Autowired
     private Gson gson;
@@ -56,6 +67,19 @@ public class AnswerControllerRestDocsTest {
 
     @MockBean
     private AnswerService answerService;
+
+    @MockBean
+    private MemberRepository memberRepository;
+
+    private String accessTokenForUser;
+    private String accessTokenForAdmin;
+
+    @BeforeAll
+    public void init() {
+        accessTokenForUser = MockSecurity.getValidAccessToken(jwtTokenizer.getSecretKey(), "USER");
+        accessTokenForAdmin = MockSecurity.getValidAccessToken(jwtTokenizer.getSecretKey(), "ADMIN");
+    }
+
 
     @Test
     public void postAnswerTest() throws Exception {
@@ -76,7 +100,7 @@ public class AnswerControllerRestDocsTest {
 
         Answer mockResultAnswer = new Answer();
         mockResultAnswer.setAnswerId(1L);
-        given(answerService.createAnswer(Mockito.anyLong(),Mockito.any(Answer.class))).willReturn(mockResultAnswer);
+        given(answerService.createAnswer(Mockito.anyLong(),Mockito.any(Answer.class), Mockito.anyLong())).willReturn(mockResultAnswer);
 
         given(mapper.answerToAnswerResponse(Mockito.any(Answer.class))).willReturn(responseDto);
 
@@ -84,6 +108,7 @@ public class AnswerControllerRestDocsTest {
 
         ResultActions actions = mockMvc.perform(
                 post("/questions/{question-id}/answers", questionId)
+                        .header("Authorization", "Bearer ".concat(accessTokenForUser))
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
@@ -98,6 +123,9 @@ public class AnswerControllerRestDocsTest {
                                 preprocessResponse(prettyPrint()),
                                 pathParameters(
                                         parameterWithName("question-id").description("질문 식별자")
+                                ),
+                                requestHeaders(
+                                        headerWithName("Authorization").description("Bearer (accessToken)")
                                 ),
                                 requestFields(
                                         List.of(
@@ -143,7 +171,7 @@ public class AnswerControllerRestDocsTest {
 
         Answer mockResultAnswer = new Answer();
         mockResultAnswer.setAnswerId(1L);
-        given(answerService.updateAnswer(Mockito.any(Answer.class))).willReturn(mockResultAnswer);
+        given(answerService.updateAnswer(Mockito.any(Answer.class), Mockito.anyLong())).willReturn(mockResultAnswer);
 
         given(mapper.answerToAnswerResponse(Mockito.any(Answer.class))).willReturn(response);
 
@@ -151,6 +179,7 @@ public class AnswerControllerRestDocsTest {
 
         ResultActions actions = mockMvc.perform(
                 patch("/answers/{answer-id}", answerId)
+                        .header("Authorization", "Bearer ".concat(accessTokenForUser))
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
@@ -166,6 +195,9 @@ public class AnswerControllerRestDocsTest {
                         getResponsePreProcessor(),
                         pathParameters(
                                 parameterWithName("answer-id").description("답변 식별자")
+                        ),
+                        requestHeaders(
+                                headerWithName("Authorization").description("Bearer (accessToken)")
                         ),
                         requestFields(
                                 List.of(
@@ -195,11 +227,13 @@ public class AnswerControllerRestDocsTest {
     public void deleteAnswerTest() throws Exception {
 
         Long answerId = 1L;
+        Long memberId = 1L;
 
-        doNothing().when(answerService).deleteAnswer(answerId);
+        doNothing().when(answerService).deleteAnswer(answerId, memberId);
 
         ResultActions actions = mockMvc.perform(
                 delete("/answers/{answer-id}", answerId)
+                        .header("Authorization", "Bearer ".concat(accessTokenForUser))
         );
 
         actions
@@ -209,6 +243,9 @@ public class AnswerControllerRestDocsTest {
                         getResponsePreProcessor(),
                         pathParameters(
                                 parameterWithName("answer-id").description("답변 식별자")
+                        ),
+                        requestHeaders(
+                                headerWithName("Authorization").description("Bearer (accessToken)")
                         )
                 ));
 

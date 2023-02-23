@@ -1,16 +1,24 @@
 package com.group5.stackoverflow.restdocs.tag;
 
+import com.group5.stackoverflow.auth.tokenizer.JwtTokenizer;
+import com.group5.stackoverflow.auth.utils.CustomAuthorityUtils;
+import com.group5.stackoverflow.config.SecurityConfiguration;
+import com.group5.stackoverflow.helper.MockSecurity;
+import com.group5.stackoverflow.member.repository.MemberRepository;
 import com.group5.stackoverflow.tag.controller.TagController;
 import com.group5.stackoverflow.tag.dto.TagDto;
 import com.group5.stackoverflow.tag.entity.Tag;
 import com.group5.stackoverflow.tag.mapper.TagMapper;
 import com.group5.stackoverflow.tag.service.TagService;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -37,17 +45,24 @@ import static org.springframework.restdocs.request.RequestDocumentation.requestP
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Import({SecurityConfiguration.class, JwtTokenizer.class, CustomAuthorityUtils.class})
 @WebMvcTest(TagController.class)
 @MockBean(JpaMetamodelMappingContext.class)
 @AutoConfigureRestDocs
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TagControllerRestDocsTest {
+
     @Autowired
     private MockMvc mockMvc;
+
     @MockBean
     private TagService tagService;
+
     @MockBean
     private TagMapper tagMapper;
 
+    @MockBean
+    private MemberRepository memberRepository;
 
     @Test
     void getTagsTest() throws Exception {
