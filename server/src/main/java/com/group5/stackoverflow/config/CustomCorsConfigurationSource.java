@@ -13,17 +13,16 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 public class CustomCorsConfigurationSource implements CorsConfigurationSource {
 
-    private final CorsConfigurationSource delegate;
+    private final CorsConfigurationSource source;
 
-    public CustomCorsConfigurationSource(CorsConfigurationSource delegate) {
-        this.delegate = delegate;
-
+    public CustomCorsConfigurationSource(CorsConfigurationSource source) {
+        this.source = source;
     }
 
     @Override
     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-        log.debug("CORS 요청 발생 - {}", request.getRequestURI());
-        CorsConfiguration corsConfiguration = delegate.getCorsConfiguration(request);
+        log.info("CORS 요청 발생 - {}", request.getRequestURI());
+        CorsConfiguration corsConfiguration = source.getCorsConfiguration(request);
         if (corsConfiguration == null) {
             corsConfiguration = new CorsConfiguration();
         }
