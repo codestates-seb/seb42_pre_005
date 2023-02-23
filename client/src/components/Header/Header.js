@@ -9,6 +9,7 @@ import { MdSearch, MdInbox } from "react-icons/md";
 import Logo from "../../icons/Logo.svg";
 import defaultProfile from "../../icons/defaultProfile.png";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 // ----- CSS 영역
 const HeaderBox = styled.div` // 헤더 전체 박스
@@ -98,6 +99,8 @@ const UserBox = styled.div` // 로그인 후 : 유저사진, 아이콘 영역
 function Header() {
   // const [isLogin, setisLogin] = useState(false); // 로그인 여부를 결정짓는 상태
   const navigate = useNavigate();
+  const isLogin = useSelector(state => state.isLogin);
+  const userData = useSelector(state => state.userData);
 
   return (
     <HeaderBox>
@@ -109,26 +112,26 @@ function Header() {
         <SearchBarInput placeholder="Search..." />
       </SearchBox>
       <RightBox> 
-          <UserBox>
+          {/* <UserBox>
             <img src={defaultProfile} alt="user profile img" onClick={() => navigate("/userdetail")} height="24px" />
-            {/* <MdInbox /> */}
+            <MdInbox />
           </UserBox> 
           <LoginBox>
             <LoginButton onClick={() => navigate("/login")}>Log in</LoginButton>
             <SignupButton onClick={() => navigate("/register")}>Sign up</SignupButton>
-          </LoginBox>
+          </LoginBox> */}
 
-        {/* {isLogin 
+        {isLogin 
           ? // 로그인을 했을 때는 유저 프로필 사진과 아이콘들이 보임
           <UserBox>
-            <img src={defaultProfile} alt="user profile img" height="24px" />
-            <MdInbox />
+            <img src={defaultProfile} alt="user profile img" onClick={() => navigate(`/users/${userData.id}/${userData.name}`)} height="24px" />
+            {/* <MdInbox /> */}
           </UserBox> 
           : // 로그인 하지 않았을 때는 login과 signup 버튼이 보임
           <LoginBox>
             <LoginButton onClick={() => navigate("/login")}>Log in</LoginButton>
             <SignupButton onClick={() => navigate("/register")}>Sign up</SignupButton>
-          </LoginBox>} */}
+          </LoginBox>}
       </RightBox>
     </HeaderBox>
   );

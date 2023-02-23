@@ -41,27 +41,27 @@ export const CardContent = styled.div`
 `
 
 export const SummaryContent = styled(CardContent)`
-    width: 1000px;
-    height: 250px;
+    width: 800px;
+    height: 200px;
 `
 
 export const AnswerContent = styled(CardContent)`
-    width: 450px;
+    width: 400px;
     height: 100px;
 `
 
 export const QuestionContent = styled(CardContent)`
-    width: 450px;
+    width: 400px;
     height: 100px;
 `
 
 export const TagContent = styled(CardContent)`
-    width: 450px;
+    width: 400px;
     height: 100px;
 `
 
 export const ReputationContent = styled(CardContent)`
-    width: 450px;
+    width: 400px;
     height: 100px;
 `
 

@@ -2,7 +2,10 @@ import { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+
 import Logo from "../../icons/Logo.svg";
+import { setIsLogin, setUserData } from "../../store/store";
 
 const StackoverflowLogo = styled.div` // 스택오버플로우 로고 영역
   display: flex;
@@ -85,6 +88,7 @@ function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const emailHandler = (e) => {
         setEmail(e.target.value);
@@ -100,12 +104,25 @@ function Login() {
             email,
             password
         }
-        axios.post(``, loginData)
-
+        console.log(loginData);
+        axios.post(`/api/auth/login`, loginData)
+        .then(res => {
+            console.log(res);
+            navigate("/")
+        })
     }
 
-    axios.get("/api/")
-    .then(()=> console.log("쉬발"));
+    const fakeLoginHandler = () => {
+        dispatch(setIsLogin(true));
+        dispatch(setUserData({
+            id: 1,
+            name: "dev-jq1",
+            age: 20,
+            email: "test@test.com",
+        }))
+        navigate("/")
+    }
+
     return (
         <LoginPage>
             <LoginContainer>
@@ -124,6 +141,7 @@ function Login() {
                     <input type="password" value={password} onChange={passwordHandler} required></input>
                     <button type="submit" onClick={loginRequestHandler}>Log in</button>
                 </InputContainer>
+                <button onClick={fakeLoginHandler}>Fake log in</button>
                 <Bottom>
                     <span>Don't have an account? <span style={{color: "#0A95FF", cursor: "pointer"}} onClick={() => navigate('/register')}>Sign up</span></span>
                 </Bottom>

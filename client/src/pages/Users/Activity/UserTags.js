@@ -12,7 +12,7 @@ export const CardContent = styled.div`
 `
 
 export const TagContent = styled(CardContent)`
-    width: 1000px;
+    width: 800px;
     height: 250px;
 `
 

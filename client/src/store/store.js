@@ -10,11 +10,23 @@ const isLogin = createSlice({
     }
 })
 
+const userData = createSlice({
+    name: "userData",
+    initialState: null,
+    reducers: {
+        setUserData(state, data){
+            return data.payload;
+        }
+    }
+})
+
 export const { setIsLogin } = isLogin.actions;
+export const { setUserData } = userData.actions;
 
 export default configureStore({
     reducer: {
         isLogin: isLogin.reducer,
+        userData: userData.reducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: false,
