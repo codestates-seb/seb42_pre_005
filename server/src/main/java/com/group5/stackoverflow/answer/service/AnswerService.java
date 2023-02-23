@@ -37,7 +37,7 @@ public class AnswerService {
     // 답변 생성
     public Answer createAnswer(Long questionId, Answer answer, Long memberId) {
         // member, question 추가함.
-        Question question = questionService.findVerifiedQuestion(questionId);
+        Question question = questionService.findQuestion(questionId);
         answer.setQuestion(question);
         Member member = memberService.findVerifiedMember(memberId);
         answer.setMember(member);
