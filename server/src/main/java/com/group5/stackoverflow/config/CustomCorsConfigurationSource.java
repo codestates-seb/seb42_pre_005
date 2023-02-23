@@ -23,9 +23,8 @@ public class CustomCorsConfigurationSource implements CorsConfigurationSource {
     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
         log.info("CORS 요청 발생 - {}", request.getRequestURI());
         CorsConfiguration corsConfiguration = source.getCorsConfiguration(request);
-        if (corsConfiguration == null) {
-            corsConfiguration = new CorsConfiguration();
-        }
+        log.info("CORS 요청 발생 - {}", corsConfiguration.getAllowedOrigins());
+        log.info("CORS 요청 발생 - {}", corsConfiguration.getAllowedHeaders());
         return corsConfiguration;
     }
 }

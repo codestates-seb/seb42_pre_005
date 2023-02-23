@@ -102,7 +102,7 @@ public class SecurityConfiguration {
     public CorsConfigurationSource corsConfigurationSource() {
         log.info("cors config");
         CorsConfiguration configuration = new CorsConfiguration();
-//        configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.setAllowedOrigins(Arrays.asList("*"));
         configuration.addAllowedOrigin("http://bucket-stackoverflow.s3-website.ap-northeast-2.amazonaws.com");
         configuration.setAllowedMethods(Arrays.asList("GET","POST", "PATCH", "DELETE"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
