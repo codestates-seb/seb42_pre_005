@@ -2,6 +2,7 @@ package com.group5.stackoverflow.member.entity;
 
 import com.group5.stackoverflow.answer.entity.Answer;
 import com.group5.stackoverflow.audit.Auditable;
+import com.group5.stackoverflow.vote.entity.Vote;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -59,6 +60,8 @@ public class Member extends Auditable {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     List<Answer> answers = new ArrayList<>();
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    List<Vote> votes = new ArrayList<>();
 
 
     public enum MemberStatus{
