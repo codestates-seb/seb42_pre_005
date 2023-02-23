@@ -9,7 +9,7 @@ public enum ExceptionCode {
     ANSWER_NOT_FOUNT(404, "Answer not found"),
     QUESTION_NOT_FOUND(404, "Question not found"),
     INVALID_MEMBER_STATUS(400, "Invalid member status"),
-    MEMBER_UNAUTHORIZED(403, "Member unauthorized");
+    MEMBER_UNAUTHORIZED(401, "UNAUTHORIZED");
 
     @Getter
     private int status;
