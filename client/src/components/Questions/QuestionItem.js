@@ -2,6 +2,7 @@
 
 // ----- 필요 라이브러리
 import styled from "styled-components";
+import { useNavigate } from 'react-router-dom';
 
 // ----- 컴포넌트 및 이미지 파일
 
@@ -13,7 +14,7 @@ const ItemBox = styled.div` // 아이템 하나의 전체 박스
 `
 const InfoBox = styled.div` // 투표, 답변, 조회 전체 부분
   padding: 0px 15px;
-  width: 70%;
+  width: 140px;
 `
 const Info = styled.p` // 투표, 답변, 조회 개별 부분
   margin-bottom: 5px;
@@ -22,11 +23,9 @@ const Info = styled.p` // 투표, 답변, 조회 개별 부분
   text-align: right;
 `
 const ContentsBox = styled.div` // 질문, 태그, 유저 정보 부분
-
+  width: 680px;
 `
-const ContentsHeader = styled.div` // 질문 부분
-  
-  
+const ContentsHeader = styled.div` // 질문 부분  
 `
 const QuestionTitle = styled.h3` // 질문 제목 부분
   margin-bottom: 5px;
@@ -86,27 +85,25 @@ const UserLog = styled.p` // 유저활동 : 물어본 시간 표기
 `
 
 // ----- 컴포넌트 영역
-function QuestionItem() {
-
+function QuestionItem( {questionItem} ) {
+  const navigate = useNavigate();
   return (
     <ItemBox>
       <InfoBox>
-        <Info>0 votes</Info>
+        <Info>{questionItem.voteCount} votes</Info>
         <Info>0 answers</Info>
-        <Info>10 views</Info>
+        <Info>{questionItem.views} views</Info>
       </InfoBox>
       <ContentsBox>
         <ContentsHeader>
-          <QuestionTitle>I would like to track my microsoft access database so that a new database is implemented whenever there is any changes. I would like to use log</QuestionTitle>
-          <QuestionDetail>I want to track my database in microsoft access. For instance, let us assume I have a database named dataset 1, this database changes every day, I would like to track it, move it to pre-archive and imported the dataset 2 which is the dataset 1 with the changes. then I would like to compare dataset 1 and dataset 2. Plus, I would like to use log in microsoft access. Once compared, I do not need the dataset 1, so it would be removed and dataset 2 would the latest version of dataset 1 and the process should keep going automatically.
-
-I am kind of having a hard time solving it.</QuestionDetail>
+          <QuestionTitle onClick={() => navigate("/view")}>{questionItem.title} </QuestionTitle>
+          <QuestionDetail>{questionItem.content}</QuestionDetail>
         </ContentsHeader>
         <ContentsFooter>
-          <TagBox>mysql</TagBox>
+          <TagBox>{questionItem.tagName}</TagBox>
           <UserBox>
             <UserImg>😀</UserImg>
-            <UserName>therefrom</UserName>
+            <UserName>{questionItem.name}</UserName>
             <UserLog>asked 1min ago</UserLog>
           </UserBox >
         </ContentsFooter>

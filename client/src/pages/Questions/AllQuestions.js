@@ -2,6 +2,8 @@
 
 // ----- 필요 라이브러리
 import styled from "styled-components";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 // ----- 컴포넌트 및 이미지 파일
 import QuestionItem from "../../components/Questions/QuestionItem";
@@ -20,12 +22,23 @@ const QustionList = styled.div`
 `;
 
 function AllQuestions() {
+    const [qustionList, setQustionList] = useState([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const response = await axios.get("http://localhost:8000/data");
+            setQustionList(response.data);
+        }
+        fetchData()
+    }, []);
+    console.log(qustionList)
+
     return (
         <>
             <QuestionsBox>
-                <AllQuestionHeader />
+                <AllQuestionHeader qustionList={qustionList}/>
                 <QustionList>
-                    <QuestionItem />
+                    {qustionList && qustionList.map((e) => <QuestionItem key={e.questionId} questionItem={e}/>)}
                 </QustionList>
             </QuestionsBox>
             <RightSideBar />

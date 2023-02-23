@@ -69,7 +69,7 @@ const FilterButton = styled.button` // filter 버튼
     background-color: rgb(185, 210, 232);
   }
 `
-function QuestionHeader() {
+function QuestionHeader( {qustionList} ) {
   return (
     <>
       <TitleBox>
@@ -77,7 +77,7 @@ function QuestionHeader() {
         <Link to="/ask"><AskButton>Ask Question</AskButton></Link>
       </TitleBox>
       <SubBox>
-        <AllQustions>23,513,018 questions</AllQustions>
+        <AllQustions>{qustionList.length} questions</AllQustions>
         <SortBox>
           <SortButton>Newest</SortButton>
           <SortButton>Active</SortButton>
