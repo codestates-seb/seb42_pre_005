@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const ProfileContainer = styled.div`
     display: flex;
     flex-direction: row;
-    height: 1000px;
+    /* height: 1000px; */
     width: 100%;
 `
 
@@ -58,7 +58,7 @@ export const Bronze = styled(CardContent)`
 `
 
 
-function UsersProfile() {
+function UserProfile() {
     return (
         <ProfileContainer>
             <VerticalFirst>
@@ -81,4 +81,4 @@ function UsersProfile() {
     )
 }
 
-export default UsersProfile;
+export default UserProfile;
