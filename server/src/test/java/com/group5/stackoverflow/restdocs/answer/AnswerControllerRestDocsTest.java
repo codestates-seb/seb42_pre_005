@@ -6,12 +6,17 @@ import com.group5.stackoverflow.answer.dto.AnswerDto;
 import com.group5.stackoverflow.answer.entity.Answer;
 import com.group5.stackoverflow.answer.mapper.AnswerMapper;
 import com.group5.stackoverflow.answer.service.AnswerService;
+import com.group5.stackoverflow.auth.tokenizer.JwtTokenizer;
+import com.group5.stackoverflow.auth.utils.CustomAuthorityUtils;
+import com.group5.stackoverflow.config.SecurityConfiguration;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -39,10 +44,11 @@ import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-
+@Import({SecurityConfiguration.class, JwtTokenizer.class, CustomAuthorityUtils.class})
 @WebMvcTest(AnswerController.class)
 @MockBean(JpaMetamodelMappingContext.class)
 @AutoConfigureRestDocs
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AnswerControllerRestDocsTest {
 
     @Autowired
@@ -76,7 +82,7 @@ public class AnswerControllerRestDocsTest {
 
         Answer mockResultAnswer = new Answer();
         mockResultAnswer.setAnswerId(1L);
-        given(answerService.createAnswer(Mockito.anyLong(),Mockito.any(Answer.class))).willReturn(mockResultAnswer);
+        given(answerService.createAnswer(Mockito.anyLong(),Mockito.any(Answer.class), Mockito.anyLong())).willReturn(mockResultAnswer);
 
         given(mapper.answerToAnswerResponse(Mockito.any(Answer.class))).willReturn(responseDto);
 
@@ -143,7 +149,7 @@ public class AnswerControllerRestDocsTest {
 
         Answer mockResultAnswer = new Answer();
         mockResultAnswer.setAnswerId(1L);
-        given(answerService.updateAnswer(Mockito.any(Answer.class))).willReturn(mockResultAnswer);
+        given(answerService.updateAnswer(Mockito.any(Answer.class), Mockito.anyLong())).willReturn(mockResultAnswer);
 
         given(mapper.answerToAnswerResponse(Mockito.any(Answer.class))).willReturn(response);
 
@@ -195,8 +201,9 @@ public class AnswerControllerRestDocsTest {
     public void deleteAnswerTest() throws Exception {
 
         Long answerId = 1L;
+        Long memberId = 1L;
 
-        doNothing().when(answerService).deleteAnswer(answerId);
+        doNothing().when(answerService).deleteAnswer(answerId, memberId);
 
         ResultActions actions = mockMvc.perform(
                 delete("/answers/{answer-id}", answerId)

@@ -5,11 +5,17 @@ import com.group5.stackoverflow.answer.entity.Answer;
 import com.group5.stackoverflow.answer.mapper.AnswerMapper;
 import com.group5.stackoverflow.answer.repository.AnswerRepository;
 import com.group5.stackoverflow.answer.service.AnswerService;
+import com.group5.stackoverflow.auth.tokenizer.JwtTokenizer;
 import com.group5.stackoverflow.dto.SingleResponseDto;
+import com.group5.stackoverflow.exception.BusinessLogicException;
+import com.group5.stackoverflow.exception.ExceptionCode;
+import com.group5.stackoverflow.member.repository.MemberRepository;
+import com.group5.stackoverflow.member.service.MemberService;
 import com.group5.stackoverflow.utils.UriCreator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,50 +29,45 @@ import java.net.URI;
 @RequestMapping
 public class AnswerController {
 
-//    private final static String ANSWER_DEFAULT_URL = "/answers";
     private final AnswerService answerService;
     private final AnswerMapper mapper;
+    private final JwtTokenizer jwtTokenizer;
 
-    public AnswerController(AnswerService answerService,
-                            AnswerMapper mapper) {
+    public AnswerController(AnswerService answerService, AnswerMapper mapper, JwtTokenizer jwtTokenizer) {
         this.answerService = answerService;
         this.mapper = mapper;
+        this.jwtTokenizer = jwtTokenizer;
     }
 
-//    @PostMapping("/{question-id}")
-//    public ResponseEntity postAnswer(@PathVariable("question-id") Long questionId,
-//                                     @Valid @RequestBody AnswerDto.Post requestBody) {
-//        Answer answer = mapper.answerPostDtoToAnswer(requestBody);
-//
-//        Answer createAnswer = answerService.createAnswer(answer, questionId);
-//        URI location = UriCreator.createUri(ANSWER_DEFAULT_URL, createAnswer.getAnswerId());
-//
-//        return ResponseEntity.created(location).build();
-//    }
-
     @PostMapping("/questions/{question-id}/answers")
-    public ResponseEntity postAnswer(@PathVariable("question-id") @Positive Long questionId,
+    public ResponseEntity postAnswer(@RequestHeader(name = "Authorization") String token,
+                                     @PathVariable("question-id") @Positive Long questionId,
                                      @Valid @RequestBody AnswerDto.Post requestBody){
+
+
+
         Answer answer = mapper.answerPostDtoToAnswer(requestBody);
-        Answer response = answerService.createAnswer(questionId, answer);
+        Answer response = answerService.createAnswer(questionId, answer, jwtTokenizer.getMemberId(token));
         return new ResponseEntity<>(
                 new SingleResponseDto<>(mapper.answerToAnswerResponse(response)), HttpStatus.CREATED);
     }
 
     @PatchMapping("/answers/{answer-id}")
-    public ResponseEntity patchAnswer(@PathVariable("answer-id") @Positive Long answerId,
+    public ResponseEntity patchAnswer(@RequestHeader(name = "Authorization") String token,
+                                      @PathVariable("answer-id") @Positive Long answerId,
                                       @Valid @RequestBody AnswerDto.Patch requestBody) {
         Answer answer = mapper.answerPatchDtoToAnswer(requestBody);
         answer.setAnswerId(answerId);
-        answerService.updateAnswer(answer);
+        Answer response = answerService.updateAnswer(answer, jwtTokenizer.getMemberId(token));
         return new ResponseEntity<>(
-                new SingleResponseDto<>(mapper.answerToAnswerResponse(answer)), HttpStatus.OK);
+                new SingleResponseDto<>(mapper.answerToAnswerResponse(response)), HttpStatus.OK);
     }
 
     @DeleteMapping("/answers/{answer-id}")
-    public ResponseEntity deleteAnswer(@PathVariable("answer-id") @Positive Long answerId) {
+    public ResponseEntity deleteAnswer(@RequestHeader(name = "Authorization") String token,
+                                       @PathVariable("answer-id") @Positive Long answerId) {
 
-        answerService.deleteAnswer(answerId);
+        answerService.deleteAnswer(answerId, jwtTokenizer.getMemberId(token));
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
