@@ -3,8 +3,10 @@
 // ----- 필요 라이브러리
 import styled from "styled-components";
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import axios from "axios";
 
 // ----- 컴포넌트 및 이미지 파일
 
@@ -106,8 +108,32 @@ const DiscardButton = styled.button` // 질문 작성 취소(삭제) 버튼
 // ----- 컴포넌트 영역
 
 function AskQuestion() {
+  const navigate = useNavigate();
+
+  const [title, setTitle] = useState(""); // 질문 제목 입력칸의 상태 관리창
   const [problemText, setProblemText] = useState(""); // 질문 내용 입력칸의 상태 관리창
-  const [expectText, setExpextText] = useState("")
+  const [expectText, setExpextText] = useState("") // expect 내용 입력칸의 상태 관리창
+
+  const askTitle = (e) => { // 질문 제목 입력칸 상태 함수
+    setTitle(e.target.value)
+  }
+
+  const ReviewButtonSubmit = (e) => { // 다 쓴 질문 제출 버튼 함수
+    e.preventDefault();
+    axios.post('/questions', {
+      title : title,
+      content : problemText
+    })
+      .then(function (res) {
+        console.log(res)
+        navigate(`/question/${res.data.questionId}`);
+        // 게시하고 나면 해당 게시물 페이지로 넘어가기
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("Failed to write. Try again.");
+      });
+  }
 
   return (
     <AskBox>
@@ -127,7 +153,7 @@ function AskQuestion() {
       <EditBox className="Titlebox">
         <EditTitle>Title</EditTitle>
         <EditText>Be specific and imagine you’re asking a question to another person.</EditText>
-        <EditInput></EditInput>
+        <EditInput onChange={askTitle} placeholder="e.g. Is there an R function for finding the index of an element in a vector?" />
       </EditBox>
 
       <EditBox>
@@ -140,7 +166,7 @@ function AskQuestion() {
           />
       </EditBox>
 
-      <EditBox>
+      {/* <EditBox>
         <EditTitle>What did you try and what were you expecting?</EditTitle>
         <EditText>Describe what you tried, what you expected to happen, and what actually resulted. Minimum 20 characters.</EditText>
         <ReactQuill 
@@ -148,19 +174,19 @@ function AskQuestion() {
           value={expectText}
           onChange={(e) => setExpextText(e)} 
           />
-      </EditBox>
+      </EditBox> */}
 
       <EditBox>
         <EditTitle>Tags</EditTitle>
         <EditText>Add up to 5 tags to describe what your question is about. Start typing to see suggestions.</EditText>
-        <EditInput></EditInput>
+        <EditInput placeholder="e.g. (angular sql-server string)" />
       </EditBox>
 
       <EditBox>
         <EditTitle>Review questions already on Stack Overflow to see if your question is a duplicate.</EditTitle>
         <EditText>Clicking on these questions will open them in a new tab for you to review. Your progress here will be saved so you can come back and continue.</EditText>
         <EditInput></EditInput>
-        <ReviewButton>Review your question</ReviewButton>
+        <ReviewButton onClick={ReviewButtonSubmit}>Review your question</ReviewButton>
       </EditBox>
       <DiscardButton>Discard draft</DiscardButton>
     </AskBox>

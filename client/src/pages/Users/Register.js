@@ -119,7 +119,9 @@ function Register() {
         console.log(registerData);
         axios.post(`/api/members`, registerData)
         .then(res => {
-            setLoginUser(res.data);
+            // setLoginUser(res.data);
+            console.log(res.data);
+            navigate("/login")
         })
         
     }

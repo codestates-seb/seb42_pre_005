@@ -2,7 +2,7 @@
 
 // ----- 필요 라이브러리
 import styled from "styled-components";
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 // ----- 필요 컴포넌트
 
@@ -27,14 +27,22 @@ const SmallTitle = styled.li` // 작은 타이틀 스타일
 `
 const BigTitle = styled.li` // 큰 타이틀 스타일
   font-size: 14px;
-  padding: 12px 80px 0px 12px;
-  border-right: 2px solid black;
+  padding: 12px 80px 10px 12px;
+  
   :hover {
     color: #c5c5c5;
+  }
+  &.current-page {
+    background-color: rgb(241, 242, 243);
+    border-right: 3px solid rgb(244, 130, 36);
+    font-weight: 600;
+    color: black;
   }
 `
 
 function LeftSideBar() {
+  const navigate = useNavigate();
+  const curruntPath = useLocation().pathname;
 
   return (
     <LeftSideBarBox>
@@ -43,9 +51,15 @@ function LeftSideBar() {
       </TitleBox>
       <TitleBox>
         <SmallTitle>PUBLIC</SmallTitle>
-          <Link to="/questions"><BigTitle>Questions</BigTitle></Link>
-          <Link to="/tags"><BigTitle>Tags</BigTitle></Link>
-          <Link to="/users"><BigTitle>Users</BigTitle></Link>
+          <BigTitle 
+            className={curruntPath === "/questions" ? "current-page" : null} 
+            onClick={() => navigate("/questions")}>Questions</BigTitle>
+          <BigTitle 
+            className={curruntPath === "/tags" ? "current-page" : null} 
+            onClick={() => navigate("/tags")}>Tags</BigTitle>
+          <BigTitle 
+            className={curruntPath === "/users" ? "current-page" : null} 
+            onClick={() => navigate("/users")}>User</BigTitle>
           <BigTitle>Companies</BigTitle>
       </TitleBox>
       <TitleBox>

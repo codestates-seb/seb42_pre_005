@@ -1,6 +1,11 @@
-import { Outlet, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import LeftSideBar from "../../components/Main/LeftSideBar";
+import UserActivity from "./Activity/UserActivity";
+import UserProfile from "./Profile/UserProfile";
+import queryString from 'query-string';
+import { current } from "@reduxjs/toolkit";
 
 
 export const UsersPage = styled.div`
@@ -11,7 +16,7 @@ export const UsersPage = styled.div`
 `;
 export const UsersTop = styled.div`
     height: 144px;
-    width: 80vw;
+    /* width: 80vw; */
     background-color: #eee;
 `;
 
@@ -19,7 +24,7 @@ export const UsersMain = styled.div`
     display: flex;
     flex-direction: row;
     /* background-color: beige; */
-    height: 1000px;
+    /* height: 1000px; */
 `;
 export const UsersMenu = styled.ul`
     height: 40px;
@@ -49,18 +54,28 @@ export const ContentsContainer = styled.div`
 `;
 
 function UserDetail() {
+    const userData = useSelector(state => state.userData);
     const navigate = useNavigate();
+    const [currentTab, setCurrentTab] = useState('activity');
+    const location = useLocation();
+    const activityTabList = ["activity", "summary", "answers", "tags", "questions"]
+    
+    useEffect(()=>{
+        const {tab} = queryString.parse(location.search)
+        if(!(tab === "" || tab === undefined)) setCurrentTab(tab);
+    },[location.search])
+
     return (
         <UsersPage>
-            <LeftSideBar />
             <ContentsContainer>
                 <UsersTop>USER 기본 정보가 들어갈 곳</UsersTop>
                 <UsersMenu>
-                    <li onClick={() => navigate("/users/profile")}>Profile</li>
-                    <li onClick={() => navigate("/users/activity")}>Activity</li>
+                    <li onClick={() => navigate(`/users/${userData.id}/${userData.name}?tab=profile`)}>Profile</li>
+                    <li onClick={() => navigate(`/users/${userData.id}/${userData.name}?tab=activity`)}>Activity</li>
                 </UsersMenu>
                 <UsersMain>
-                    <Outlet></Outlet>
+                    {activityTabList.includes(currentTab) && <UserActivity currentTab={ currentTab === "activity" ? "summary" : currentTab}/>}
+                    {currentTab === "profile" && <UserProfile/>}
                 </UsersMain>
             </ContentsContainer>
         </UsersPage>
