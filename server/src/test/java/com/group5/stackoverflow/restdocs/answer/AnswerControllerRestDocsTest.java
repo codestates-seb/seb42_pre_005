@@ -9,6 +9,9 @@ import com.group5.stackoverflow.answer.service.AnswerService;
 import com.group5.stackoverflow.auth.tokenizer.JwtTokenizer;
 import com.group5.stackoverflow.auth.utils.CustomAuthorityUtils;
 import com.group5.stackoverflow.config.SecurityConfiguration;
+import com.group5.stackoverflow.helper.MockSecurity;
+import com.group5.stackoverflow.member.repository.MemberRepository;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mockito;
@@ -33,8 +36,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
@@ -55,6 +57,9 @@ public class AnswerControllerRestDocsTest {
     private MockMvc mockMvc;
 
     @Autowired
+    private JwtTokenizer jwtTokenizer;
+
+    @Autowired
     private Gson gson;
 
     @MockBean
@@ -62,6 +67,19 @@ public class AnswerControllerRestDocsTest {
 
     @MockBean
     private AnswerService answerService;
+
+    @MockBean
+    private MemberRepository memberRepository;
+
+    private String accessTokenForUser;
+    private String accessTokenForAdmin;
+
+    @BeforeAll
+    public void init() {
+        accessTokenForUser = MockSecurity.getValidAccessToken(jwtTokenizer.getSecretKey(), "USER");
+        accessTokenForAdmin = MockSecurity.getValidAccessToken(jwtTokenizer.getSecretKey(), "ADMIN");
+    }
+
 
     @Test
     public void postAnswerTest() throws Exception {
@@ -90,6 +108,7 @@ public class AnswerControllerRestDocsTest {
 
         ResultActions actions = mockMvc.perform(
                 post("/questions/{question-id}/answers", questionId)
+                        .header("Authorization", "Bearer ".concat(accessTokenForUser))
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
@@ -104,6 +123,9 @@ public class AnswerControllerRestDocsTest {
                                 preprocessResponse(prettyPrint()),
                                 pathParameters(
                                         parameterWithName("question-id").description("질문 식별자")
+                                ),
+                                requestHeaders(
+                                        headerWithName("Authorization").description("Bearer (accessToken)")
                                 ),
                                 requestFields(
                                         List.of(
@@ -157,6 +179,7 @@ public class AnswerControllerRestDocsTest {
 
         ResultActions actions = mockMvc.perform(
                 patch("/answers/{answer-id}", answerId)
+                        .header("Authorization", "Bearer ".concat(accessTokenForUser))
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
@@ -172,6 +195,9 @@ public class AnswerControllerRestDocsTest {
                         getResponsePreProcessor(),
                         pathParameters(
                                 parameterWithName("answer-id").description("답변 식별자")
+                        ),
+                        requestHeaders(
+                                headerWithName("Authorization").description("Bearer (accessToken)")
                         ),
                         requestFields(
                                 List.of(
@@ -207,6 +233,7 @@ public class AnswerControllerRestDocsTest {
 
         ResultActions actions = mockMvc.perform(
                 delete("/answers/{answer-id}", answerId)
+                        .header("Authorization", "Bearer ".concat(accessTokenForUser))
         );
 
         actions
@@ -216,6 +243,9 @@ public class AnswerControllerRestDocsTest {
                         getResponsePreProcessor(),
                         pathParameters(
                                 parameterWithName("answer-id").description("답변 식별자")
+                        ),
+                        requestHeaders(
+                                headerWithName("Authorization").description("Bearer (accessToken)")
                         )
                 ));
 

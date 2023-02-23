@@ -3,11 +3,14 @@ package com.group5.stackoverflow.restdocs.tag;
 import com.group5.stackoverflow.auth.tokenizer.JwtTokenizer;
 import com.group5.stackoverflow.auth.utils.CustomAuthorityUtils;
 import com.group5.stackoverflow.config.SecurityConfiguration;
+import com.group5.stackoverflow.helper.MockSecurity;
+import com.group5.stackoverflow.member.repository.MemberRepository;
 import com.group5.stackoverflow.tag.controller.TagController;
 import com.group5.stackoverflow.tag.dto.TagDto;
 import com.group5.stackoverflow.tag.entity.Tag;
 import com.group5.stackoverflow.tag.mapper.TagMapper;
 import com.group5.stackoverflow.tag.service.TagService;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mockito;
@@ -48,13 +51,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureRestDocs
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TagControllerRestDocsTest {
+
     @Autowired
     private MockMvc mockMvc;
+
     @MockBean
     private TagService tagService;
+
     @MockBean
     private TagMapper tagMapper;
 
+    @MockBean
+    private MemberRepository memberRepository;
 
     @Test
     void getTagsTest() throws Exception {
