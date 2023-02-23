@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.group5.stackoverflow.auth.tokenizer.JwtTokenizer;
 import com.group5.stackoverflow.auth.utils.CustomAuthorityUtils;
 import com.group5.stackoverflow.config.SecurityConfiguration;
+import com.group5.stackoverflow.helper.MemberControllerTestHelper;
+import com.group5.stackoverflow.helper.MockQuestion;
 import com.group5.stackoverflow.helper.MockSecurity;
 import com.group5.stackoverflow.member.controller.MemberController;
 import com.group5.stackoverflow.member.dto.MemberDto;
@@ -11,6 +13,10 @@ import com.group5.stackoverflow.member.entity.Member;
 import com.group5.stackoverflow.member.mapper.MemberMapper;
 import com.group5.stackoverflow.member.repository.MemberRepository;
 import com.group5.stackoverflow.member.service.MemberService;
+import com.group5.stackoverflow.question.dto.QuestionDto;
+import com.group5.stackoverflow.question.entity.Question;
+import com.group5.stackoverflow.question.mapper.QuestionMapper;
+import com.group5.stackoverflow.question.service.QuestionService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -26,7 +32,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -54,7 +62,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @MockBean(JpaMetamodelMappingContext.class)
 @AutoConfigureRestDocs
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class MemberControllerRestDocsTest {
+public class MemberControllerRestDocsTest implements MemberControllerTestHelper {
     @Autowired
     private MockMvc mockMvc;
 
@@ -69,6 +77,11 @@ public class MemberControllerRestDocsTest {
     @MockBean
     private MemberRepository memberRepository;
 
+    @MockBean
+    private QuestionMapper questionMapper;
+
+    @MockBean
+    private QuestionService questionService;
 
     @Autowired
     private Gson gson;
@@ -439,5 +452,58 @@ public class MemberControllerRestDocsTest {
 
                         )
                 );
+    }
+
+    @Test
+    public void postQuestionByMemberTest() throws Exception {
+
+        QuestionDto.Post post = new QuestionDto.Post("타이틀 입니다.", "이곳은 질문을 적는 곳입니다.", 1L);
+        long memberId = post.getMemberId();
+
+        String content = gson.toJson(post);
+
+        given(questionMapper.questionPostToQuestion(Mockito.any(QuestionDto.Post.class))).willReturn(new Question());
+
+        Question mockResultQuestion = new Question();
+        mockResultQuestion.setQuestionId(1L);
+
+        given(questionService.createQuestion(Mockito.any(Question.class))).willReturn(mockResultQuestion);
+
+        ResultActions actions =
+                mockMvc.perform(
+                        post("/members/{member-id}/questions", memberId)
+                                .header("Authorization", "Bearer ".concat(accessTokenForUser))
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(content)
+                        );
+
+        actions
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", is(startsWith("/questions"))))
+                .andDo(document(
+                        "post-question",
+                        getRequestPreProcessor(),
+                        getResponsePreProcessor(),
+                        requestHeaders(
+                                headerWithName("Authorization").description("USER JWT token")
+                        ),
+                        pathParameters(
+                                parameterWithName("member-id").description("회원 식별자")
+                        ),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("title").type(JsonFieldType.STRING).description("제목")
+                                                .attributes(key("validation").value("Not Null")),
+                                        fieldWithPath("content").type(JsonFieldType.STRING).description("질문 내용")
+                                                .attributes(key("validation").value("Not Null")),
+                                        fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("회원 식별자")
+                                                .attributes(key("validation").value("Not Null"))
+                                )
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.LOCATION).description("Location header. 등록된 리소스의 URI")
+                        )
+                ));
     }
 }

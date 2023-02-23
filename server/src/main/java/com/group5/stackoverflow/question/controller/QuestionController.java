@@ -29,7 +29,7 @@ import java.util.List;
 @Validated
 @Slf4j
 public class QuestionController {
-    private final static String QUESTION_DEFAULT_URL = "/questions";
+    public final static String QUESTION_DEFAULT_URL = "/questions";
     private final QuestionService questionService;
     private final QuestionMapper questionMapper;
     private final JwtTokenizer jwtTokenizer;
@@ -43,21 +43,21 @@ public class QuestionController {
     }
 
     // 질문 생성
-    @PostMapping
-    public ResponseEntity postQuestion(@Valid @RequestBody QuestionDto.Post requestBody) {
-        Question question = questionMapper.questionPostToQuestion(requestBody);
-
-        Question createdQuestion = questionService.createQuestion(question);
-        URI location = UriCreator.createUri(QUESTION_DEFAULT_URL, createdQuestion.getQuestionId());
-
-        return ResponseEntity.created(location).build();
-    }
+//    @PostMapping
+//    public ResponseEntity postQuestion(@Valid @RequestBody QuestionDto.Post requestBody) {
+//        Question question = questionMapper.questionPostToQuestion(requestBody);
+//
+//        Question createdQuestion = questionService.createQuestion(question);
+//        URI location = UriCreator.createUri(QUESTION_DEFAULT_URL, createdQuestion.getQuestionId());
+//
+//        return ResponseEntity.created(location).build();
+//    }
 
     // 질문 수정
     @PatchMapping("/{question-id}")
     public ResponseEntity patchQuestion(@PathVariable("question-id") @Positive Long questionId,
                                         @Valid @RequestBody QuestionDto.Patch requestBody) {
-        requestBody.setQuestionId(questionId);
+        requestBody.addQuestionId(questionId);
 
         Question question = questionService.updateQuestion(questionMapper.questionPatchToQuestion(requestBody));
 

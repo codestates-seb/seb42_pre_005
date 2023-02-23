@@ -32,7 +32,7 @@ public class QuestionService {
     public Question createQuestion(Question question) {
         // 멤버가 맞는지 확인
         Member member = memberService.findMember(question.getMember().getMemberId());
-        question.setMember(member);
+//        question.setMember(member);
 
         return repository.save(question);
     }
@@ -41,7 +41,6 @@ public class QuestionService {
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
     public Question updateQuestion(Question question) {
         Question findQuestion = findVerifiedQuestion(question.getQuestionId());
-        Member findMember = findQuestion.getMember();
 
         Optional.ofNullable(question.getTitle())
                 .ifPresent(title -> findQuestion.setTitle(title));

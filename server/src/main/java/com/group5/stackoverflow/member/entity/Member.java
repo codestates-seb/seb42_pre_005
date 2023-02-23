@@ -2,11 +2,9 @@ package com.group5.stackoverflow.member.entity;
 
 import com.group5.stackoverflow.answer.entity.Answer;
 import com.group5.stackoverflow.audit.Auditable;
+import com.group5.stackoverflow.question.entity.Question;
 import com.group5.stackoverflow.vote.entity.Vote;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
@@ -63,6 +61,17 @@ public class Member extends Auditable {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     List<Vote> votes = new ArrayList<>();
 
+    @Setter(AccessLevel.NONE)
+    @OneToMany(mappedBy = "member")
+    private List<Question> questions = new ArrayList<>();
+
+
+    public void setQuestion(Question question) {
+        this.questions.add(question);
+        if (question.getMember() != this) {
+            question.setMember(this);
+        }
+    }
 
     public enum MemberStatus{
 
