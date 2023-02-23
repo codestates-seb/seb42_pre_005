@@ -93,7 +93,7 @@ public class QuestionControllerRestDocsTest {
         Question mockResultQuestion = new Question();
         mockResultQuestion.setQuestionId(1L);
 
-        given(questionService.createQuestion(Mockito.any(Question.class), Mockito.anyLong())).willReturn(mockResultQuestion);
+        given(questionService.createQuestion(Mockito.any(Question.class))).willReturn(mockResultQuestion);
 
         ResultActions actions =
                 mockMvc.perform(
@@ -147,7 +147,7 @@ public class QuestionControllerRestDocsTest {
 
         given(questionMapper.questionPatchToQuestion(Mockito.any(QuestionDto.Patch.class))).willReturn(new Question());
 
-        given(questionService.updateQuestion(Mockito.any(Question.class), Mockito.anyLong())).willReturn(new Question());
+        given(questionService.updateQuestion(Mockito.any(Question.class))).willReturn(new Question());
 
         given(questionMapper.questionToQuestionResponse(Mockito.any(Question.class))).willReturn(response);
 
@@ -352,10 +352,9 @@ public class QuestionControllerRestDocsTest {
     @Test
     public void deleteQuestion() throws Exception {
         Long questionId = 1L;
-        Long memberId = 1L;
         String accessToken = accessTokenForUser;
 
-        doNothing().when(questionService).deleteQuestion(questionId, memberId);
+        doNothing().when(questionService).deleteQuestion(questionId);
 
         ResultActions actions =
                 mockMvc.perform(

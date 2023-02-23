@@ -29,9 +29,9 @@ public class QuestionService {
     }
 
     // 질문 생성
-    public Question createQuestion(Question question, Long memberId) {
+    public Question createQuestion(Question question) {
         // 멤버가 맞는지 확인
-        Member member = memberService.findMember(memberId);
+        Member member = memberService.findMember(question.getMember().getMemberId());
         question.setMember(member);
 
         return repository.save(question);
@@ -39,13 +39,9 @@ public class QuestionService {
 
     // 질문 수정
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
-    public Question updateQuestion(Question question, Long memberId) {
+    public Question updateQuestion(Question question) {
         Question findQuestion = findVerifiedQuestion(question.getQuestionId());
         Member findMember = findQuestion.getMember();
-
-        if (findMember.getMemberId() != memberId) {
-            throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
-        }
 
         Optional.ofNullable(question.getTitle())
                 .ifPresent(title -> findQuestion.setTitle(title));
@@ -82,13 +78,9 @@ public class QuestionService {
 //    }
 
     // 질문 삭제
-    public void deleteQuestion(Long questionId, Long memberId) {
+    public void deleteQuestion(Long questionId) {
         Question findQuestion = findQuestion(questionId);
         Member findMember = findQuestion.getMember();
-
-        if (findMember.getMemberId() != memberId) {
-            throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
-        }
 
         repository.delete(findQuestion);
     }
