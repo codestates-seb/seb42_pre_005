@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.List;
+
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
     @Value("${config.domain}")
@@ -13,7 +15,8 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins(domain).allowedMethods("GET","DELETE", "POST", "OPTIONS").allowCredentials(true)
+                .allowedOrigins("*")
+                .allowedMethods("GET","DELETE", "POST", "OPTIONS").allowCredentials(true)
                 .exposedHeaders("authorization");
     }
 }
