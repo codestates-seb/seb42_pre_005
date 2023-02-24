@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import UserActivity from "./Activity/UserActivity";
 import UserProfile from "./Profile/UserProfile";
 import queryString from 'query-string';
-import { current } from "@reduxjs/toolkit";
 
 
 export const UsersPage = styled.div`
@@ -15,10 +14,26 @@ export const UsersPage = styled.div`
     /* background-color: #eee; */
 `;
 export const UsersTop = styled.div`
-    height: 144px;
+    display: flex;
+    /* height: 144px; */
     /* width: 80vw; */
-    background-color: #eee;
+    /* background-color: #eee; */
 `;
+
+export const UserImage = styled.div`
+    background-color: yellow;
+    width: 128px;
+    height: 128px;
+`
+
+const UserInfo = styled.div`
+    display: flex;
+    align-items: center;
+    h1 {
+        margin-left: 12px;
+        font-weight: normal;
+    }
+`
 
 export const UsersMain = styled.div`
     display: flex;
@@ -29,23 +44,30 @@ export const UsersMain = styled.div`
 export const UsersMenu = styled.ul`
     height: 40px;
     display: flex;
-    margin: 16px 0 16px 0;
+    align-items: center;
+    margin: 16px 0;
     li {
         /* background-color: black; */
         display: flex;
         list-style: none;
         width: 80px;
+        height: 32px;
         justify-content: center;
         align-items: center;
-        padding: 6px 12px;
+        padding: 0 12px;
         border-radius: 20px;
+        margin-right: 6px;
         :hover {
-            background-color: orange;
+            background-color: #c5c5c5;
             color: white;
         }
         a {
             text-decoration: none;
         }
+        &.current-tab {
+            background-color: orange;
+            color: white;
+        } 
     }
 `;
 
@@ -68,10 +90,15 @@ function UserDetail() {
     return (
         <UsersPage>
             <ContentsContainer>
-                <UsersTop>USER 기본 정보가 들어갈 곳</UsersTop>
+                <UsersTop>
+                    <UserImage></UserImage>
+                    <UserInfo>
+                        <h1>{userData.name}</h1>
+                    </UserInfo>
+                </UsersTop>
                 <UsersMenu>
-                    <li onClick={() => navigate(`/users/${userData.id}/${userData.name}?tab=profile`)}>Profile</li>
-                    <li onClick={() => navigate(`/users/${userData.id}/${userData.name}?tab=activity`)}>Activity</li>
+                    <li onClick={() => navigate(`/users/${userData.id}/${userData.name}?tab=profile`)} className={currentTab === "profile" ? "current-tab" : null }>Profile</li>
+                    <li onClick={() => navigate(`/users/${userData.id}/${userData.name}?tab=activity`)} className={currentTab !== "profile" ? "current-tab" : null }>Activity</li>
                 </UsersMenu>
                 <UsersMain>
                     {activityTabList.includes(currentTab) && <UserActivity currentTab={ currentTab === "activity" ? "summary" : currentTab}/>}

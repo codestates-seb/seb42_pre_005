@@ -32,12 +32,16 @@ export const ActivityMenu = styled.ul`
         border-radius: 20px;
         color: #525960;
         :hover {
-            background-color: #F1F2F3;
+            background-color: #c1c1c1;
             color: black;
         }
         a {
             text-decoration: none;
         }
+        &.current-tab {
+            background-color: #d5d7d9;
+            color: black;
+        } 
     }
 `
 
@@ -48,15 +52,16 @@ export const ActivityRight = styled.div`
 function UserActivity({currentTab}) {
     const navigate = useNavigate();
     const userData = useSelector(state => state.userData);
-    
+
+
     return (
         <ActivityContainer>
             <ActivityLeft>
                 <ActivityMenu>
-                    <li onClick={() => navigate(`/users/${userData.id}/${userData.name}?tab=summary`)}>Summary</li>
-                    <li onClick={() => navigate(`/users/${userData.id}/${userData.name}?tab=answers`)}>Answers</li>
-                    <li onClick={() => navigate(`/users/${userData.id}/${userData.name}?tab=questions`)}>Questions</li>
-                    <li onClick={() => navigate(`/users/${userData.id}/${userData.name}?tab=tags`)}>Tags</li>
+                    <li onClick={() => navigate(`/users/${userData.id}/${userData.name}?tab=summary`)} className={currentTab === "summary" ? "current-tab" : null }>Summary</li>
+                    <li onClick={() => navigate(`/users/${userData.id}/${userData.name}?tab=answers`)} className={currentTab === "answers" ? "current-tab" : null }>Answers</li>
+                    <li onClick={() => navigate(`/users/${userData.id}/${userData.name}?tab=questions`)} className={currentTab === "questions" ? "current-tab" : null }>Questions</li>
+                    <li onClick={() => navigate(`/users/${userData.id}/${userData.name}?tab=tags`)} className={currentTab === "tags" ? "current-tab" : null }>Tags</li>
                 </ActivityMenu>
             </ActivityLeft>
             <ActivityRight>

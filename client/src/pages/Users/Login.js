@@ -105,11 +105,16 @@ function Login() {
             password
         }
         console.log(loginData);
-        axios.post(`/api/auth/login`, loginData)
+        axios.post(process.env.REACT_APP_API_URL+"/auth/login", loginData)
         .then(res => {
             console.log(res);
             navigate("/")
         })
+        // axios.post(`/api/auth/login`, loginData)
+        // .then(res => {
+        //     console.log(res);
+        //     navigate("/")
+        // })
     }
 
     const fakeLoginHandler = () => {
