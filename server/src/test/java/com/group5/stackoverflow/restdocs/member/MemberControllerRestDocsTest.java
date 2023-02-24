@@ -5,7 +5,6 @@ import com.group5.stackoverflow.auth.tokenizer.JwtTokenizer;
 import com.group5.stackoverflow.auth.utils.CustomAuthorityUtils;
 import com.group5.stackoverflow.config.SecurityConfiguration;
 import com.group5.stackoverflow.helper.MemberControllerTestHelper;
-import com.group5.stackoverflow.helper.MockQuestion;
 import com.group5.stackoverflow.helper.MockSecurity;
 import com.group5.stackoverflow.member.controller.MemberController;
 import com.group5.stackoverflow.member.dto.MemberDto;
@@ -29,19 +28,14 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.group5.stackoverflow.utils.ApiDocumentUtils.getRequestPreProcessor;
 import static com.group5.stackoverflow.utils.ApiDocumentUtils.getResponsePreProcessor;
