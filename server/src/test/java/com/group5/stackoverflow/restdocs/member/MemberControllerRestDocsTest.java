@@ -473,14 +473,25 @@ public class MemberControllerRestDocsTest implements MemberControllerTestHelper 
                         );
 
         actions
-                .andExpect(status().isCreated())
+                .andExpect(status().isCreated());
+
+        actions =
+                mockMvc.perform(
+                        post("/members/{member-id}/questions", memberId)
+                                .header("Authorization", "Bearer ".concat(accessTokenForAdmin))
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(content)
+                );
+
+        actions
                 .andExpect(header().string("Location", is(startsWith("/questions"))))
                 .andDo(document(
                         "post-question",
                         getRequestPreProcessor(),
                         getResponsePreProcessor(),
                         requestHeaders(
-                                headerWithName("Authorization").description("USER JWT token")
+                                headerWithName("Authorization").description("USER|ADMIN JWT token")
                         ),
                         pathParameters(
                                 parameterWithName("member-id").description("회원 식별자")
