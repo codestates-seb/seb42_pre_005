@@ -61,7 +61,7 @@ public class Member extends Auditable {
     @Setter(AccessLevel.NONE)
     @OneToMany(mappedBy = "member")
     private List<Question> questions = new ArrayList<>();
-    
+
     public void setQuestion(Question question) {
         this.questions.add(question);
         if (question.getMember() != this) {
