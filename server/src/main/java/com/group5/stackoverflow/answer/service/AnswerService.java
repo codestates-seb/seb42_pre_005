@@ -35,19 +35,23 @@ public class AnswerService {
     }
 
     // 답변 생성
-    public Answer createAnswer(Long questionId, Answer answer) {
+    public Answer createAnswer(Long questionId, Answer answer, Long memberId) {
         // member, question 추가함.
         Question question = questionService.findVerifiedQuestion(questionId);
         answer.setQuestion(question);
-        Member member = memberService.findVerifiedMember(answer.getMember().getMemberId());
+        Member member = memberService.findVerifiedMember(memberId);
         answer.setMember(member);
 
         return answerRepository.save(answer);
     }
 
     // 답변 수정
-    public Answer updateAnswer(Answer answer) {
+    public Answer updateAnswer(Answer answer, Long memberId) {
         Answer findAnswer = findVerifiedAnswer(answer.getAnswerId());
+
+        if (!findAnswer.getMember().getMemberId().equals(memberId)) {
+            throw new BusinessLogicException(ExceptionCode.MEMBER_UNAUTHORIZED);
+        }
 
         Optional.ofNullable(answer.getContent())
                 .ifPresent(content -> findAnswer.setContent(content));
@@ -57,10 +61,13 @@ public class AnswerService {
     }
 
     // 답변 삭제
-    public void deleteAnswer(Long answerId) {
+    public void deleteAnswer(Long answerId, Long memberId) {
         Answer findAnswer = findVerifiedAnswer(answerId);
-        answerRepository.delete(findAnswer);
 
+        if (!findAnswer.getMember().getMemberId().equals(memberId)) {
+            throw new BusinessLogicException(ExceptionCode.MEMBER_UNAUTHORIZED);
+        }
+        answerRepository.delete(findAnswer);
     }
 
     // 답변 검증
