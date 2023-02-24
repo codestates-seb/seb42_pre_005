@@ -44,11 +44,11 @@ const ArticleInfo = styled.div`
   }
 `
 
-function ArticleHeader () {
+function ArticleHeader ( {QuestionData} ) {
   return (
     <HeaderBox>
       <HeaderTitle>
-        <h1>Java 8 calculate months between two dates</h1>
+        <h1>{QuestionData.title}</h1>
         <Link to="/ask"><button>Ask Question</button></Link>
       </HeaderTitle>
       <ArticleInfoBox>

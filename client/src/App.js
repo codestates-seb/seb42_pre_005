@@ -18,6 +18,8 @@ import AllQuestions from './pages/Questions/AllQuestions';
 import TopQuestions from './pages/Questions/TopQuestions';
 import AskQuestion from './pages/Questions/AskQuestion';
 import QuestionView from './pages/QuestionView/QuestionView';
+import NotFound from './components/NotFound';
+import EditQuestion from './pages/Questions/EditQustions';
 
 
 
@@ -37,10 +39,14 @@ function App() {
           <Route path="/view" element={<QuestionView />} />
           <Route path='/users/:id/:name' element={<UserDetail/>}/>
           <Route path="/users" element={<Users />}/>
+          <Route path='/companies' element={<NotFound />} />
+          <Route path='/collectives' element={<NotFound />} />
+          <Route path='/teams' element={<NotFound />} />
         </Route>
         <Route path="/ask" element={<AskQuestion />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/edit" element={<EditQuestion />} />
       </Routes>
     </div>
   );

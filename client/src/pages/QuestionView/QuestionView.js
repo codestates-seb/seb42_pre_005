@@ -4,9 +4,10 @@
 import styled from "styled-components";
 import Article from "./Article";
 import Answer from "./Answer";
-import AnswerCreate from "./AnswerCreate";
 import RightSideBar from "../../components/Main/RightSideBar";
 import ArticleHeader from "./ArticleHeader";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 // ----- 컴포넌트 및 이미지 파일
 
@@ -16,21 +17,33 @@ const ViewBox = styled.div` // 묻는 공간 전체 창
 `
 const ContentsBox = styled.div`
   display: flex;
-  max-width: 1000px;
+  max-width: 1200px;
 `
 const Contents = styled.div`
   
 `
 
+
 // ----- 컴포넌트 영역
 function QuestionView() {
+  const [QuestionData, setQustionData] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+        const response = await axios.get("http://localhost:8000/data");
+        setQustionData(response.data[0]);
+    }
+    fetchData()
+    }, []);
+  console.log(QuestionData)
+
   return (
     <ViewBox>
-      <ArticleHeader />
+      <ArticleHeader QuestionData={QuestionData} />
       <ContentsBox>
         <Contents>
-          <Article />
-          <Answer />
+          <Article QuestionData={QuestionData} />
+          <Answer QuestionData={QuestionData} />
         </Contents>
         <RightSideBar />
       </ContentsBox>
