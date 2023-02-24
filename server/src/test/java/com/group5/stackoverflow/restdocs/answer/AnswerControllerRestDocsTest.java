@@ -10,7 +10,9 @@ import com.group5.stackoverflow.auth.tokenizer.JwtTokenizer;
 import com.group5.stackoverflow.auth.utils.CustomAuthorityUtils;
 import com.group5.stackoverflow.config.SecurityConfiguration;
 import com.group5.stackoverflow.helper.MockSecurity;
+import com.group5.stackoverflow.member.entity.Member;
 import com.group5.stackoverflow.member.repository.MemberRepository;
+import com.group5.stackoverflow.member.service.MemberService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -71,6 +73,9 @@ public class AnswerControllerRestDocsTest {
     @MockBean
     private MemberRepository memberRepository;
 
+    @MockBean
+    private MemberService memberService;
+
     private String accessTokenForUser;
     private String accessTokenForAdmin;
 
@@ -84,10 +89,11 @@ public class AnswerControllerRestDocsTest {
     @Test
     public void postAnswerTest() throws Exception {
 
-        AnswerDto.Post post = new AnswerDto.Post(1L, "이곳은 답변을 적는 곳입니다.");
+        AnswerDto.Post post = new AnswerDto.Post(1L, 1L,"이곳은 답변을 적는 곳입니다.");
         String content = gson.toJson(post);
 
         AnswerDto.Response responseDto = new AnswerDto.Response(
+                1L,
                 1L,
                 1L,
                 "홍길동",
@@ -95,19 +101,24 @@ public class AnswerControllerRestDocsTest {
                 0
         );
 
+        Member member = new Member();
+        member.setMemberId(post.getMemberId());
+
+        given(memberService.findMemberByEmail(Mockito.anyString())).willReturn(member);
 
         given(mapper.answerPostDtoToAnswer(Mockito.any(AnswerDto.Post.class))).willReturn(new Answer());
 
         Answer mockResultAnswer = new Answer();
         mockResultAnswer.setAnswerId(1L);
-        given(answerService.createAnswer(Mockito.anyLong(),Mockito.any(Answer.class), Mockito.anyLong())).willReturn(mockResultAnswer);
+        given(answerService.createAnswer(Mockito.any(Answer.class), Mockito.anyLong())).willReturn(mockResultAnswer);
 
         given(mapper.answerToAnswerResponse(Mockito.any(Answer.class))).willReturn(responseDto);
 
         Long questionId = 1L;
+        Long memberId = 1L;
 
         ResultActions actions = mockMvc.perform(
-                post("/questions/{question-id}/answers", questionId)
+                post("/{member-id}/questions/{question-id}/answers", memberId, questionId)
                         .header("Authorization", "Bearer ".concat(accessTokenForUser))
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -115,6 +126,7 @@ public class AnswerControllerRestDocsTest {
         );
 
         actions.andExpect(status().isCreated())
+                .andExpect(jsonPath("$.data.memberId").value(post.getMemberId()))
                 .andExpect(jsonPath("$.data.questionId").value(post.getQuestionId()))
                 .andExpect(jsonPath("$.data.content").value(post.getContent()))
                 .andDo(document(
@@ -122,13 +134,17 @@ public class AnswerControllerRestDocsTest {
                                 preprocessRequest(prettyPrint()),
                                 preprocessResponse(prettyPrint()),
                                 pathParameters(
+                                        parameterWithName("member-id").description("회원 식별자"),
                                         parameterWithName("question-id").description("질문 식별자")
+
                                 ),
                                 requestHeaders(
                                         headerWithName("Authorization").description("Bearer (accessToken)")
                                 ),
                                 requestFields(
                                         List.of(
+                                                fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("회원 식별자")
+                                                        .attributes(key("validation").value("Not Null")),
                                                 fieldWithPath("questionId").type(JsonFieldType.NUMBER).description("질문 식별자")
                                                         .attributes(key("validation").value("Not Null")).ignored(),
                                                 fieldWithPath("content").type(JsonFieldType.STRING).description("답변 내용")
@@ -139,6 +155,7 @@ public class AnswerControllerRestDocsTest {
                                         List.of(
                                                 fieldWithPath("data").type(JsonFieldType.OBJECT).description("결과 데이터"),
                                                 fieldWithPath("data.answerId").type(JsonFieldType.NUMBER).description("답변 식별자"),
+                                                fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("회원 식별자"),
                                                 fieldWithPath("data.questionId").type(JsonFieldType.NUMBER).description("질문 식별자"),
                                                 fieldWithPath("data.name").type(JsonFieldType.STRING).description("답변자 이름"),
                                                 fieldWithPath("data.content").type(JsonFieldType.STRING).description("답변 내용"),
@@ -156,16 +173,22 @@ public class AnswerControllerRestDocsTest {
     public void patchAnswerTest() throws Exception {
 
         AnswerDto.Patch patch = new AnswerDto.Patch(
-                1L, 1L, "이곳은 답변을 적는 곳입니다.");
+                1L, 1L, 1L,"이곳은 답변을 적는 곳입니다.");
         String content = gson.toJson(patch);
 
         AnswerDto.Response response = new AnswerDto.Response(
+                1L,
                 1L,
                 1L,
                 "홍길동",
                 "이곳은 답변을 적는 곳입니다.",
                 0
         );
+
+        Member member = new Member();
+        member.setMemberId(patch.getMemberId());
+
+        given(memberService.findMemberByEmail(Mockito.anyString())).willReturn(member);
 
         given(mapper.answerPatchDtoToAnswer(Mockito.any(AnswerDto.Patch.class))).willReturn(new Answer());
 
@@ -176,9 +199,10 @@ public class AnswerControllerRestDocsTest {
         given(mapper.answerToAnswerResponse(Mockito.any(Answer.class))).willReturn(response);
 
         Long answerId = 1L;
+        Long memberId = 1L;
 
         ResultActions actions = mockMvc.perform(
-                patch("/answers/{answer-id}", answerId)
+                patch("/{member-id}/answers/{answer-id}", memberId, answerId)
                         .header("Authorization", "Bearer ".concat(accessTokenForUser))
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -186,7 +210,8 @@ public class AnswerControllerRestDocsTest {
         );
 
         actions.andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.answerId").value(patch.getAnswerId()))
+                .andExpect(jsonPath("$.data.memberId").value(patch.getMemberId()))
+                .andExpect(jsonPath("$.data.answerId").value(patch.getMemberId()))
                 .andExpect(jsonPath("$.data.questionId").value(patch.getQuestionId()))
                 .andExpect(jsonPath("$.data.content").value(patch.getContent()))
                 .andDo(document(
@@ -194,6 +219,7 @@ public class AnswerControllerRestDocsTest {
                         getRequestPreProcessor(),
                         getResponsePreProcessor(),
                         pathParameters(
+                                parameterWithName("member-id").description("회원 식별자"),
                                 parameterWithName("answer-id").description("답변 식별자")
                         ),
                         requestHeaders(
@@ -201,6 +227,8 @@ public class AnswerControllerRestDocsTest {
                         ),
                         requestFields(
                                 List.of(
+                                        fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("회원 식별자")
+                                                .attributes(key("validation").value("Not Null")),
                                         fieldWithPath("answerId").type(JsonFieldType.NUMBER).description("답변 식별자")
                                                 .attributes(key("validation").value("Not Null")),
                                         fieldWithPath("questionId").type(JsonFieldType.NUMBER).description("질문 식별자")
@@ -213,6 +241,7 @@ public class AnswerControllerRestDocsTest {
                                 List.of(
                                         fieldWithPath("data").type(JsonFieldType.OBJECT).description("결과 데이터"),
                                         fieldWithPath("data.answerId").type(JsonFieldType.NUMBER).description("답변 식별자"),
+                                        fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("회원 식별자"),
                                         fieldWithPath("data.questionId").type(JsonFieldType.NUMBER).description("질문 식별자"),
                                         fieldWithPath("data.name").type(JsonFieldType.STRING).description("답변자 이름"),
                                         fieldWithPath("data.content").type(JsonFieldType.STRING).description("답변 내용"),
@@ -227,9 +256,8 @@ public class AnswerControllerRestDocsTest {
     public void deleteAnswerTest() throws Exception {
 
         Long answerId = 1L;
-        Long memberId = 1L;
 
-        doNothing().when(answerService).deleteAnswer(answerId, memberId);
+        doNothing().when(answerService).deleteAnswer(Mockito.anyLong(), Mockito.anyString());
 
         ResultActions actions = mockMvc.perform(
                 delete("/answers/{answer-id}", answerId)

@@ -31,43 +31,58 @@ public class AnswerController {
 
     private final AnswerService answerService;
     private final AnswerMapper mapper;
-    private final JwtTokenizer jwtTokenizer;
+    private final MemberService memberService;
 
-    public AnswerController(AnswerService answerService, AnswerMapper mapper, JwtTokenizer jwtTokenizer) {
+    public AnswerController(AnswerService answerService, AnswerMapper mapper, MemberService memberService) {
         this.answerService = answerService;
         this.mapper = mapper;
-        this.jwtTokenizer = jwtTokenizer;
+        this.memberService = memberService;
     }
 
-    @PostMapping("/questions/{question-id}/answers")
-    public ResponseEntity postAnswer(@RequestHeader(name = "Authorization") String token,
-                                     @PathVariable("question-id") @Positive Long questionId,
+    @PostMapping("{member-id}/questions/{question-id}/answers")
+    public ResponseEntity postAnswer(@PathVariable("member-id") @Positive Long memberId,
+            @PathVariable("question-id") @Positive Long questionId,
                                      @Valid @RequestBody AnswerDto.Post requestBody){
 
+        requestBody.setMemberId(memberId);
+        requestBody.setQuestionId(questionId);
 
+        // 헤더에 담겨서 넘어온 JWT토큰을 해독하여 email 정보를 가져옴
+        String jwtEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (memberService.findMemberByEmail(jwtEmail).getMemberId() != requestBody.getMemberId()) {
+            throw new BusinessLogicException(ExceptionCode.REQUEST_FORBIDDEN);
+        }
 
         Answer answer = mapper.answerPostDtoToAnswer(requestBody);
-        Answer response = answerService.createAnswer(questionId, answer, jwtTokenizer.getMemberId(token));
+        Answer response = answerService.createAnswer(answer, questionId);
         return new ResponseEntity<>(
                 new SingleResponseDto<>(mapper.answerToAnswerResponse(response)), HttpStatus.CREATED);
     }
 
-    @PatchMapping("/answers/{answer-id}")
-    public ResponseEntity patchAnswer(@RequestHeader(name = "Authorization") String token,
+    @PatchMapping("{member-id}/answers/{answer-id}")
+    public ResponseEntity patchAnswer(@PathVariable("member-id") @Positive Long memberId,
                                       @PathVariable("answer-id") @Positive Long answerId,
                                       @Valid @RequestBody AnswerDto.Patch requestBody) {
-        Answer answer = mapper.answerPatchDtoToAnswer(requestBody);
-        answer.setAnswerId(answerId);
-        Answer response = answerService.updateAnswer(answer, jwtTokenizer.getMemberId(token));
+        requestBody.setMemberId(memberId);
+        requestBody.setAnswerId(answerId);
+
+        // 헤더에 담겨서 넘어온 JWT토큰을 해독하여 email 정보를 가져옴
+        String jwtEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (memberService.findMemberByEmail(jwtEmail).getMemberId() != requestBody.getMemberId()) {
+            throw new BusinessLogicException(ExceptionCode.REQUEST_FORBIDDEN);
+        }
+
+        Answer response = answerService.updateAnswer(mapper.answerPatchDtoToAnswer(requestBody), answerId);
         return new ResponseEntity<>(
                 new SingleResponseDto<>(mapper.answerToAnswerResponse(response)), HttpStatus.OK);
     }
 
     @DeleteMapping("/answers/{answer-id}")
-    public ResponseEntity deleteAnswer(@RequestHeader(name = "Authorization") String token,
-                                       @PathVariable("answer-id") @Positive Long answerId) {
+    public ResponseEntity deleteAnswer(@PathVariable("answer-id") @Positive Long answerId) {
+        // 헤더에 담겨서 넘어온 JWT토큰을 해독하여 email 정보를 가져옴
+        String jwtEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        answerService.deleteAnswer(answerId, jwtTokenizer.getMemberId(token));
+        answerService.deleteAnswer(answerId, jwtEmail);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

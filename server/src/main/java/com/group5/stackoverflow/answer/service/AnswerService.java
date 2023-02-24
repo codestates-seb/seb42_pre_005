@@ -12,6 +12,8 @@ import com.group5.stackoverflow.question.repository.QuestionRepository;
 import com.group5.stackoverflow.question.service.QuestionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -19,7 +21,6 @@ import java.util.Optional;
 
 @Service
 @Slf4j
-@Transactional
 public class AnswerService {
 
     private final AnswerRepository answerRepository;
@@ -35,23 +36,19 @@ public class AnswerService {
     }
 
     // 답변 생성
-    public Answer createAnswer(Long questionId, Answer answer, Long memberId) {
-        // member, question 추가함.
+    public Answer createAnswer(Answer answer, Long questionId) {
         Question question = questionService.findVerifiedQuestion(questionId);
         answer.setQuestion(question);
-        Member member = memberService.findVerifiedMember(memberId);
+        Member member = memberService.findVerifiedMember(answer.getMember().getMemberId());
         answer.setMember(member);
 
         return answerRepository.save(answer);
     }
 
     // 답변 수정
-    public Answer updateAnswer(Answer answer, Long memberId) {
-        Answer findAnswer = findVerifiedAnswer(answer.getAnswerId());
-
-        if (!findAnswer.getMember().getMemberId().equals(memberId)) {
-            throw new BusinessLogicException(ExceptionCode.MEMBER_UNAUTHORIZED);
-        }
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
+    public Answer updateAnswer(Answer answer, Long answerId) {
+        Answer findAnswer = findVerifiedAnswer(answerId);
 
         Optional.ofNullable(answer.getContent())
                 .ifPresent(content -> findAnswer.setContent(content));
@@ -61,11 +58,11 @@ public class AnswerService {
     }
 
     // 답변 삭제
-    public void deleteAnswer(Long answerId, Long memberId) {
+    public void deleteAnswer(Long answerId, String email) {
         Answer findAnswer = findVerifiedAnswer(answerId);
 
-        if (!findAnswer.getMember().getMemberId().equals(memberId)) {
-            throw new BusinessLogicException(ExceptionCode.MEMBER_UNAUTHORIZED);
+        if (findAnswer.getMember() != memberService.findMemberByEmail(email)) {
+            throw new BusinessLogicException(ExceptionCode.REQUEST_FORBIDDEN);
         }
         answerRepository.delete(findAnswer);
     }
