@@ -12,9 +12,8 @@ import Vote from "./Vote";
 // ----- CSS 영역
 const AnswerBox = styled.div` // 답변부분 전체 박스
   display: flex;
-  border-top: 1px solid #c5c5c5;
+  border-top: 1px solid #BBBFC3;
   padding-top: 20px;
-  background-color: beige;
 `
 const IndexBox = styled.div` // 투표 및 본문 부분
 `
@@ -45,7 +44,6 @@ function Answer() {
       <IndexBox>
         <Content>
         <p>I recently added a new scene to my game and I was testing going to it from previously made scenes. But while I can switch between the 3 scenes I made before just fine, when I switch to the new scene, the game gets an error and freezes.</p>
-        <p>Here is the code from a previously made scene. The code involved in scene switching makes it so the game switches to the adjacent when the player moves to an invisible sprite on one of the sides of the scene.</p>
         </Content>
         <InfoBox>
           <Info>
