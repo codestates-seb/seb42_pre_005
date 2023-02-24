@@ -3,25 +3,17 @@ package com.group5.stackoverflow.answer.controller;
 import com.group5.stackoverflow.answer.dto.AnswerDto;
 import com.group5.stackoverflow.answer.entity.Answer;
 import com.group5.stackoverflow.answer.mapper.AnswerMapper;
-import com.group5.stackoverflow.answer.repository.AnswerRepository;
 import com.group5.stackoverflow.answer.service.AnswerService;
 import com.group5.stackoverflow.auth.tokenizer.JwtTokenizer;
 import com.group5.stackoverflow.dto.SingleResponseDto;
-import com.group5.stackoverflow.exception.BusinessLogicException;
-import com.group5.stackoverflow.exception.ExceptionCode;
-import com.group5.stackoverflow.member.repository.MemberRepository;
-import com.group5.stackoverflow.member.service.MemberService;
-import com.group5.stackoverflow.utils.UriCreator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
-import java.net.URI;
 
 @Slf4j
 @RestController
