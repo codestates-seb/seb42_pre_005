@@ -28,7 +28,7 @@ import java.util.List;
 @RequestMapping("/members")
 @Validated
 @Slf4j
-@CrossOrigin(value = {"http://bucket-stackoverflow.s3-website.ap-northeast-2.amazonaws.com", "http://seb42-pre5.s3-website.ap-northeast-2.amazonaws.com/"})
+//@CrossOrigin(value = {"http://bucket-stackoverflow.s3-website.ap-northeast-2.amazonaws.com", "http://seb42-pre5.s3-website.ap-northeast-2.amazonaws.com/"})
 public class MemberController {
 
     private final MemberService memberService;
