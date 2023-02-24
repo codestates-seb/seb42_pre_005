@@ -58,14 +58,10 @@ public class Member extends Auditable {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     List<Answer> answers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    List<Vote> votes = new ArrayList<>();
-
     @Setter(AccessLevel.NONE)
     @OneToMany(mappedBy = "member")
     private List<Question> questions = new ArrayList<>();
-
-
+    
     public void setQuestion(Question question) {
         this.questions.add(question);
         if (question.getMember() != this) {
