@@ -2,6 +2,7 @@ package com.group5.stackoverflow.config;
 
 import com.group5.stackoverflow.auth.filter.JwtAuthenticationFilter;
 import com.group5.stackoverflow.auth.filter.JwtVerificationFilter;
+import com.group5.stackoverflow.auth.filter.LogFilter;
 import com.group5.stackoverflow.auth.handler.MemberAccessDeniedHandler;
 import com.group5.stackoverflow.auth.handler.MemberAuthenticationEntryPoint;
 import com.group5.stackoverflow.auth.handler.MemberAuthenticationFailureHandler;
@@ -125,8 +126,9 @@ public class SecurityConfiguration {
             builder
                 .addFilter(jwtAuthenticationFilter)
                 .addFilterAfter(jwtVerificationFilter, JwtAuthenticationFilter.class)
-                    .cors().configurationSource(corsConfigurationSource)  // 추가
-                    .and();   // (3)추가
+                .addFilterBefore(new LogFilter(), JwtAuthenticationFilter.class);
+//                    .cors().configurationSource(corsConfigurationSource)  // 추가
+//                    .and();   // (3)추가
         }
     }
 }
