@@ -14,6 +14,8 @@ import javax.validation.constraints.Positive;
 @RequestMapping
 @Valid
 @Slf4j
+@CrossOrigin(value = {"http://bucket-stackoverflow.s3-website.ap-northeast-2.amazonaws.com",
+        "http://seb42-pre5.s3-website.ap-northeast-2.amazonaws.com/"})
 public class VoteController {
     private final VoteService voteService;
     private final JwtTokenizer jwtTokenizer;

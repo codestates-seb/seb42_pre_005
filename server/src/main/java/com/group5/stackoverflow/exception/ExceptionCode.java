@@ -11,6 +11,9 @@ public enum ExceptionCode {
     INVALID_MEMBER_STATUS(400, "Invalid member status"),
     MEMBER_UNAUTHORIZED(401, "UNAUTHORIZED");
 
+    
+
+
     @Getter
     private int status;
 
