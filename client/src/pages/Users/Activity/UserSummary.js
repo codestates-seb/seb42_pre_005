@@ -5,6 +5,7 @@ export const SummaryContainer = styled.div`
 `
 
 export const Title = styled.span`
+    margin-bottom: 6px;
 `
 
 export const FirstSection = styled.div`

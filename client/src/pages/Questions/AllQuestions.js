@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import QuestionItem from "../../components/Questions/QuestionItem";
 import RightSideBar from "../../components/Main/RightSideBar";
 import AllQuestionHeader from "../../components/Header/AllQuestionHeader";
+import Paging from "../../components/Pagination";
 
 // ----- CSS 영역
 const QuestionsBox = styled.div`
@@ -22,24 +23,33 @@ const QustionList = styled.div`
 `;
 
 function AllQuestions() {
-    const [qustionList, setQustionList] = useState([]);
+    const [questionList, setQuestionList] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1); // 페이지 정보 가져오기
+    const [currentSize, setCurrentSize] = useState(10); // 보여줄 사이즈
+    const [totalPages, setTotalPages] = useState(); // 전체 페이지
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await axios.get("http://localhost:8000/data");
-            setQustionList(response.data);
+            const response = await axios.get("http://localhost:8000/data")
+            // await axios.get(`http://localhost:8000/questions?page=${currentPage}&size=${currentSize}`) // 받아올 API 주소
+            .then((res) => {
+                const {data} = res;
+                setQuestionList(data.data);
+                response = questionList;
+            })
         }
         fetchData()
     }, []);
-    console.log(qustionList)
+    console.log(questionList)
 
     return (
         <>
             <QuestionsBox>
-                <AllQuestionHeader qustionList={qustionList}/>
+                <AllQuestionHeader qustionList={questionList}/>
                 <QustionList>
-                    {qustionList && qustionList.map((e) => <QuestionItem key={e.questionId} questionItem={e}/>)}
+                    {questionList && questionList.map((e) => <QuestionItem key={e.questionId} questionItem={e}/>)}
                 </QustionList>
+                <Paging qustionList={questionList.pageInfo}/>
             </QuestionsBox>
             <RightSideBar />
         </>

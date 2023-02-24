@@ -60,15 +60,18 @@ function LeftSideBar() {
           <BigTitle 
             className={curruntPath === "/users" ? "current-page" : null} 
             onClick={() => navigate("/users")}>User</BigTitle>
-          <BigTitle>Companies</BigTitle>
+          <BigTitle className={curruntPath === "/companies" ? "current-page" : null} 
+            onClick={() => navigate("/companies")}>Companies</BigTitle>
       </TitleBox>
       <TitleBox>
         <SmallTitle>COLLECTIVES</SmallTitle>
-          <BigTitle>Explore Collectives</BigTitle>
+          <BigTitle className={curruntPath === "/collectives" ? "current-page" : null} 
+            onClick={() => navigate("/collectives")}>Explore Collectives</BigTitle>
       </TitleBox>
       <TitleBox>
         <SmallTitle>TEAMS</SmallTitle>
-          <BigTitle>Create free Team</BigTitle>
+          <BigTitle className={curruntPath === "/teams" ? "current-page" : null} 
+            onClick={() => navigate("/teams")}>Create free Team</BigTitle>
       </TitleBox>
     </LeftSideBarBox>
   )
