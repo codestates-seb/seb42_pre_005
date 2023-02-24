@@ -1,26 +1,35 @@
 package com.group5.stackoverflow.auth.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.group5.stackoverflow.dto.SingleResponseDto;
 import com.group5.stackoverflow.exception.BusinessLogicException;
 import com.group5.stackoverflow.exception.ExceptionCode;
+import com.group5.stackoverflow.member.dto.MemberDto;
 import com.group5.stackoverflow.member.entity.Member;
+import com.group5.stackoverflow.member.mapper.MemberMapper;
 import com.group5.stackoverflow.member.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 @Slf4j
 public class MemberAuthenticationSuccessHandler implements AuthenticationSuccessHandler {  // (1)
 
     private final MemberRepository memberRepository;
+    private final MemberMapper memberMapper;
 
-    public MemberAuthenticationSuccessHandler(MemberRepository memberRepository) {
+    public MemberAuthenticationSuccessHandler(MemberRepository memberRepository, MemberMapper memberMapper) {
         this.memberRepository = memberRepository;
+        this.memberMapper = memberMapper;
     }
 
     // (2)
@@ -37,6 +46,14 @@ public class MemberAuthenticationSuccessHandler implements AuthenticationSuccess
         Member member =  optionalMember.orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
 
 
-        response.addHeader("memeber-id", String.valueOf(member.getMemberId()));
+        response.setStatus(HttpStatus.OK.value());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
+
+        MemberDto.Response memberResponseDto = memberMapper.memberToMemberResponse(member);
+        response.getWriter().write(new ObjectMapper().writeValueAsString(new SingleResponseDto<>(memberResponseDto)));
+
+
+
     }
 }
