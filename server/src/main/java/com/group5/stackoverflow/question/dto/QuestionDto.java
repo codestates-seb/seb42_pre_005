@@ -17,6 +17,12 @@ public class QuestionDto {
 
         @NotBlank
         private String content;
+
+        private Long memberId;
+
+        public void addMemberId(Long memberId) {
+            this.memberId = memberId;
+        }
     }
 
     @Getter
@@ -31,7 +37,7 @@ public class QuestionDto {
         @NotBlank
         private String content;
 
-        public void setQuestionId(Long questionId) {
+        public void addQuestionId(Long questionId) {
             this.questionId = questionId;
         }
     }

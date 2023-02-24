@@ -7,6 +7,10 @@ import com.group5.stackoverflow.member.dto.MemberDto;
 import com.group5.stackoverflow.member.entity.Member;
 import com.group5.stackoverflow.member.mapper.MemberMapper;
 import com.group5.stackoverflow.member.service.MemberService;
+import com.group5.stackoverflow.question.dto.QuestionDto;
+import com.group5.stackoverflow.question.entity.Question;
+import com.group5.stackoverflow.question.mapper.QuestionMapper;
+import com.group5.stackoverflow.question.service.QuestionService;
 import com.group5.stackoverflow.utils.UriCreator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -14,6 +18,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +29,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.group5.stackoverflow.question.controller.QuestionController.QUESTION_DEFAULT_URL;
+
 @RestController
 @RequestMapping("/members")
 @Validated
@@ -33,9 +40,16 @@ public class MemberController {
     private final MemberService memberService;
     private final MemberMapper mapper;
 
-    public MemberController(MemberService memberService, MemberMapper mapper) {
+    private final QuestionService questionService;
+
+    private final QuestionMapper questionMapper;
+
+    public MemberController(MemberService memberService, MemberMapper mapper,
+                            QuestionService questionService, QuestionMapper questionMapper) {
         this.memberService = memberService;
         this.mapper = mapper;
+        this.questionService = questionService;
+        this.questionMapper = questionMapper;
     }
 
     private final static String MEMBER_DEFAULT_URL = "/members";
@@ -108,5 +122,15 @@ public class MemberController {
 
         return new ResponseEntity<>(new SingleResponseDto<>(mapper.memberToMemberResponse(findmember)),
                 HttpStatus.OK);
+    }
+
+    @PostMapping("/{member-id}/questions")
+    public ResponseEntity postQuestionOfMember(@PathVariable("member-id") @Positive long memberId,
+                                               @Valid @RequestBody QuestionDto.Post requestBody) {
+        requestBody.addMemberId(memberId);
+        Question createdQuestion = questionService.createQuestion(questionMapper.questionPostToQuestion(requestBody));
+        URI location = UriCreator.createUri(QUESTION_DEFAULT_URL, createdQuestion.getQuestionId());
+
+        return ResponseEntity.created(location).build();
     }
 }

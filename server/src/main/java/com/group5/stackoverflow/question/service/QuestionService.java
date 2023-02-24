@@ -29,23 +29,18 @@ public class QuestionService {
     }
 
     // 질문 생성
-    public Question createQuestion(Question question, Long tokenId) {
+    public Question createQuestion(Question question) {
         // 멤버가 맞는지 확인
-        Member member = memberService.findMember(tokenId);
-        question.setMember(member);
+        Member member = memberService.findMember(question.getMember().getMemberId());
+//        question.setMember(member);
 
         return repository.save(question);
     }
 
     // 질문 수정
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
-    public Question updateQuestion(Question question, Long tokenId) {
+    public Question updateQuestion(Question question) {
         Question findQuestion = findVerifiedQuestion(question.getQuestionId());
-        Member findMember = findQuestion.getMember();
-
-        if (findMember.getMemberId() != tokenId) {
-            throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
-        }
 
         Optional.ofNullable(question.getTitle())
                 .ifPresent(title -> findQuestion.setTitle(title));
@@ -59,7 +54,6 @@ public class QuestionService {
     @Transactional(readOnly = true)
     public Question findQuestion(Long questionId) {
         Question findQuestion = findVerifiedQuestion(questionId);
-
         // view 카운트 로직
         int findViews = findQuestion.getViews() + 1;
         findQuestion.setViews(findViews);
@@ -81,26 +75,22 @@ public class QuestionService {
 //        return questionPage;
 //    }
 
-    // 질문 삭제
-    public void deleteQuestion(Long questionId, Long tokenId) {
-        Question findQuestion = findQuestion(questionId);
-        Member findMember = findQuestion.getMember();
-
-        if (findMember.getMemberId() != tokenId) {
-            throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
-        }
-
-        repository.delete(findQuestion);
-    }
-
-    // 질문이 존재하는지 확인
     @Transactional(readOnly = true)
-    public Question findVerifiedQuestion(Long questionId) {
-        Optional<Question> optionalQuestion = repository.findById(questionId);
+    public Question findVerifiedQuestion(long questionId) {
+        Optional<Question> optionalQuestion =
+                repository.findById(questionId);
         Question findQuestion =
                 optionalQuestion.orElseThrow(() ->
                         new BusinessLogicException(ExceptionCode.QUESTION_NOT_FOUND));
+
         return findQuestion;
     }
 
+    // 질문 삭제
+    public void deleteQuestion(Long questionId) {
+        Question findQuestion = findQuestion(questionId);
+        Member findMember = findQuestion.getMember();
+
+        repository.delete(findQuestion);
+    }
 }
