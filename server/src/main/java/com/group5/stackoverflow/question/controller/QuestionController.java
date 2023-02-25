@@ -3,6 +3,7 @@ package com.group5.stackoverflow.question.controller;
 import com.group5.stackoverflow.auth.tokenizer.JwtTokenizer;
 import com.group5.stackoverflow.dto.MultiResponseDto;
 import com.group5.stackoverflow.dto.SingleResponseDto;
+import com.group5.stackoverflow.member.service.MemberService;
 import com.group5.stackoverflow.question.dto.QuestionDto;
 import com.group5.stackoverflow.question.entity.Question;
 import com.group5.stackoverflow.question.mapper.QuestionMapper;
@@ -32,14 +33,11 @@ public class QuestionController {
     public final static String QUESTION_DEFAULT_URL = "/questions";
     private final QuestionService questionService;
     private final QuestionMapper questionMapper;
-    private final JwtTokenizer jwtTokenizer;
 
     public QuestionController(QuestionService questionService,
-                              QuestionMapper questionMapper,
-                              JwtTokenizer jwtTokenizer) {
+                              QuestionMapper questionMapper) {
         this.questionService = questionService;
         this.questionMapper = questionMapper;
-        this.jwtTokenizer = jwtTokenizer;
     }
 
     // 질문 생성
@@ -88,27 +86,18 @@ public class QuestionController {
                 HttpStatus.OK);
     }
 
-    // 질문에 대한 태그 조회
-//    @GetMapping("/tags")
-//    public ResponseEntity getQuestionByTag(@RequestParam String tagName,
-//                                           @PageableDefault(sort = "question-id", direction = Sort.Direction.DESC)
-//                                           Pageable pageable) {
-//        return null;
-//    }
-
     // 검색에 의한 질문 조회
-//    @GetMapping("/search")
-//    public ResponseEntity searchQuestion(@RequestParam String search,
-//                                         @PageableDefault(sort = "question-id", direction = Sort.Direction.DESC)
-//                                         Pageable pageable) {
-//        Page<Question> searchQuestionPage = questionService.searchQuestion(search, pageable);
-//        List<Question> searchQuestionList = searchQuestionPage.getContent();
-//
-//        return new ResponseEntity<>(
-//                new MultiResponseDto<>(
-//                        questionMapper.questionsToQuestionResponses(searchQuestionList), searchQuestionPage),
-//                HttpStatus.OK);
-//    }
+    @GetMapping("/search")
+    public ResponseEntity searchQuestion(@RequestParam String keyword,
+                                         @RequestParam("page") int page,
+                                         @RequestParam("size") int size) {
+        Page<Question> pageQuestions = questionService.searchQuestion(page - 1, size, keyword);
+        List<Question> questions = pageQuestions.getContent();
+
+        return new ResponseEntity<>(
+                new MultiResponseDto<>(questionMapper.questionsToQuestionResponses(questions), pageQuestions),
+                HttpStatus.OK);
+    }
 
     // 질문 삭제
     @DeleteMapping("/{question-id}")

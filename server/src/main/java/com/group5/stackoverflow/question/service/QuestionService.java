@@ -41,6 +41,11 @@ public class QuestionService {
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
     public Question updateQuestion(Question question) {
         Question findQuestion = findVerifiedQuestion(question.getQuestionId());
+        // 다른 사람 질문 수정 못하게 하기
+        // 토큰 확인
+        if (findQuestion.getMember().getMemberId() != memberService.getLoginMember().getMemberId())
+            throw new BusinessLogicException(ExceptionCode.ACCESS_DENIED);
+
 
         Optional.ofNullable(question.getTitle())
                 .ifPresent(title -> findQuestion.setTitle(title));
@@ -65,15 +70,16 @@ public class QuestionService {
     // 질문 전체 찾기
     public Page<Question> findQuestions(int page, int size) {
         return repository.findAll(
-                PageRequest.of(page, size, Sort.by("question-id").descending()));
+                PageRequest.of(page, size, Sort.by("questionId"))); // 순서대로 나오게 하기 위한 수정
     }
 
     // 검색에 맞는 질문 찾기
-//    public Page<Question> searchQuestion(String search, Pageable pageable) {
-//        Page<Question> questionPage = repository.findByTitleContainingOrTextContaining(search, search, pageable);
-//
-//        return questionPage;
-//    }
+    public Page<Question> searchQuestion(int page, int size, String keyword) {
+        Page<Question> questionPage =
+                repository.findAllByTitleContainingIgnoreCase(PageRequest.of(page, size), keyword);
+
+        return questionPage;
+    }
 
     @Transactional(readOnly = true)
     public Question findVerifiedQuestion(long questionId) {
@@ -89,7 +95,9 @@ public class QuestionService {
     // 질문 삭제
     public void deleteQuestion(Long questionId) {
         Question findQuestion = findQuestion(questionId);
-        Member findMember = findQuestion.getMember();
+
+        if (findQuestion.getMember().getMemberId() != memberService.getLoginMember().getMemberId())
+            throw new BusinessLogicException(ExceptionCode.ACCESS_DENIED);
 
         repository.delete(findQuestion);
     }
