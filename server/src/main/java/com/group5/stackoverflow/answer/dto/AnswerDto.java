@@ -16,8 +16,11 @@ public class AnswerDto {
     public static class Post {
 
         private Long questionId;
-        @NotNull
+        private Long memberId;
+
+        @NotBlank(message = "답변 내용은 공백이 아니여야 합니다.")
         private String content;
+
     }
 
     @Getter
@@ -25,6 +28,7 @@ public class AnswerDto {
     @AllArgsConstructor
     public static class Patch {
 
+        private Long memberId;
         private Long answerId;
         private Long questionId;
 
@@ -34,10 +38,12 @@ public class AnswerDto {
 
     @Getter
     @Setter
+    @Builder
     @AllArgsConstructor
     public static class Response {
 
         private Long answerId;
+        private Long memberId;
         private Long questionId;
         private String name;
         private String content;
