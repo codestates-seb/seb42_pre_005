@@ -53,7 +53,6 @@ public class MemberAuthenticationSuccessHandler implements AuthenticationSuccess
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
 
         MemberDto.Response memberResponseDto = memberMapper.memberToMemberResponse(member);
-        memberResponseDto.setPassword(null);
         response.getWriter().write(new ObjectMapper().writeValueAsString(new SingleResponseDto<>(memberResponseDto)));
 
     }

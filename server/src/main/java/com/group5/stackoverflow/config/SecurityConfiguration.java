@@ -1,5 +1,6 @@
 package com.group5.stackoverflow.config;
 
+import com.group5.stackoverflow.auth.filter.MemberUrIVerificationFilter;
 import com.group5.stackoverflow.auth.filter.JwtAuthenticationFilter;
 import com.group5.stackoverflow.auth.filter.JwtVerificationFilter;
 import com.group5.stackoverflow.auth.filter.LogFilter;
@@ -23,12 +24,6 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -103,10 +98,13 @@ public class SecurityConfiguration {
 
             JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtTokenizer, authorityUtils);
 
+            MemberUrIVerificationFilter memberUrIVerificationFilter = new MemberUrIVerificationFilter(jwtTokenizer);
+
             builder
                 .addFilterBefore(new LogFilter(), ChannelProcessingFilter.class)
                 .addFilter(jwtAuthenticationFilter)
-                .addFilterAfter(jwtVerificationFilter, JwtAuthenticationFilter.class);   // (3)추가
+                .addFilterAfter(jwtVerificationFilter, JwtAuthenticationFilter.class)
+                .addFilterAfter(memberUrIVerificationFilter, JwtVerificationFilter.class);;
         }
     }
 }

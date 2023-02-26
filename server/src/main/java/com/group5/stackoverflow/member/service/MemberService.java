@@ -1,5 +1,6 @@
 package com.group5.stackoverflow.member.service;
 
+import com.group5.stackoverflow.auth.tokenizer.JwtTokenizer;
 import com.group5.stackoverflow.auth.utils.CustomAuthorityUtils;
 import com.group5.stackoverflow.exception.BusinessLogicException;
 import com.group5.stackoverflow.exception.ExceptionCode;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Optional;
@@ -24,11 +26,14 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final CustomAuthorityUtils authorityUtils;
+    private final JwtTokenizer jwtTokenizer;
 
-    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, CustomAuthorityUtils authorityUtils) {
+    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder,
+                         CustomAuthorityUtils authorityUtils, JwtTokenizer jwtTokenizer) {
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityUtils = authorityUtils;
+        this.jwtTokenizer = jwtTokenizer;
     }
 
     public Member createMember(Member member) {
@@ -51,8 +56,6 @@ public class MemberService {
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
     public Member updateMember(Member member) throws IllegalAccessException {
         Member findMember = findVerifiedMember(member.getMemberId());
-
-
         // 널이 아닌 값을 복사한다.
         Field[] fields = member.getClass().getDeclaredFields();
         for (Field field : fields) {
@@ -68,7 +71,9 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public Member findMember(long memberId) {
-        return findVerifiedMember(memberId);
+        Member findMember = findVerifiedMember(memberId);
+        return findMember;
+
     }
 
     public Page<Member> findMembers(int page, int size, String  mode) {
@@ -115,6 +120,10 @@ public class MemberService {
         Optional<Member> member = memberRepository.findByEmail(email);
         if (member.isPresent())
             throw new BusinessLogicException(ExceptionCode.MEMBER_EXISTS);
+    }
+
+    public boolean verifyMyMemberId(HttpServletRequest request, Long memberId){
+        return jwtTokenizer.getMemberId(request.getHeader("Authorization")) == memberId;
     }
 
 
