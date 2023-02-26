@@ -31,13 +31,10 @@ import java.util.List;
 public class MemberController {
     private final MemberService memberService;
     private final MemberMapper mapper;
-    private final JwtTokenizer jwtTokenizer;
 
-    public MemberController(MemberService memberService, MemberMapper mapper,
-                            JwtTokenizer jwtTokenizer) {
+    public MemberController(MemberService memberService, MemberMapper mapper) {
         this.memberService = memberService;
         this.mapper = mapper;
-        this.jwtTokenizer = jwtTokenizer;
     }
 
     private final static String MEMBER_DEFAULT_URL = "/members";
@@ -62,9 +59,7 @@ public class MemberController {
             @Valid @RequestBody MemberDto.Patch requestBody,
                                 HttpServletRequest request) throws IllegalAccessException {
 
-        if(!Checker.isVerified(jwtTokenizer, request, memberId)) {
-            throw (new BusinessLogicException(ExceptionCode.MEMBER_UNAUTHORIZED));
-        }
+        Checker.checkVerified(request);
         requestBody.setMemberId(memberId);
         Member member = memberService.updateMember(mapper.memberPatchToMember(requestBody));
 
@@ -81,7 +76,7 @@ public class MemberController {
         Member findmember =
                 memberService.findMember(memberId);
 
-        MemberDto.Response  response = request.getAttribute("verified").equals(true) ?
+        MemberDto.Response  response = Checker.checkVerified(request) ?
                                         mapper.memberToMemberResponse(findmember):
                                         mapper.memberToMemberResponseForPublic(findmember);
 
@@ -91,34 +86,28 @@ public class MemberController {
     }
 
 
-
-
     @GetMapping()
     public ResponseEntity getMembers(@RequestParam @Positive int page,
                                      @RequestParam @Positive int size,
-                                     @RequestParam(required = false, defaultValue = "base") String mode){
+                                     @RequestParam(required = false, defaultValue = "base") String mode,
+                                     HttpServletRequest request){
         Page<Member> pageMembers = memberService.findMembers(page-1, size, mode);
         List<Member> members = pageMembers.getContent();
-        return new ResponseEntity<>(new MultiResponseDto<>(mapper.membersToMemberResponses(members), pageMembers),
+        List<MemberDto.Response>  response = Checker.checkVerified(request) ?
+                mapper.membersToMemberResponses(members):
+                mapper.membersToMemberResponsesForPublic(members);
+        return new ResponseEntity<>(new MultiResponseDto<>(response, pageMembers),
                 HttpStatus.OK);
 
     }
 
     // delete
     @DeleteMapping("/{member-id}")
-    public ResponseEntity deleteMember(@PathVariable("member-id") @Positive long memberId){
+    public ResponseEntity deleteMember(@PathVariable("member-id") @Positive long memberId,
+                                       HttpServletRequest request){
+        Checker.checkVerified(request);
         memberService.deleteMember(memberId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    // get voteCount
-    @GetMapping("/{member-id}/vote-count")
-    public ResponseEntity getMemberVoteCount(@PathVariable("member-id") @Positive long memberId){
-        Member findmember =  new Member();
-        findmember.setVoteCount(100);
-        findmember.setMemberId(memberId);
-
-        return new ResponseEntity<>(new SingleResponseDto<>(mapper.memberToMemberResponse(findmember)),
-                HttpStatus.OK);
-    }
 }

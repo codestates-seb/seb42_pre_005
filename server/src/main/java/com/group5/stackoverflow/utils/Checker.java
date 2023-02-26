@@ -1,6 +1,8 @@
 package com.group5.stackoverflow.utils;
 
 import com.group5.stackoverflow.auth.tokenizer.JwtTokenizer;
+import com.group5.stackoverflow.exception.BusinessLogicException;
+import com.group5.stackoverflow.exception.ExceptionCode;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -25,6 +27,13 @@ public class Checker {
                 .stream().map(Object::toString)
                 .collect(Collectors.toList());
         return currentUserRole.contains("ROLE_ADMIN");
+    }
+
+    public static boolean checkVerified(HttpServletRequest request){
+        if(request.getAttribute("verified").equals(false)) {
+            throw(new BusinessLogicException(ExceptionCode.MEMBER_UNAUTHORIZED));}
+        return true;
+
     }
 
 }
