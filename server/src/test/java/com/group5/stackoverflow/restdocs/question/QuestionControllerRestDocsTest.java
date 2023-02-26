@@ -313,7 +313,7 @@ public class QuestionControllerRestDocsTest {
                         2L, "gildong", 23, 54, "SPRING")
         );
 
-        given(questionService.findQuestions(Mockito.anyInt(), Mockito.anyInt())).willReturn(pageQuestions);
+        given(questionService.findQuestions(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString())).willReturn(pageQuestions);
         given(questionMapper.questionsToQuestionResponses(Mockito.anyList())).willReturn(responses);
 
         ResultActions actions =

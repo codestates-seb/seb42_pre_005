@@ -42,6 +42,17 @@ public class QuestionDto {
         }
     }
 
+    @Getter
+    @AllArgsConstructor
+    public static class PatchVote {
+        private Long voteId;
+        private Long questionId;
+
+        public void addQuestionId(long questionId) {
+            this.questionId = questionId;
+        }
+    }
+
     @AllArgsConstructor
     @Getter
     public static class Response {

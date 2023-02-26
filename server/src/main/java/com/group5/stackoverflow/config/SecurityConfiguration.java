@@ -69,6 +69,7 @@ public class SecurityConfiguration {
 //                        .mvcMatchers(HttpMethod.POST, "/questions/**").hasRole("ADMIN")
                         .antMatchers(HttpMethod.POST, "/members/*/questions").hasAnyRole("USER", "ADMIN")
                         .antMatchers(HttpMethod.PATCH, "/questions/**").hasRole("USER")
+                        .antMatchers(HttpMethod.PATCH, "/questions/*/vote").hasRole("USER")
                         .antMatchers(HttpMethod.DELETE, "/questions/**").hasRole("USER")
                                 .antMatchers(HttpMethod.POST, "/questions/*/answers").hasRole("USER")
                         .antMatchers(HttpMethod.PATCH, "/*/answers/**").hasRole("USER")

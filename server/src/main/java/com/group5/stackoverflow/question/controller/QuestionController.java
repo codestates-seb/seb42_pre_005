@@ -1,20 +1,13 @@
 package com.group5.stackoverflow.question.controller;
 
-import com.group5.stackoverflow.auth.tokenizer.JwtTokenizer;
 import com.group5.stackoverflow.dto.MultiResponseDto;
 import com.group5.stackoverflow.dto.SingleResponseDto;
-import com.group5.stackoverflow.member.service.MemberService;
 import com.group5.stackoverflow.question.dto.QuestionDto;
 import com.group5.stackoverflow.question.entity.Question;
 import com.group5.stackoverflow.question.mapper.QuestionMapper;
 import com.group5.stackoverflow.question.service.QuestionService;
-import com.group5.stackoverflow.tag.service.TagService;
-import com.group5.stackoverflow.utils.UriCreator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -77,8 +70,9 @@ public class QuestionController {
     // 질문 전체 조회
     @GetMapping
     public ResponseEntity getQuestions(@RequestParam("page") int page,
-                                       @RequestParam("size") int size) {
-        Page<Question> pageQuestions = questionService.findQuestions(page - 1, size);
+                                       @RequestParam("size") int size,
+                                       @RequestParam(required = false, defaultValue = "newest") String tab) {
+        Page<Question> pageQuestions = questionService.findQuestions(page - 1, size, tab);
         List<Question> questions = pageQuestions.getContent();
 
         return new ResponseEntity<>(
@@ -96,6 +90,20 @@ public class QuestionController {
 
         return new ResponseEntity<>(
                 new MultiResponseDto<>(questionMapper.questionsToQuestionResponses(questions), pageQuestions),
+                HttpStatus.OK);
+    }
+
+    // 추천수 updown 기능
+    @PatchMapping("/{question-id}/vote")
+    public ResponseEntity patchQuestionVote(@PathVariable("question-id") @Positive Long questionId,
+                                            @RequestParam String updown,
+                                            @Valid @RequestBody QuestionDto.PatchVote requestBody ) {
+        requestBody.addQuestionId(questionId);
+        Question question =
+                questionService.updateVote(requestBody.getQuestionId(), updown);
+
+        return new ResponseEntity<>(
+                new SingleResponseDto<>(questionMapper.questionToQuestionResponse(question)),
                 HttpStatus.OK);
     }
 
