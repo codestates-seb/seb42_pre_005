@@ -58,7 +58,7 @@ public class QuestionController {
                                         @Valid @RequestBody QuestionDto.Patch requestBody) {
         requestBody.addQuestionId(questionId);
 
-        Question question = questionService.updateQuestion(questionMapper.questionPatchToQuestion(requestBody));
+        Question question = questionService.updateQuestion(questionMapper.questionPatchToQuestion(requestBody), requestBody.getTagNames());
 
         return new ResponseEntity<>(
                 new SingleResponseDto<>(questionMapper.questionToQuestionResponse(question)),

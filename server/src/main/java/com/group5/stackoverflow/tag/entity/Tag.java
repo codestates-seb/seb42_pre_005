@@ -32,11 +32,8 @@ public class Tag extends Auditable {
     private List<QuestionTag> questionTags = new ArrayList<>();
 
 
-    public void setQuestionTags(QuestionTag questionTag) {
-        this.questionTags.add(questionTag);
-        if (questionTag.getTag() != this) {
-            questionTag.setTag(this);
-        }
+    public void setQuestionTag(QuestionTag questionTag) {
+        questionTags.add(questionTag);
     }
 
     public void calQuestionCount() {

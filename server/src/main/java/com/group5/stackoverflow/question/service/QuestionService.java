@@ -2,9 +2,12 @@ package com.group5.stackoverflow.question.service;
 
 import com.group5.stackoverflow.exception.BusinessLogicException;
 import com.group5.stackoverflow.exception.ExceptionCode;
+import com.group5.stackoverflow.member.entity.Member;
 import com.group5.stackoverflow.member.service.MemberService;
 import com.group5.stackoverflow.question.entity.Question;
+import com.group5.stackoverflow.question.entity.QuestionTag;
 import com.group5.stackoverflow.question.repository.QuestionRepository;
+import com.group5.stackoverflow.tag.entity.Tag;
 import com.group5.stackoverflow.tag.repository.TagRepository;
 import com.group5.stackoverflow.tag.service.TagService;
 import org.springframework.data.domain.Page;
@@ -15,6 +18,8 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -36,14 +41,18 @@ public class QuestionService {
     }
 
     // 질문 생성
-    public Question createQuestion(Question question) {
+    public Question createQuestion(Question question, List<String> tagName) {
         memberService.findVerifiedMember(question.getMember().getMemberId()); // member 확인
+
+        List<Tag> tags = tagService.findTagsElseCreateTags(tagName);
+        tags.forEach(tag -> new QuestionTag(question, tag));
+
         return repository.save(question);
     }
 
     // 질문 수정
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
-    public Question updateQuestion(Question question) {
+    public Question updateQuestion(Question question, List<String> tagName) {
         Question findQuestion = findVerifiedQuestion(question.getQuestionId());
         // 다른 사람 질문 수정 못하게 하기
         // 토큰 확인
@@ -54,6 +63,9 @@ public class QuestionService {
                 .ifPresent(title -> findQuestion.setTitle(title));
         Optional.ofNullable(question.getContent())
                 .ifPresent(content -> findQuestion.setContent(content));
+
+        List<Tag> tags = tagService.updateQuestionTags(findQuestion, tagName);
+        tags.forEach(tag -> new QuestionTag(question, tag));
 
         return repository.save(findQuestion);
     }
