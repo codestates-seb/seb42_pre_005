@@ -1,10 +1,13 @@
 package com.group5.stackoverflow.question.dto;
 
+import com.group5.stackoverflow.answer.dto.AnswerDto;
+import com.group5.stackoverflow.tag.dto.TagDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 public class QuestionDto {
 
@@ -63,6 +66,7 @@ public class QuestionDto {
         private String name;
         private int voteCount;
         private int views;
-        private String tagName;
+        private List<TagDto.ResponseDto> tagNames;
+        private List<AnswerDto.Response> answers;
     }
 }
