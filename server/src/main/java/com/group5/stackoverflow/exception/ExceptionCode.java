@@ -12,6 +12,9 @@ public enum ExceptionCode {
     REQUEST_FORBIDDEN(403,"Request forbidden"),
     MEMBER_UNAUTHORIZED(401, "UNAUTHORIZED");
 
+    
+
+
     @Getter
     private int status;
 

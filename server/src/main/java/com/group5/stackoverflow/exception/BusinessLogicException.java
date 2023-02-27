@@ -2,7 +2,9 @@ package com.group5.stackoverflow.exception;
 
 import lombok.Getter;
 
+
 public class BusinessLogicException extends RuntimeException {
+
     @Getter
     private ExceptionCode exceptionCode;
 
