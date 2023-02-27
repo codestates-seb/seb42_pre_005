@@ -69,8 +69,6 @@ public class MemberDto {
         @Email
         String email;
 
-        @NotNull
-        String password;
 
         @Nullable
         int age;

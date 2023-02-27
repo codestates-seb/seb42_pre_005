@@ -1,13 +1,16 @@
 package com.group5.stackoverflow.config;
 
+import com.group5.stackoverflow.auth.filter.MemberUrIVerificationFilter;
 import com.group5.stackoverflow.auth.filter.JwtAuthenticationFilter;
 import com.group5.stackoverflow.auth.filter.JwtVerificationFilter;
+import com.group5.stackoverflow.auth.filter.LogFilter;
 import com.group5.stackoverflow.auth.handler.MemberAccessDeniedHandler;
 import com.group5.stackoverflow.auth.handler.MemberAuthenticationEntryPoint;
 import com.group5.stackoverflow.auth.handler.MemberAuthenticationFailureHandler;
 import com.group5.stackoverflow.auth.handler.MemberAuthenticationSuccessHandler;
 import com.group5.stackoverflow.auth.tokenizer.JwtTokenizer;
 import com.group5.stackoverflow.auth.utils.CustomAuthorityUtils;
+import com.group5.stackoverflow.member.mapper.MemberMapper;
 import com.group5.stackoverflow.member.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;

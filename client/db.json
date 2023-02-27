@@ -1,0 +1,27 @@
+{
+  "data" : [ {
+    "questionId" : 1,
+    "title" : "타이틀입니다.",
+    "content" : "질문 내용입니다.",
+    "memberId" : 1,
+    "name" : "taekie",
+    "voteCount" : 52,
+    "views" : 98,
+    "tagName" : "JAVA"
+  }, {
+    "questionId" : 2,
+    "title" : "2번째 타이틀입니다.",
+    "content" : "2번째 질문 내용입니다.",
+    "memberId" : 2,
+    "name" : "gildong",
+    "voteCount" : 23,
+    "views" : 54,
+    "tagName" : "SPRING"
+  } ],
+  "pageInfo" : {
+    "page" : 2,
+    "size" : 10,
+    "totalElements" : 12,
+    "totalPages" : 2
+  }
+}
