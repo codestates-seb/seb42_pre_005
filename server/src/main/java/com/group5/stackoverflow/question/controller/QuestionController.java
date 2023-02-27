@@ -12,9 +12,6 @@ import com.group5.stackoverflow.utils.Checker;
 import com.group5.stackoverflow.utils.UriCreator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -81,8 +78,9 @@ public class QuestionController {
     // 질문 전체 조회
     @GetMapping
     public ResponseEntity getQuestions(@RequestParam("page") int page,
-                                       @RequestParam("size") int size) {
-        Page<Question> pageQuestions = questionService.findQuestions(page - 1, size);
+                                       @RequestParam("size") int size,
+                                       @RequestParam(required = false, defaultValue = "newest") String tab) {
+        Page<Question> pageQuestions = questionService.findQuestions(page - 1, size, tab);
         List<Question> questions = pageQuestions.getContent();
 
         return new ResponseEntity<>(
@@ -102,27 +100,32 @@ public class QuestionController {
                 HttpStatus.OK);
     }
 
-    // 질문에 대한 태그 조회
-//    @GetMapping("/tags")
-//    public ResponseEntity getQuestionByTag(@RequestParam String tagName,
-//                                           @PageableDefault(sort = "question-id", direction = Sort.Direction.DESC)
-//                                           Pageable pageable) {
-//        return null;
-//    }
-
     // 검색에 의한 질문 조회
-//    @GetMapping("/search")
-//    public ResponseEntity searchQuestion(@RequestParam String search,
-//                                         @PageableDefault(sort = "question-id", direction = Sort.Direction.DESC)
-//                                         Pageable pageable) {
-//        Page<Question> searchQuestionPage = questionService.searchQuestion(search, pageable);
-//        List<Question> searchQuestionList = searchQuestionPage.getContent();
-//
-//        return new ResponseEntity<>(
-//                new MultiResponseDto<>(
-//                        questionMapper.questionsToQuestionResponses(searchQuestionList), searchQuestionPage),
-//                HttpStatus.OK);
-//    }
+    @GetMapping("/search")
+    public ResponseEntity searchQuestion(@RequestParam String keyword,
+                                         @RequestParam("page") int page,
+                                         @RequestParam("size") int size) {
+        Page<Question> pageQuestions = questionService.searchQuestion(page - 1, size, keyword);
+        List<Question> questions = pageQuestions.getContent();
+
+        return new ResponseEntity<>(
+                new MultiResponseDto<>(questionMapper.questionsToQuestionResponses(questions), pageQuestions),
+                HttpStatus.OK);
+    }
+
+    // 추천수 updown 기능
+    @PatchMapping("/{question-id}/vote")
+    public ResponseEntity patchQuestionVote(@PathVariable("question-id") @Positive Long questionId,
+                                            @RequestParam String updown,
+                                            @Valid @RequestBody QuestionDto.PatchVote requestBody ) {
+        requestBody.addQuestionId(questionId);
+        Question question =
+                questionService.updateVote(requestBody.getQuestionId(), updown);
+
+        return new ResponseEntity<>(
+                new SingleResponseDto<>(questionMapper.questionToQuestionResponse(question)),
+                HttpStatus.OK);
+    }
 
     // 질문 삭제
     @DeleteMapping("/{question-id}")
