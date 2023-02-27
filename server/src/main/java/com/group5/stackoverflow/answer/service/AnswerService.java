@@ -11,6 +11,9 @@ import com.group5.stackoverflow.question.entity.Question;
 import com.group5.stackoverflow.question.repository.QuestionRepository;
 import com.group5.stackoverflow.question.service.QuestionService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -74,6 +77,10 @@ public class AnswerService {
                 new BusinessLogicException(ExceptionCode.ANSWER_NOT_FOUND));
 
         return answer;
+    }
+
+    public Page<Answer> findMyAnswers(Long memberId, int page, int size) {
+        return answerRepository.findAllByMemberMemberId(PageRequest.of(page, size, Sort.by("answerId").descending()), memberId);
     }
 
 }

@@ -6,39 +6,48 @@ import com.group5.stackoverflow.answer.mapper.AnswerMapper;
 import com.group5.stackoverflow.answer.repository.AnswerRepository;
 import com.group5.stackoverflow.answer.service.AnswerService;
 import com.group5.stackoverflow.auth.tokenizer.JwtTokenizer;
+import com.group5.stackoverflow.dto.MultiResponseDto;
 import com.group5.stackoverflow.dto.SingleResponseDto;
 import com.group5.stackoverflow.exception.BusinessLogicException;
 import com.group5.stackoverflow.exception.ExceptionCode;
 import com.group5.stackoverflow.member.repository.MemberRepository;
 import com.group5.stackoverflow.member.service.MemberService;
+import com.group5.stackoverflow.question.entity.Question;
+import com.group5.stackoverflow.utils.Checker;
 import com.group5.stackoverflow.utils.UriCreator;
+import io.jsonwebtoken.Jwt;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.net.URI;
+import java.util.List;
 
 @Slf4j
 @RestController
 @Validated
 @RequestMapping
-@CrossOrigin(value = {"http://bucket-stackoverflow.s3-website.ap-northeast-2.amazonaws.com",
-        "http://seb42-pre5.s3-website.ap-northeast-2.amazonaws.com/"})
 public class AnswerController {
 
     private final AnswerService answerService;
     private final AnswerMapper mapper;
     private final MemberService memberService;
 
-    public AnswerController(AnswerService answerService, AnswerMapper mapper, MemberService memberService) {
+    private final JwtTokenizer jwtTokenizer;
+
+    public AnswerController(AnswerService answerService, AnswerMapper mapper,
+                            MemberService memberService, JwtTokenizer jwtTokenizer) {
         this.answerService = answerService;
         this.mapper = mapper;
         this.memberService = memberService;
+        this.jwtTokenizer = jwtTokenizer;
     }
 
     @PostMapping("{member-id}/questions/{question-id}/answers")
@@ -86,5 +95,17 @@ public class AnswerController {
 
         answerService.deleteAnswer(answerId, jwtEmail);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/answers/my")
+    public ResponseEntity getMyQuestions(@RequestParam("page") int page,
+                                         @RequestParam("size") int size,
+                                         HttpServletRequest request) {
+        Page<Answer> pageAnswers = answerService.findMyAnswers(Checker.getMemberId(jwtTokenizer, request), page - 1, size);
+        List<Answer> answers = pageAnswers.getContent();
+
+        return new ResponseEntity<>(
+                new MultiResponseDto<>(mapper.answersToAnswerResponses(answers), pageAnswers),
+                HttpStatus.OK);
     }
 }
