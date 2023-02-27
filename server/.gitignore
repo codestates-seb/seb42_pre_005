@@ -1,3 +1,5 @@
+build.gradle
+InsertDummyData.java
 HELP.md
 .gradle
 build/
@@ -40,4 +42,3 @@ out/
 *.yml
 application.yml
 
-InsertDummyData.java
