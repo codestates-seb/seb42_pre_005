@@ -49,10 +49,8 @@ export const ActivityRight = styled.div`
 `
 
 
-function UserActivity({currentTab}) {
+function UserActivity({currentTab, userData}) {
     const navigate = useNavigate();
-    const userData = useSelector(state => state.userData);
-
 
     return (
         <ActivityContainer>
