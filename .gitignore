@@ -1,4 +1,4 @@
-build.gradle
+server/build.gradle
 InsertDummyData.java
 HELP.md
 .gradle
