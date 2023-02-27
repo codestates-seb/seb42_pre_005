@@ -132,8 +132,6 @@ public class MemberControllerRestDocsTest implements MemberControllerTestHelper 
                                                 .attributes(key("validation").value("Not Null")),
                                         fieldWithPath("email").type(JsonFieldType.STRING).description("이메일")
                                                 .attributes(key("validation").value("Email")),
-                                        fieldWithPath("password").type(JsonFieldType.STRING).description("암호")
-                                                .attributes(key("validation").value("Not Null")),
                                         fieldWithPath("age").type(JsonFieldType.NUMBER).description("나이") //// (7-5)
                                                 .attributes(key("validation").value("- ")).optional()
                                 )
@@ -148,7 +146,9 @@ public class MemberControllerRestDocsTest implements MemberControllerTestHelper 
     public void patchMemberTest() throws Exception {
         // given
         long memberId = 1L;
-        MemberDto.Patch patch = new MemberDto.Patch(memberId, "홍길동", "password", 23
+//        MemberDto.Patch patch = new MemberDto.Patch(memberId, "홍길동", "password", 23
+//                , 100,  Member.MemberStatus.MEMBER_ACTIVE);
+                MemberDto.Patch patch = new MemberDto.Patch(memberId, "홍길동",  23
                 , 100,  Member.MemberStatus.MEMBER_ACTIVE);
         String content = gson.toJson(patch);
 
@@ -156,7 +156,6 @@ public class MemberControllerRestDocsTest implements MemberControllerTestHelper 
                 new MemberDto.Response(1L,
                         "홍길동",
                         "hgd@gmail.com",
-                        "password",
                         23,
                         100,
                         Member.MemberStatus.MEMBER_ACTIVE);
@@ -184,7 +183,7 @@ public class MemberControllerRestDocsTest implements MemberControllerTestHelper 
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.memberId").value(patch.getMemberId()))
                 .andExpect(jsonPath("$.data.name").value(patch.getName()))
-                .andExpect(jsonPath("$.data.password").value(patch.getPassword()))
+//                .andExpect(jsonPath("$.data.password").value(patch.getPassword()))
                 .andExpect(jsonPath("$.data.age").value(patch.getAge()))
                 .andExpect(jsonPath("$.data.voteCount").value(patch.getVoteCount()))
                 .andExpect(jsonPath("$.data.memberStatus").value(patch.getMemberStatus().getStatus()))
@@ -201,8 +200,8 @@ public class MemberControllerRestDocsTest implements MemberControllerTestHelper 
                                                 // TODO Not Space
                                                 // TODO Validation 수정
                                                 .attributes(key("validation").value("Not Space")).optional(),
-                                        fieldWithPath("password").type(JsonFieldType.STRING).description("암호")
-                                                .attributes(key("validation").value("Not Space")).optional(),
+//                                        fieldWithPath("password").type(JsonFieldType.STRING).description("암호")
+//                                                .attributes(key("validation").value("Not Space")).optional(),
                                         fieldWithPath("age").type(JsonFieldType.NUMBER).description("나이")
                                                 .attributes(key("validation").value("Not Space")).optional(),
                                         fieldWithPath("voteCount").type(JsonFieldType.NUMBER).description("추천수")
@@ -220,7 +219,6 @@ public class MemberControllerRestDocsTest implements MemberControllerTestHelper 
                                         fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("회원 식별자"),           // (5)
                                         fieldWithPath("data.name").type(JsonFieldType.STRING).description("이름"),
                                         fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
-                                        fieldWithPath("data.password").type(JsonFieldType.STRING).description("암호"),
                                         fieldWithPath("data.age").type(JsonFieldType.NUMBER).description("나이"),
                                         fieldWithPath("data.voteCount").type(JsonFieldType.NUMBER).description("추천수"),
                                         fieldWithPath("data.memberStatus").type(JsonFieldType.STRING).description("회원 상태: 신규 / 활동중 / 휴면 상태 / 탈퇴 상태")
@@ -236,7 +234,6 @@ public class MemberControllerRestDocsTest implements MemberControllerTestHelper 
                 new MemberDto.Response(1L,
                         "홍길동",
                         "hgd@gmail.com",
-                        "password",
                         23,
                         100,
                         Member.MemberStatus.MEMBER_ACTIVE);
@@ -259,7 +256,6 @@ public class MemberControllerRestDocsTest implements MemberControllerTestHelper 
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.memberId").value(responseDto.getMemberId()))
                 .andExpect(jsonPath("$.data.name").value(responseDto.getName()))
-                .andExpect(jsonPath("$.data.password").value(responseDto.getPassword()))
                 .andExpect(jsonPath("$.data.age").value(responseDto.getAge()))
                 .andExpect(jsonPath("$.data.voteCount").value(responseDto.getVoteCount()))
                 .andExpect(jsonPath("$.data.memberStatus").value(responseDto.getMemberStatus()))
@@ -278,7 +274,6 @@ public class MemberControllerRestDocsTest implements MemberControllerTestHelper 
                                         fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("회원 식별자"),           // (5)
                                         fieldWithPath("data.name").type(JsonFieldType.STRING).description("이름"),
                                         fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
-                                        fieldWithPath("data.password").type(JsonFieldType.STRING).description("암호"),
                                         fieldWithPath("data.age").type(JsonFieldType.NUMBER).description("나이"),
                                         fieldWithPath("data.voteCount").type(JsonFieldType.NUMBER).description("추천수"),
                                         fieldWithPath("data.memberStatus").type(JsonFieldType.STRING).description("회원 상태: 신규 / 활동중 / 휴면 상태 / 탈퇴 상태")
@@ -296,14 +291,12 @@ public class MemberControllerRestDocsTest implements MemberControllerTestHelper 
         member1.setAge(30);
         member1.setEmail("john.doe@example.com");
         member1.setVoteCount(0);
-        member1.setPassword("mysecretpassword");
         member1.setMemberStatus(Member.MemberStatus.MEMBER_NEW);
 
         MemberDto.Response response1 = new MemberDto.Response(
                 member1.getMemberId(),
                 member1.getName(),
                 member1.getEmail(),
-                member1.getPassword(),
                 member1.getAge(),
                 member1.getVoteCount(),
                 member1.getMemberStatus()
@@ -316,14 +309,12 @@ public class MemberControllerRestDocsTest implements MemberControllerTestHelper 
         member2.setAge(25);
         member2.setEmail("alice.smith@example.com");
         member2.setVoteCount(0);
-        member2.setPassword("mypassword123");
         member2.setMemberStatus(Member.MemberStatus.MEMBER_NEW);
 
         MemberDto.Response response2 = new MemberDto.Response(
                 member2.getMemberId(),
                 member2.getName(),
                 member2.getEmail(),
-                member2.getPassword(),
                 member2.getAge(),
                 member2.getVoteCount(),
                 member2.getMemberStatus()
@@ -358,13 +349,11 @@ public class MemberControllerRestDocsTest implements MemberControllerTestHelper 
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0].memberId").value(member1.getMemberId()))
                 .andExpect(jsonPath("$.data[0].name").value(member1.getName()))
-                .andExpect(jsonPath("$.data[0].password").value(member1.getPassword()))
                 .andExpect(jsonPath("$.data[0].age").value(member1.getAge()))
                 .andExpect(jsonPath("$.data[0].voteCount").value(member1.getVoteCount()))
                 .andExpect(jsonPath("$.data[0].memberStatus").value(member1.getMemberStatus().getStatus()))
                 .andExpect(jsonPath("$.data[1].memberId").value(member2.getMemberId()))
                 .andExpect(jsonPath("$.data[1].name").value(member2.getName()))
-                .andExpect(jsonPath("$.data[1].password").value(member2.getPassword()))
                 .andExpect(jsonPath("$.data[1].age").value(member2.getAge()))
                 .andExpect(jsonPath("$.data[1].voteCount").value(member2.getVoteCount()))
                 .andExpect(jsonPath("$.data[1].memberStatus").value(member2.getMemberStatus().getStatus()))
@@ -388,7 +377,6 @@ public class MemberControllerRestDocsTest implements MemberControllerTestHelper 
                                         fieldWithPath("data.[].memberId").type(JsonFieldType.NUMBER).description("회원 식별자"),           // (5)
                                         fieldWithPath("data.[].name").type(JsonFieldType.STRING).description("이름"),
                                         fieldWithPath("data.[].email").type(JsonFieldType.STRING).description("이메일"),
-                                        fieldWithPath("data.[].password").type(JsonFieldType.STRING).description("암호"),
                                         fieldWithPath("data.[].age").type(JsonFieldType.NUMBER).description("나이"),
                                         fieldWithPath("data.[].voteCount").type(JsonFieldType.NUMBER).description("추천수"),
                                         fieldWithPath("data.[].memberStatus").type(JsonFieldType.STRING).description("회원 상태: 신규 / 활동중 / 휴면 상태 / 탈퇴 상태"),
@@ -463,21 +451,11 @@ public class MemberControllerRestDocsTest implements MemberControllerTestHelper 
 
         given(questionService.createQuestion(Mockito.any(Question.class))).willReturn(mockResultQuestion);
 
+
+
         ResultActions actions =
                 mockMvc.perform(
-                        post("/members/{member-id}/questions", memberId)
-                                .header("Authorization", "Bearer ".concat(accessTokenForUser))
-                                .accept(MediaType.APPLICATION_JSON)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(content)
-                        );
-
-        actions
-                .andExpect(status().isCreated());
-
-        actions =
-                mockMvc.perform(
-                        post("/members/{member-id}/questions", memberId)
+                        post("/members/questions", memberId)
                                 .header("Authorization", "Bearer ".concat(accessTokenForAdmin))
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -485,6 +463,7 @@ public class MemberControllerRestDocsTest implements MemberControllerTestHelper 
                 );
 
         actions
+                .andExpect(status().isCreated())
                 .andExpect(header().string("Location", is(startsWith("/questions"))))
                 .andDo(document(
                         "post-question",
@@ -492,9 +471,6 @@ public class MemberControllerRestDocsTest implements MemberControllerTestHelper 
                         getResponsePreProcessor(),
                         requestHeaders(
                                 headerWithName("Authorization").description("USER|ADMIN JWT token")
-                        ),
-                        pathParameters(
-                                parameterWithName("member-id").description("회원 식별자")
                         ),
                         requestFields(
                                 List.of(

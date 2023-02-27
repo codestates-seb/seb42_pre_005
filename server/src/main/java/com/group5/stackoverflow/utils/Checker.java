@@ -37,4 +37,9 @@ public class Checker {
 
     }
 
+    public static Long getMemberId(JwtTokenizer jwtTokenizer,  HttpServletRequest request){
+        if(jwtTokenizer.getMemberId(request.getHeader("Authorization")) == null) return -1L;
+        return jwtTokenizer.getMemberId(request.getHeader("Authorization")) ;
+    }
+
 }

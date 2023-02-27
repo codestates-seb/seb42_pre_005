@@ -19,13 +19,13 @@ repositories {
 	mavenCentral()
 }
 
-//ext {
-//	set('snippetsDir', file("build/generated-snippets"))
-//}
-//
-//configurations {
-//	asciidoctorExtensions
-//}
+ext {
+	set('snippetsDir', file("build/generated-snippets"))
+}
+
+configurations {
+	asciidoctorExtensions
+}
 
 dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
@@ -43,8 +43,8 @@ dependencies {
 
 	implementation 'com.google.code.gson:gson'
 
-//	//JAVA DOCS
-//	asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+	//JAVA DOCS
+	asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
 
 
 //	 spring security
@@ -55,30 +55,30 @@ dependencies {
 	runtimeOnly	'io.jsonwebtoken:jjwt-jackson:0.11.5'
 }
 
-//tasks.named('test') {
-//	outputs.dir snippetsDir
-//	useJUnitPlatform()
-//}
-//
-//tasks.named('asciidoctor') {
-//	configurations "asciidoctorExtensions"
-//	inputs.dir snippetsDir
-//	dependsOn test
-//}
-//
-//task copyDocument(type: Copy) {
-//	dependsOn asciidoctor
-//	from file("${asciidoctor.outputDir}")
-//	into file("src/main/resources/static/docs")
-//}
-//
-//build {
-//	dependsOn copyDocument
-//}
-//
-//bootJar {
-//	dependsOn copyDocument
-//	from ("${asciidoctor.outputDir}") {
-//		into 'static/docs'
-//	}
-//}
+tasks.named('test') {
+	outputs.dir snippetsDir
+	useJUnitPlatform()
+}
+
+tasks.named('asciidoctor') {
+	configurations "asciidoctorExtensions"
+	inputs.dir snippetsDir
+	dependsOn test
+}
+
+task copyDocument(type: Copy) {
+	dependsOn asciidoctor
+	from file("${asciidoctor.outputDir}")
+	into file("src/main/resources/static/docs")
+}
+
+build {
+	dependsOn copyDocument
+}
+
+bootJar {
+	dependsOn copyDocument
+	from ("${asciidoctor.outputDir}") {
+		into 'static/docs'
+	}
+}

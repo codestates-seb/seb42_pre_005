@@ -15,7 +15,7 @@ public class LogFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.info("Request adr: {}", request.getRemoteAddr());
-        log.info("Request header: {}", request.getHeader("Origin"));
+        log.info("Request Origin header: {}", request.getHeader("Origin"));
         log.info("Request URI: {}", request.getRequestURI());
 
         filterChain.doFilter(request, response);
