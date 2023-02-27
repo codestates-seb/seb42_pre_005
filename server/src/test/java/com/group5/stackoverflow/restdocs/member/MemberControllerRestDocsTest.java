@@ -156,7 +156,6 @@ public class MemberControllerRestDocsTest implements MemberControllerTestHelper 
                 new MemberDto.Response(1L,
                         "홍길동",
                         "hgd@gmail.com",
-                        "password",
                         23,
                         100,
                         Member.MemberStatus.MEMBER_ACTIVE);
@@ -236,7 +235,6 @@ public class MemberControllerRestDocsTest implements MemberControllerTestHelper 
                 new MemberDto.Response(1L,
                         "홍길동",
                         "hgd@gmail.com",
-                        "password",
                         23,
                         100,
                         Member.MemberStatus.MEMBER_ACTIVE);
@@ -259,7 +257,6 @@ public class MemberControllerRestDocsTest implements MemberControllerTestHelper 
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.memberId").value(responseDto.getMemberId()))
                 .andExpect(jsonPath("$.data.name").value(responseDto.getName()))
-                .andExpect(jsonPath("$.data.password").value(responseDto.getPassword()))
                 .andExpect(jsonPath("$.data.age").value(responseDto.getAge()))
                 .andExpect(jsonPath("$.data.voteCount").value(responseDto.getVoteCount()))
                 .andExpect(jsonPath("$.data.memberStatus").value(responseDto.getMemberStatus()))
@@ -303,7 +300,6 @@ public class MemberControllerRestDocsTest implements MemberControllerTestHelper 
                 member1.getMemberId(),
                 member1.getName(),
                 member1.getEmail(),
-                member1.getPassword(),
                 member1.getAge(),
                 member1.getVoteCount(),
                 member1.getMemberStatus()
@@ -323,7 +319,6 @@ public class MemberControllerRestDocsTest implements MemberControllerTestHelper 
                 member2.getMemberId(),
                 member2.getName(),
                 member2.getEmail(),
-                member2.getPassword(),
                 member2.getAge(),
                 member2.getVoteCount(),
                 member2.getMemberStatus()

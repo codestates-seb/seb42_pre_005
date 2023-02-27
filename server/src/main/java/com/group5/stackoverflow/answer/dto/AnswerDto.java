@@ -5,13 +5,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.swing.plaf.SpinnerUI;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 public class AnswerDto {
 
     @Getter
-    @Setter
     @AllArgsConstructor
     public static class Post {
 
@@ -21,10 +21,17 @@ public class AnswerDto {
         @NotBlank(message = "답변 내용은 공백이 아니여야 합니다.")
         private String content;
 
+        public void addMemberId(Long memberId) {
+            this.memberId = memberId;
+        }
+
+        public void addQuestionId(Long questionId) {
+            this.questionId = questionId;
+        }
+
     }
 
     @Getter
-    @Setter
     @AllArgsConstructor
     public static class Patch {
 
@@ -34,7 +41,28 @@ public class AnswerDto {
 
         @NotBlank
         private String content;
+
+        public void addMemberId(Long memberId) {
+            this.memberId = memberId;
+        }
+
+        public void addAnswerId(Long answerId) {
+            this.answerId = answerId;
+        }
     }
+
+    @Getter
+    @AllArgsConstructor
+    public static class PatchVote {
+
+        private Long answerId;
+        private Long voteId;
+
+        public void addAnswerId(Long answerId) {
+            this.answerId = answerId;
+        }
+    }
+
 
     @Getter
     @Setter

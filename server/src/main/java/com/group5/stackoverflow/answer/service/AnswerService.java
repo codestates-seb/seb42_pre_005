@@ -67,6 +67,15 @@ public class AnswerService {
         answerRepository.delete(findAnswer);
     }
 
+    // 추천 로직
+    public Answer updateVote(Long answerId, String upDown) {
+        Answer findAnswer = findVerifiedAnswer(answerId);
+        int vote = (upDown.equals("up")) ? findAnswer.getVoteCount() + 1 : findAnswer.getVoteCount() - 1;
+
+        findAnswer.setVoteCount(vote);
+        return answerRepository.save(findAnswer);
+    }
+
     // 답변 검증
     public Answer findVerifiedAnswer(Long answerId) {
         Optional<Answer> findAnswer = answerRepository.findById(answerId);

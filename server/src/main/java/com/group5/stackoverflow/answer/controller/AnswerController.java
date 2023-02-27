@@ -11,6 +11,8 @@ import com.group5.stackoverflow.exception.BusinessLogicException;
 import com.group5.stackoverflow.exception.ExceptionCode;
 import com.group5.stackoverflow.member.repository.MemberRepository;
 import com.group5.stackoverflow.member.service.MemberService;
+import com.group5.stackoverflow.question.dto.QuestionDto;
+import com.group5.stackoverflow.question.entity.Question;
 import com.group5.stackoverflow.utils.UriCreator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -41,13 +43,13 @@ public class AnswerController {
         this.memberService = memberService;
     }
 
-    @PostMapping("{member-id}/questions/{question-id}/answers")
+    @PostMapping("/{member-id}/questions/{question-id}/answers")
     public ResponseEntity postAnswer(@PathVariable("member-id") @Positive Long memberId,
             @PathVariable("question-id") @Positive Long questionId,
                                      @Valid @RequestBody AnswerDto.Post requestBody){
 
-        requestBody.setMemberId(memberId);
-        requestBody.setQuestionId(questionId);
+        requestBody.addMemberId(memberId);
+        requestBody.addQuestionId(questionId);
 
         // 헤더에 담겨서 넘어온 JWT토큰을 해독하여 email 정보를 가져옴
         String jwtEmail = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -61,12 +63,12 @@ public class AnswerController {
                 new SingleResponseDto<>(mapper.answerToAnswerResponse(response)), HttpStatus.CREATED);
     }
 
-    @PatchMapping("{member-id}/answers/{answer-id}")
+    @PatchMapping("/{member-id}/answers/{answer-id}")
     public ResponseEntity patchAnswer(@PathVariable("member-id") @Positive Long memberId,
                                       @PathVariable("answer-id") @Positive Long answerId,
                                       @Valid @RequestBody AnswerDto.Patch requestBody) {
-        requestBody.setMemberId(memberId);
-        requestBody.setAnswerId(answerId);
+        requestBody.addMemberId(memberId);
+        requestBody.addAnswerId(answerId);
 
         // 헤더에 담겨서 넘어온 JWT토큰을 해독하여 email 정보를 가져옴
         String jwtEmail = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -77,6 +79,18 @@ public class AnswerController {
         Answer response = answerService.updateAnswer(mapper.answerPatchDtoToAnswer(requestBody), answerId);
         return new ResponseEntity<>(
                 new SingleResponseDto<>(mapper.answerToAnswerResponse(response)), HttpStatus.OK);
+    }
+
+    // 추천수 upDown 기능
+    @PatchMapping("/answers/{answer-id}/vote")
+    public ResponseEntity patchAnswerVote(@PathVariable("answer-id") @Positive Long answerId,
+                                          @RequestParam String upDown,
+                                          @Valid @RequestBody AnswerDto.PatchVote requestBody ) {
+        requestBody.addAnswerId(answerId);
+        Answer answer = answerService.updateVote(requestBody.getAnswerId(), upDown);
+
+        return new ResponseEntity<>(
+                new SingleResponseDto<>(mapper.answerToAnswerResponse(answer)), HttpStatus.OK);
     }
 
     @DeleteMapping("/answers/{answer-id}")

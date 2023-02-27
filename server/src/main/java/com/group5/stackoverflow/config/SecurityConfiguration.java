@@ -80,9 +80,10 @@ public class SecurityConfiguration {
                         .antMatchers(HttpMethod.PATCH, "/questions/**").hasRole("USER")
                         .antMatchers(HttpMethod.PATCH, "/questions/*/vote").hasRole("USER")
                         .antMatchers(HttpMethod.DELETE, "/questions/**").hasRole("USER")
-                        .antMatchers(HttpMethod.POST, "/questions/*/answers").hasRole("USER")
+                        .antMatchers(HttpMethod.POST, "/*/questions/*/answers").hasRole("USER")
                         .antMatchers(HttpMethod.PATCH, "/*/answers/**").hasRole("USER")
                         .antMatchers(HttpMethod.DELETE, "/answers/**").hasRole("USER")
+                        .antMatchers(HttpMethod.PATCH, "/answers/*/answers").hasRole("USER")
                         .antMatchers(HttpMethod.GET, "/tags").permitAll()
                         .anyRequest().permitAll()
                 );
