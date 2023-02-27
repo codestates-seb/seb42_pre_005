@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import axios from "axios";
+import { getAccessToken } from "../../storage/cookie";
 
 // ----- 컴포넌트 및 이미지 파일
 
@@ -129,6 +130,10 @@ function AskQuestion() {
     axios.post(`${process.env.REACT_APP_API_URL}/questions`, {
       title : title,
       content : problemText,
+    },{
+      headers: {
+        Authorization: `Bearer ${getAccessToken()}`
+      }
     })
     .then(res => {
         console.log(res)

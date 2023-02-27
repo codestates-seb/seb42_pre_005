@@ -87,45 +87,34 @@ const UserProfile = styled.div` // 유저사진, 이름
 `
 
 // ----- 컴포넌트 영역
-function Article() {
+function Article({QuestionData}) {
   const navigate = useNavigate();
-  const params = useParams();
-  const [item, setItem] = useState();
-
-  useEffect(()=>{
-    console.log(params);
-    axios.get(`${process.env.REACT_APP_API_URL}/questions/${params.id}`)
-    .then((res)=>{
-      console.log(res.data)
-      setItem(res.data)
-    })
-  })
 
   return (
     <ArticleBox>
       <VoteBox>
         <TiArrowSortedUp className="counticon" />
-        {item.voteCount}
+        {QuestionData.voteCount}
         <TiArrowSortedDown className="counticon" />
         <RxBookmark className="markicon" />
         <RxCounterClockwiseClock className="markicon" />
       </VoteBox>
       <IndexBox>
-        <div className="contents">{item.content}</div>
-        <button className="tags">{item.tagName}</button>
+        <div className="contents">{QuestionData.content}</div>
+        <button className="tags">{QuestionData.tagName}</button>
         <InfoBox>
           <Info>
             <div>Share</div>
-            <div onClick={() => navigate(`/questions/${item.questionId}/edit`)}>Edit</div>
+            <div onClick={() => navigate(`/questions/${QuestionData.questionId}/edit`)}>Edit</div>
             <div>Follow</div>
           </Info>
           <UserBox>
             <div className="creatday">asked Feb 23, 2018 at 14:32</div>
             <UserProfile>
-              <div className="img">{item.name}</div>
+              <div className="img">{QuestionData.name}</div>
               <div className="info">
-                <div onClick={() => navigate(`/users/${item.memberId}/${item.name}`)}>{item.name}</div>
-                <div>{item.questionId}</div>
+                <div onClick={() => navigate(`/users/${QuestionData.memberId}/${QuestionData.name}`)}>{QuestionData.name}</div>
+                <div>{QuestionData.questionId}</div>
               </div>
             </UserProfile>
           </UserBox>

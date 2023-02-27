@@ -9,6 +9,7 @@ import ArticleHeader from "./ArticleHeader";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { getAccessToken } from "../../storage/cookie";
 
 // ----- 컴포넌트 및 이미지 파일
 
@@ -26,16 +27,19 @@ const Contents = styled.div`
 
 // ----- 컴포넌트 영역
 function QuestionView() {
-  const [QuestionData, setQustionData] = useState("");
+  const [QuestionData, setQuestionData] = useState("");
   const { id } = useParams();
 
   useEffect(() => {
-    const fetchData = async () => {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/questions/${id}`);
-        setQustionData(response);
-    }
-    fetchData()
-    }, []);
+      axios.get(`${process.env.REACT_APP_API_URL}/questions/${id}`,{
+        headers: {
+          Authorization: `Bearer ${getAccessToken()}`
+        }
+      })
+      .then((res) => {
+        setQuestionData(res.data);
+      });
+  }, []);
   console.log(QuestionData)
 
   return (

@@ -55,6 +55,7 @@ function App() {
         <Route path="/" element={<Main />}>
           <Route path="/" element={<TopQuestions/>}/>
           <Route path="/questions" element={<AllQuestions/>}/>
+          <Route path="/questions/:id" element={<QuestionView/>}/>
           <Route path="/questions/:id/edit" element={<EditQuestion />} />
           <Route path="/tags" element={<Tags />} />
           <Route path="/view" element={<QuestionView />} />
