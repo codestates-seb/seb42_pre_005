@@ -122,7 +122,7 @@ public class AnswerController {
         List<Answer> answers = pageAnswers.getContent();
 
         return new ResponseEntity<>(
-                new MultiResponseDto<>(mapper.answerToAnswerResponses(answers), pageAnswers),
+                new MultiResponseDto<>(mapper.answersToAnswerResponses(answers), pageAnswers),
                 HttpStatus.OK);
     }
 }

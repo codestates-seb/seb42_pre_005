@@ -32,13 +32,16 @@ public class QuestionController {
     private final QuestionService questionService;
     private final QuestionMapper questionMapper;
     private final JwtTokenizer jwtTokenizer;
+    private final TagService tagService;
 
     public QuestionController(QuestionService questionService,
                               QuestionMapper questionMapper,
-                              JwtTokenizer jwtTokenizer) {
+                              JwtTokenizer jwtTokenizer,
+                              TagService tagService) {
         this.questionService = questionService;
         this.questionMapper = questionMapper;
         this.jwtTokenizer = jwtTokenizer;
+        this.tagService = tagService;
     }
 
     // 질문 생성
@@ -111,6 +114,19 @@ public class QuestionController {
         return new ResponseEntity<>(
                 new MultiResponseDto<>(questionMapper.questionsToQuestionResponses(questions), pageQuestions),
                 HttpStatus.OK);
+    }
+    // 질문을 태그로 조회
+    @GetMapping("/questions/tagged/{tagName}")
+    public ResponseEntity getQuestionsByTag(@PathVariable("tagName") String tagName,
+                                            @Positive @RequestParam(required = false, defaultValue = "1") int page,
+                                            @Positive @RequestParam(required = false, defaultValue = "10") int size) {
+
+        Page<Question> pageQuestions = questionService.findQuestionsByTag(page, size, tagService.findOptionalTagByTagName(tagName));
+
+        return new ResponseEntity(
+                new MultiResponseDto<>(questionMapper.questionsToQuestionResponses(pageQuestions.getContent()), pageQuestions),
+                HttpStatus.OK
+        );
     }
 
     // 추천수 updown 기능

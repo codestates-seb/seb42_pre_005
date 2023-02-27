@@ -4,7 +4,9 @@ import com.group5.stackoverflow.auth.tokenizer.JwtTokenizer;
 import com.group5.stackoverflow.auth.utils.CustomAuthorityUtils;
 import com.group5.stackoverflow.config.SecurityConfiguration;
 import com.group5.stackoverflow.helper.MockSecurity;
+import com.group5.stackoverflow.member.mapper.MemberMapper;
 import com.group5.stackoverflow.member.repository.MemberRepository;
+import com.group5.stackoverflow.question.service.QuestionService;
 import com.group5.stackoverflow.tag.controller.TagController;
 import com.group5.stackoverflow.tag.dto.TagDto;
 import com.group5.stackoverflow.tag.entity.Tag;
@@ -13,6 +15,7 @@ import com.group5.stackoverflow.tag.service.TagService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -63,6 +66,12 @@ public class TagControllerRestDocsTest {
 
     @MockBean
     private MemberRepository memberRepository;
+
+    @MockBean
+    private MemberMapper memberMapper;
+
+    @MockBean
+    private QuestionService questionService;
 
     @Test
     void getTagsTest() throws Exception {

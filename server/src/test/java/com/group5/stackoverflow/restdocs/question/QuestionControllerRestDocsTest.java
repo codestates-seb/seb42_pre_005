@@ -6,12 +6,14 @@ import com.group5.stackoverflow.auth.utils.CustomAuthorityUtils;
 import com.group5.stackoverflow.config.SecurityConfiguration;
 import com.group5.stackoverflow.helper.MockSecurity;
 import com.group5.stackoverflow.member.entity.Member;
+import com.group5.stackoverflow.member.mapper.MemberMapper;
 import com.group5.stackoverflow.member.repository.MemberRepository;
 import com.group5.stackoverflow.question.controller.QuestionController;
 import com.group5.stackoverflow.question.dto.QuestionDto;
 import com.group5.stackoverflow.question.entity.Question;
 import com.group5.stackoverflow.question.mapper.QuestionMapper;
 import com.group5.stackoverflow.question.service.QuestionService;
+import com.group5.stackoverflow.tag.service.TagService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -71,6 +73,12 @@ public class QuestionControllerRestDocsTest {
 
     @MockBean
     private MemberRepository memberRepository;
+
+    @MockBean
+    private TagService tagService;
+
+    @MockBean
+    private MemberMapper memberMapper;
 
     private String accessTokenForUser;
     private String accessTokenForAdmin;
@@ -490,7 +498,7 @@ public class QuestionControllerRestDocsTest {
                         "taekie",
                         20,
                         10,
-                        "JAVA");
+                        List.of());
 
         given(questionService.updateVote(Mockito.anyLong(), Mockito.anyString())).willReturn(new Question());
 

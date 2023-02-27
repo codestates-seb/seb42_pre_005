@@ -11,6 +11,7 @@ import com.group5.stackoverflow.auth.utils.CustomAuthorityUtils;
 import com.group5.stackoverflow.config.SecurityConfiguration;
 import com.group5.stackoverflow.helper.MockSecurity;
 import com.group5.stackoverflow.member.entity.Member;
+import com.group5.stackoverflow.member.mapper.MemberMapper;
 import com.group5.stackoverflow.member.repository.MemberRepository;
 import com.group5.stackoverflow.member.service.MemberService;
 import org.junit.jupiter.api.BeforeAll;
@@ -75,6 +76,9 @@ public class AnswerControllerRestDocsTest {
 
     @MockBean
     private MemberService memberService;
+
+    @MockBean
+    private MemberMapper memberMapper;
 
     private String accessTokenForUser;
     private String accessTokenForAdmin;
