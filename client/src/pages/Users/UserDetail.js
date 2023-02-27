@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import UserActivity from "./Activity/UserActivity";
 import UserProfile from "./Profile/UserProfile";
 import queryString from 'query-string';
+import axios from "axios";
+import { getAccessToken } from "../../storage/cookie";
 
 
 export const UsersPage = styled.div`
@@ -21,7 +23,10 @@ export const UsersTop = styled.div`
 `;
 
 export const UserImage = styled.div`
-    background-color: yellow;
+    /* background-color: yellow; */
+    display: table-cell;
+    vertical-align: middle;
+    overflow-y: hidden;
     width: 128px;
     height: 128px;
 `
@@ -76,33 +81,49 @@ export const ContentsContainer = styled.div`
 `;
 
 function UserDetail() {
-    const userData = useSelector(state => state.userData);
+    const loginUser = useSelector(state => state.loginUser);
+
+    const params = useParams();
+    const [userData, setUserData] = useState();
+    const [isPending, setIsPending] = useState(true);
+
     const navigate = useNavigate();
     const [currentTab, setCurrentTab] = useState('activity');
     const location = useLocation();
     const activityTabList = ["activity", "summary", "answers", "tags", "questions"]
     
     useEffect(()=>{
+        console.log(params);
+        axios.get(`${process.env.REACT_APP_API_URL}/members/${params.id}`,{
+            headers : {
+                Authorization: `Bearer ${getAccessToken()}`,
+            }
+        })
+        .then(res => {
+            setUserData(res.data.data);
+            console.log(userData);
+            setIsPending(false);
+        })
         const {tab} = queryString.parse(location.search)
         if(!(tab === "" || tab === undefined)) setCurrentTab(tab);
-    },[location.search])
+    },[location.search, params])
 
     return (
         <UsersPage>
             <ContentsContainer>
                 <UsersTop>
-                    <UserImage></UserImage>
+                    <UserImage><img alt="user_img" src="https://i.pravatar.cc/128"/></UserImage>
                     <UserInfo>
-                        <h1>{userData.name}</h1>
+                        { !isPending && <h1>{userData.name}</h1> }
                     </UserInfo>
                 </UsersTop>
                 <UsersMenu>
-                    <li onClick={() => navigate(`/users/${userData.id}/${userData.name}?tab=profile`)} className={currentTab === "profile" ? "current-tab" : null }>Profile</li>
-                    <li onClick={() => navigate(`/users/${userData.id}/${userData.name}?tab=activity`)} className={currentTab !== "profile" ? "current-tab" : null }>Activity</li>
+                    <li onClick={() => navigate(`/users/${userData.memberId}/${userData.name}?tab=profile`)} className={currentTab === "profile" ? "current-tab" : null }>Profile</li>
+                    <li onClick={() => navigate(`/users/${userData.memberId}/${userData.name}?tab=activity`)} className={currentTab !== "profile" ? "current-tab" : null }>Activity</li>
                 </UsersMenu>
                 <UsersMain>
-                    {activityTabList.includes(currentTab) && <UserActivity currentTab={ currentTab === "activity" ? "summary" : currentTab}/>}
-                    {currentTab === "profile" && <UserProfile/>}
+                    {activityTabList.includes(currentTab) && <UserActivity userData={userData} currentTab={ currentTab === "activity" ? "summary" : currentTab}/>}
+                    {currentTab === "profile" && <UserProfile userData={userData}/>}
                 </UsersMain>
             </ContentsContainer>
         </UsersPage>

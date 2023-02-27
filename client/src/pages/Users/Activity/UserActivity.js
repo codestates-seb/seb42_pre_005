@@ -58,10 +58,10 @@ function UserActivity({currentTab}) {
         <ActivityContainer>
             <ActivityLeft>
                 <ActivityMenu>
-                    <li onClick={() => navigate(`/users/${userData.id}/${userData.name}?tab=summary`)} className={currentTab === "summary" ? "current-tab" : null }>Summary</li>
-                    <li onClick={() => navigate(`/users/${userData.id}/${userData.name}?tab=answers`)} className={currentTab === "answers" ? "current-tab" : null }>Answers</li>
-                    <li onClick={() => navigate(`/users/${userData.id}/${userData.name}?tab=questions`)} className={currentTab === "questions" ? "current-tab" : null }>Questions</li>
-                    <li onClick={() => navigate(`/users/${userData.id}/${userData.name}?tab=tags`)} className={currentTab === "tags" ? "current-tab" : null }>Tags</li>
+                    <li onClick={() => navigate(`/users/${userData.memberId}/${userData.name}?tab=summary`)} className={currentTab === "summary" ? "current-tab" : null }>Summary</li>
+                    <li onClick={() => navigate(`/users/${userData.memberId}/${userData.name}?tab=answers`)} className={currentTab === "answers" ? "current-tab" : null }>Answers</li>
+                    <li onClick={() => navigate(`/users/${userData.memberId}/${userData.name}?tab=questions`)} className={currentTab === "questions" ? "current-tab" : null }>Questions</li>
+                    <li onClick={() => navigate(`/users/${userData.memberId}/${userData.name}?tab=tags`)} className={currentTab === "tags" ? "current-tab" : null }>Tags</li>
                 </ActivityMenu>
             </ActivityLeft>
             <ActivityRight>
