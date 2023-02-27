@@ -31,10 +31,7 @@ public class Checker {
     }
 
     public static boolean checkVerified(HttpServletRequest request){
-        if(request.getAttribute("verified").equals(false)) {
-            throw(new BusinessLogicException(ExceptionCode.MEMBER_UNAUTHORIZED));}
-        return true;
-
+       return request.getAttribute("verified").equals(false);
     }
 
     public static Long getMemberId(JwtTokenizer jwtTokenizer,  HttpServletRequest request){
