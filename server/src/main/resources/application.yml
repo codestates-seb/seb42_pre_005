@@ -19,5 +19,3 @@ jwt:
 mail:
   address:
     admin: ${ADMIN_MAIL}
-config:
-  domain: ${AWS_S3_ENDPOINT}
