@@ -109,7 +109,7 @@ public class QuestionService {
 
     private void verifyQuestion(Question question) {
         // member 존재 확인
-        memberService.findVerifiedMember(question.getQuestionId());
+        memberService.findVerifiedMember(question.getMember().getMemberId());
     }
 
     // 추천 로직
