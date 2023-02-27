@@ -37,7 +37,7 @@ public class QuestionService {
 
     // 질문 생성
     public Question createQuestion(Question question) {
-        verifyQuestion(question);
+//        verifyQuestion(question);
         return repository.save(question);
     }
 
@@ -107,10 +107,10 @@ public class QuestionService {
         return findQuestion;
     }
 
-    private void verifyQuestion(Question question) {
-        // member 존재 확인
-        memberService.findVerifiedMember(question.getQuestionId());
-    }
+//    private void verifyQuestion(Question question) {
+//        // member 존재 확인
+//        memberService.findVerifiedMember(question.getQuestionId());
+//    }
 
     // 추천 로직
     public Question updateVote(long questionId, String updown) {
