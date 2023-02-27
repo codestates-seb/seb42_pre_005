@@ -68,6 +68,11 @@ public class QuestionService {
                 PageRequest.of(page, size, Sort.by("question-id").descending()));
     }
 
+    public Page<Question> findMyQuestions(Long memberId, int page, int size) {
+        return repository.findByMemberMemberId(memberId,
+                PageRequest.of(page, size, Sort.by("CREATED_AT").descending()));
+    }
+
     // 검색에 맞는 질문 찾기
 //    public Page<Question> searchQuestion(String search, Pageable pageable) {
 //        Page<Question> questionPage = repository.findByTitleContainingOrTextContaining(search, search, pageable);

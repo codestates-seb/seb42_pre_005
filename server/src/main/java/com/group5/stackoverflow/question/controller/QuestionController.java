@@ -8,6 +8,7 @@ import com.group5.stackoverflow.question.entity.Question;
 import com.group5.stackoverflow.question.mapper.QuestionMapper;
 import com.group5.stackoverflow.question.service.QuestionService;
 import com.group5.stackoverflow.tag.service.TagService;
+import com.group5.stackoverflow.utils.Checker;
 import com.group5.stackoverflow.utils.UriCreator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -19,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.net.URI;
@@ -28,8 +30,6 @@ import java.util.List;
 @RequestMapping("/questions")
 @Validated
 @Slf4j
-@CrossOrigin(value = {"http://bucket-stackoverflow.s3-website.ap-northeast-2.amazonaws.com",
-        "http://seb42-pre5.s3-website.ap-northeast-2.amazonaws.com/"})
 public class QuestionController {
     public final static String QUESTION_DEFAULT_URL = "/questions";
     private final QuestionService questionService;
@@ -83,6 +83,18 @@ public class QuestionController {
     public ResponseEntity getQuestions(@RequestParam("page") int page,
                                        @RequestParam("size") int size) {
         Page<Question> pageQuestions = questionService.findQuestions(page - 1, size);
+        List<Question> questions = pageQuestions.getContent();
+
+        return new ResponseEntity<>(
+                new MultiResponseDto<>(questionMapper.questionsToQuestionResponses(questions), pageQuestions),
+                HttpStatus.OK);
+    }
+
+    @GetMapping("/my")
+    public ResponseEntity getMyQuestions(@RequestParam("page") int page,
+                                         @RequestParam("size") int size,
+                                         HttpServletRequest request) {
+        Page<Question> pageQuestions = questionService.findMyQuestions(Checker.getMemberId(jwtTokenizer, request), page - 1, size);
         List<Question> questions = pageQuestions.getContent();
 
         return new ResponseEntity<>(
