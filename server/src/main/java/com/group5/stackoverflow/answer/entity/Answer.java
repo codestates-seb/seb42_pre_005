@@ -27,6 +27,7 @@ public class Answer extends Auditable{
     @Column(nullable = false)
     private String content;
 
+    @Column(nullable = false)
     private int voteCount = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)

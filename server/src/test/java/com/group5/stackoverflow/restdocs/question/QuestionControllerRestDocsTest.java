@@ -13,6 +13,7 @@ import com.group5.stackoverflow.question.dto.QuestionDto;
 import com.group5.stackoverflow.question.entity.Question;
 import com.group5.stackoverflow.question.mapper.QuestionMapper;
 import com.group5.stackoverflow.question.service.QuestionService;
+import com.group5.stackoverflow.tag.service.TagService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -72,6 +73,9 @@ public class QuestionControllerRestDocsTest {
 
     @MockBean
     private MemberRepository memberRepository;
+
+    @MockBean
+    private TagService tagService;
 
     @MockBean
     private MemberMapper memberMapper;
@@ -139,7 +143,7 @@ public class QuestionControllerRestDocsTest {
     public void patchQuestionTest() throws Exception {
         Long questionId = 1L;
         QuestionDto.Patch patch = new QuestionDto.Patch(questionId, "타이틀입니다.",
-                "이부분은 질문 내용입니다.", List.of("Java", "Spring"));
+                "이부분은 질문 내용입니다.",List.of("Java", "Spring"));
         String content = gson.toJson(patch);
         String accessToken = accessTokenForUser;
 
@@ -151,8 +155,7 @@ public class QuestionControllerRestDocsTest {
                         "taekie",
                         20,
                         10,
-                        List.of()
-                );
+                        List.of());
 
         given(questionMapper.questionPatchToQuestion(Mockito.any(QuestionDto.Patch.class))).willReturn(new Question());
 
@@ -223,8 +226,7 @@ public class QuestionControllerRestDocsTest {
                         "taekie",
                         30,
                         40,
-                        List.of()
-                );
+                        List.of());
 
         given(questionService.findQuestion(Mockito.anyLong())).willReturn(new Question());
         given(questionMapper.questionToQuestionResponse(Mockito.any(Question.class))).willReturn(response);

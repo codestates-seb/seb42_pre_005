@@ -11,6 +11,7 @@ import com.group5.stackoverflow.tag.entity.Tag;
 import com.group5.stackoverflow.tag.repository.TagRepository;
 import com.group5.stackoverflow.tag.service.TagService;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -52,7 +54,7 @@ public class QuestionService {
 
     // 질문 수정
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
-    public Question updateQuestion(Question question, List<String> tagName) {
+    public Question updateQuestion(Question question, List<String> tagNames) {
         Question findQuestion = findVerifiedQuestion(question.getQuestionId());
         // 다른 사람 질문 수정 못하게 하기
         // 토큰 확인
@@ -64,7 +66,7 @@ public class QuestionService {
         Optional.ofNullable(question.getContent())
                 .ifPresent(content -> findQuestion.setContent(content));
 
-        List<Tag> tags = tagService.updateQuestionTags(findQuestion, tagName);
+        List<Tag> tags = tagService.updateQuestionTags(findQuestion, tagNames);
         tags.forEach(tag -> new QuestionTag(question, tag));
 
         return repository.save(findQuestion);
@@ -108,6 +110,24 @@ public class QuestionService {
         return questionPage;
     }
 
+    // 질문을 태그로 조회
+    @Transactional(readOnly = true)
+    public Page<Question> findQuestionsByTag(int page, int size, Optional<Tag> optionalTag) {
+        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("questionId").descending());
+
+        if (optionalTag.isEmpty()) { // optionalTag 객체가 빈값일 경우 전체 질문을 조회한다.
+            return repository.findAll(pageRequest);
+        }
+
+        List<Question> questions = optionalTag.get().getQuestionTags().stream()
+                .map(questionTag -> questionTag.getQuestion())
+                .collect(Collectors.toList());
+
+        Page<Question> pageQuestions = new PageImpl<>(questions, pageRequest, questions.size());
+
+        return pageQuestions;
+    }
+
     @Transactional(readOnly = true)
     public Question findVerifiedQuestion(long questionId) {
         Optional<Question> optionalQuestion =
@@ -118,6 +138,11 @@ public class QuestionService {
 
         return findQuestion;
     }
+
+//    private void verifyQuestion(Question question) {
+//        // member 존재 확인
+//        memberService.findVerifiedMember(question.getQuestionId());
+//    }
 
     // 추천 로직
     public Question updateVote(long questionId, String updown) {

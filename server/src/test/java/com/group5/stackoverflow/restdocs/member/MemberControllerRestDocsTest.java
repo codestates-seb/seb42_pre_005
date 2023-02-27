@@ -16,9 +16,11 @@ import com.group5.stackoverflow.question.dto.QuestionDto;
 import com.group5.stackoverflow.question.entity.Question;
 import com.group5.stackoverflow.question.mapper.QuestionMapper;
 import com.group5.stackoverflow.question.service.QuestionService;
+import com.group5.stackoverflow.tag.service.TagService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -35,6 +37,7 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.group5.stackoverflow.utils.ApiDocumentUtils.getRequestPreProcessor;
@@ -82,6 +85,9 @@ public class MemberControllerRestDocsTest implements MemberControllerTestHelper 
 
     @Autowired
     private JwtTokenizer jwtTokenizer;
+
+    @MockBean
+    private TagService tagService;
 
     private String accessTokenForUser;
     private String accessTokenForAdmin;
@@ -446,6 +452,8 @@ public class MemberControllerRestDocsTest implements MemberControllerTestHelper 
         String content = gson.toJson(post);
 
         given(questionMapper.questionPostToQuestion(Mockito.any(QuestionDto.Post.class))).willReturn(new Question());
+
+        given(tagService.findTagsElseCreateTags(Mockito.anyList())).willReturn(new ArrayList<>());
 
         Question mockResultQuestion = new Question();
         mockResultQuestion.setQuestionId(1L);

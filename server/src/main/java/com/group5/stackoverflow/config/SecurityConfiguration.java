@@ -24,6 +24,11 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -72,13 +77,16 @@ public class SecurityConfiguration {
                         .antMatchers(HttpMethod.POST, "/members/*/questions").hasAnyRole("USER", "ADMIN")
                         .antMatchers(HttpMethod.GET, "/questions").permitAll()
                         .antMatchers(HttpMethod.GET, "/questions/**").hasAnyRole("USER", "ADMIN")
+                        .antMatchers(HttpMethod.GET, "/questions/tags/**").permitAll()
+                        .antMatchers(HttpMethod.POST, "/members/*/questions").hasAnyRole("USER", "ADMIN")
                         .antMatchers(HttpMethod.POST, "/questions").hasRole("USER")
                         .antMatchers(HttpMethod.PATCH, "/questions/**").hasRole("USER")
                         .antMatchers(HttpMethod.PATCH, "/questions/*/vote").hasRole("USER")
                         .antMatchers(HttpMethod.DELETE, "/questions/**").hasRole("USER")
-                        .antMatchers(HttpMethod.POST, "/questions/*/answers").hasRole("USER")
+                        .antMatchers(HttpMethod.POST, "/*/questions/*/answers").hasRole("USER")
                         .antMatchers(HttpMethod.PATCH, "/*/answers/**").hasRole("USER")
                         .antMatchers(HttpMethod.DELETE, "/answers/**").hasRole("USER")
+                        .antMatchers(HttpMethod.PATCH, "/answers/*/answers").hasRole("USER")
                         .antMatchers(HttpMethod.GET, "/tags").permitAll()
                         .anyRequest().permitAll()
                 );

@@ -52,6 +52,13 @@ public class Question extends Auditable {
         answers.add(answer);
     }
 
+    public void addQuestionTag(QuestionTag questionTag) {
+        this.questionTags.add(questionTag);
+        if (questionTag.getQuestion() != this) {
+            questionTag.setQuestion(this);
+        }
+    }
+
     public void setQuestionTag(QuestionTag questionTag) {
         questionTags.add(questionTag);
     }
