@@ -9,4 +9,5 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface QuestionRepository extends JpaRepository<Question, Long> {
     Page<Question> findAllByTitleContainingIgnoreCase(Pageable pageable, String keyword);
+    Page<Question> findAllByMemberMemberId(Pageable pageable, Long memberId);
 }
