@@ -8,6 +8,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -69,6 +70,8 @@ public interface AnswerMapper {
                 .name(answer.getMember().getName())
                 .build();
     }
+
+    List<AnswerDto.Response> answersToAnswerResponses(List<Answer> answers);
 
 //    default AnswerDto.Response answerToAnswerResponse(Answer answer) {
 //        if (answer == null) {
