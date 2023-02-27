@@ -8,6 +8,7 @@ import RightSideBar from "../../components/Main/RightSideBar";
 import ArticleHeader from "./ArticleHeader";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useParams } from "react-router-dom";
 
 // ----- 컴포넌트 및 이미지 파일
 
@@ -20,18 +21,18 @@ const ContentsBox = styled.div`
   max-width: 1200px;
 `
 const Contents = styled.div`
-  
 `
 
 
 // ----- 컴포넌트 영역
 function QuestionView() {
   const [QuestionData, setQustionData] = useState("");
+  const { id } = useParams();
 
   useEffect(() => {
     const fetchData = async () => {
-        const response = await axios.get("http://localhost:8000/data");
-        setQustionData(response.data[0]);
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/questions/${id}`);
+        setQustionData(response);
     }
     fetchData()
     }, []);

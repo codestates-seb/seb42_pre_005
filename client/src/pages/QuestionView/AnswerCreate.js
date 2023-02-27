@@ -46,20 +46,15 @@ function AnswerCreate() {
 
   const Answerpost = () => {
     // 댓글 포스트 요청 함수
-    // if (answerText.length < 15) {
-    //   alert("Please enter at least 15 characters in your answer");
-    // } else {
-    //   axios({
-    //     method: "post",
-    //     url: `${요청할 url}answers/${id}`,
-    //     data: { answerText },
-    //   })
-    //     .then(window.location.reload())
-    //     .catch((err) => {
-    //       console.log(err.response.data);
-    //     });
-    // }
-    window.alert("Post Your Answer!")
+    axios({
+      method: 'post',
+      url: `${process.env.REACT_APP_API_URL}/questions/${id}/answers`,
+      data: {content : {answerText}}
+    })
+    .then(res => {
+      console.log(res)
+      window.location.reload()
+    })
   }
 
   return (

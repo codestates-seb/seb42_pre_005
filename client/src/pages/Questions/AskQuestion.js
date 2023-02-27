@@ -112,21 +112,27 @@ function AskQuestion() {
 
   const [title, setTitle] = useState(""); // 질문 제목 입력칸의 상태 관리창
   const [problemText, setProblemText] = useState(""); // 질문 내용 입력칸의 상태 관리창
-  const [expectText, setExpextText] = useState("") // expect 내용 입력칸의 상태 관리창
+  const [tags, setTags] = useState("") // 태그 내용 입력칸의 상태 관리창
 
   const askTitle = (e) => { // 질문 제목 입력칸 상태 함수
     setTitle(e.target.value)
   }
+  const askText = (e) => { // 질문 내용 입력칸 상태 함수
+    setProblemText(e.target.value)
+  }
+  const editTag = (e) => { // 태그 내용 입력칸 상태 함수
+    setTags(e.target.value)
+  }
 
   const ReviewButtonSubmit = (e) => { // 다 쓴 질문 제출 버튼 함수
     e.preventDefault();
-    axios.post('/questions', {
+    axios.post(`${process.env.REACT_APP_API_URL}/questions`, {
       title : title,
-      content : problemText
+      content : problemText,
     })
-      .then(function (res) {
+    .then(res => {
         console.log(res)
-        navigate(`/question/${res.data.questionId}`);
+        navigate(`/questions`);
         // 게시하고 나면 해당 게시물 페이지로 넘어가기
       })
       .catch((err) => {
@@ -153,7 +159,7 @@ function AskQuestion() {
       <EditBox className="Titlebox">
         <EditTitle>Title</EditTitle>
         <EditText>Be specific and imagine you’re asking a question to another person.</EditText>
-        <EditInput onChange={askTitle} placeholder="e.g. Is there an R function for finding the index of an element in a vector?" />
+        <EditInput value={title} onChange={askTitle} placeholder="e.g. Is there an R function for finding the index of an element in a vector?" />
       </EditBox>
 
       <EditBox>
@@ -162,33 +168,20 @@ function AskQuestion() {
         <ReactQuill 
           theme="snow"
           value={problemText}
-          onChange={(e) => setProblemText(e)} 
+          onChange={askText}
           />
       </EditBox>
-
-      {/* <EditBox>
-        <EditTitle>What did you try and what were you expecting?</EditTitle>
-        <EditText>Describe what you tried, what you expected to happen, and what actually resulted. Minimum 20 characters.</EditText>
-        <ReactQuill 
-          theme="snow"
-          value={expectText}
-          onChange={(e) => setExpextText(e)} 
-          />
-      </EditBox> */}
-
       <EditBox>
         <EditTitle>Tags</EditTitle>
         <EditText>Add up to 5 tags to describe what your question is about. Start typing to see suggestions.</EditText>
-        <EditInput placeholder="e.g. (angular sql-server string)" />
+        <EditInput 
+          value={tags}
+          onChange={editTag}
+          placeholder="e.g. (angular sql-server string)"
+          />
       </EditBox>
-
-      <EditBox>
-        <EditTitle>Review questions already on Stack Overflow to see if your question is a duplicate.</EditTitle>
-        <EditText>Clicking on these questions will open them in a new tab for you to review. Your progress here will be saved so you can come back and continue.</EditText>
-        <EditInput></EditInput>
-        <ReviewButton onClick={ReviewButtonSubmit}>Review your question</ReviewButton>
-      </EditBox>
-      <DiscardButton>Discard draft</DiscardButton>
+      <ReviewButton onClick={ReviewButtonSubmit}>Review your question</ReviewButton>
+      <DiscardButton onClick={() => navigate("/questions")}>Discard draft</DiscardButton>
     </AskBox>
   )
 }
