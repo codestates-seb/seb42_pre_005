@@ -4,7 +4,6 @@ import com.group5.stackoverflow.audit.Auditable;
 import com.group5.stackoverflow.member.entity.Member;
 import com.group5.stackoverflow.question.entity.Question;
 import com.group5.stackoverflow.tag.entity.Tag;
-import com.group5.stackoverflow.vote.entity.Vote;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,9 +36,4 @@ public class Answer extends Auditable{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
-
-    @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL)
-    private List<Vote> votes = new ArrayList<>();
-
-
 }

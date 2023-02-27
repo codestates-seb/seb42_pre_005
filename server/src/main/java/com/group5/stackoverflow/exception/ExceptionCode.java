@@ -10,7 +10,9 @@ public enum ExceptionCode {
     ANSWER_NOT_FOUNT(404, "Answer not found"),
     QUESTION_NOT_FOUND(404, "Question not found"),
     INVALID_MEMBER_STATUS(400, "Invalid member status"),
-    MEMBER_UNAUTHORIZED(401, "UNAUTHORIZED");
+    REQUEST_FORBIDDEN(403,"Request forbidden"),
+    MEMBER_UNAUTHORIZED(401, "UNAUTHORIZED"),
+    ACCESS_DENIED(401, "Access Denied");
 
     
 

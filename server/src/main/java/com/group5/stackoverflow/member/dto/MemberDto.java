@@ -39,8 +39,8 @@ public class MemberDto {
         @Nullable
         String name;
 
-        @Nullable
-        String password;
+//        @Nullable
+//        String password;
 
         @Nullable
         int age;
@@ -69,8 +69,6 @@ public class MemberDto {
         @Email
         String email;
 
-        @NotNull
-        String password;
 
         @Nullable
         int age;

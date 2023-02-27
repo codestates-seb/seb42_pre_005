@@ -4,7 +4,6 @@ package com.group5.stackoverflow.question.entity;
 import com.group5.stackoverflow.answer.entity.Answer;
 import com.group5.stackoverflow.audit.Auditable;
 import com.group5.stackoverflow.member.entity.Member;
-import com.group5.stackoverflow.vote.entity.Vote;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -44,9 +43,6 @@ public class Question extends Auditable {
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
     private List<QuestionTag> questionTags = new ArrayList<>();
-
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
-    private List<Vote> votes = new ArrayList<>();
 
     public void setMember(Member member) {
         this.member = member;

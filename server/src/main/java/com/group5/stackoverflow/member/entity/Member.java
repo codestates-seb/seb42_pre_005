@@ -3,7 +3,6 @@ package com.group5.stackoverflow.member.entity;
 import com.group5.stackoverflow.answer.entity.Answer;
 import com.group5.stackoverflow.audit.Auditable;
 import com.group5.stackoverflow.question.entity.Question;
-import com.group5.stackoverflow.vote.entity.Vote;
 import lombok.*;
 import org.springframework.lang.Nullable;
 

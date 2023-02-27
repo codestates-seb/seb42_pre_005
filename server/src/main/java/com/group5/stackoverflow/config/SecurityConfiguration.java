@@ -1,5 +1,6 @@
 package com.group5.stackoverflow.config;
 
+import com.group5.stackoverflow.auth.filter.MemberUrIVerificationFilter;
 import com.group5.stackoverflow.auth.filter.JwtAuthenticationFilter;
 import com.group5.stackoverflow.auth.filter.JwtVerificationFilter;
 import com.group5.stackoverflow.auth.filter.LogFilter;
@@ -12,7 +13,6 @@ import com.group5.stackoverflow.auth.utils.CustomAuthorityUtils;
 import com.group5.stackoverflow.member.mapper.MemberMapper;
 import com.group5.stackoverflow.member.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -23,11 +23,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.Arrays;
+import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -48,7 +44,8 @@ public class SecurityConfiguration {
         this.memberMapper = memberMapper;
     }
 
-    @Bean
+
+        @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .headers().frameOptions().sameOrigin()
@@ -71,13 +68,15 @@ public class SecurityConfiguration {
                         .antMatchers(HttpMethod.GET, "/members").permitAll()
                         .antMatchers(HttpMethod.GET, "/members/**").hasAnyRole("USER", "ADMIN")
                         .antMatchers(HttpMethod.DELETE, "/members/**").hasAnyRole("USER", "ADMIN")
+                        .antMatchers(HttpMethod.POST, "/members/*/questions").hasAnyRole("USER", "ADMIN")
                         .antMatchers(HttpMethod.GET, "/questions").permitAll()
                         .antMatchers(HttpMethod.GET, "/questions/**").hasAnyRole("USER", "ADMIN")
-//                        .mvcMatchers(HttpMethod.POST, "/questions/**").hasRole("ADMIN")
-                        .antMatchers(HttpMethod.POST, "/members/*/questions").hasAnyRole("USER", "ADMIN")
+                        .antMatchers(HttpMethod.POST, "/questions").hasRole("USER")
                         .antMatchers(HttpMethod.PATCH, "/questions/**").hasRole("USER")
+                        .antMatchers(HttpMethod.PATCH, "/questions/*/vote").hasRole("USER")
                         .antMatchers(HttpMethod.DELETE, "/questions/**").hasRole("USER")
-                        .antMatchers(HttpMethod.PATCH, "/answers/**").hasRole("USER")
+                        .antMatchers(HttpMethod.POST, "/questions/*/answers").hasRole("USER")
+                        .antMatchers(HttpMethod.PATCH, "/*/answers/**").hasRole("USER")
                         .antMatchers(HttpMethod.DELETE, "/answers/**").hasRole("USER")
                         .antMatchers(HttpMethod.GET, "/tags").permitAll()
                         .anyRequest().permitAll()
@@ -91,26 +90,8 @@ public class SecurityConfiguration {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
-    // (8)
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        log.info("cors config");
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*", "http://bucket-stackoverflow.s3-website.ap-northeast-2.amazonaws.com",
-                "http://seb42-pre5.s3-website.ap-northeast-2.amazonaws.com"));
-        configuration.addAllowedOrigin("http://localhost:3000");
-        configuration.setAllowedMethods(Arrays.asList("GET","POST", "PATCH", "DELETE"));
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-
-        return source;
-    }
 
     public class CustomFilterConfigurer extends AbstractHttpConfigurer<CustomFilterConfigurer, HttpSecurity> {
-        @Autowired
-        private CorsConfigurationSource corsConfigurationSource;
-
         @Override
         public void configure(HttpSecurity builder) throws Exception {
             AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
@@ -123,12 +104,13 @@ public class SecurityConfiguration {
 
             JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtTokenizer, authorityUtils);
 
+            MemberUrIVerificationFilter memberUrIVerificationFilter = new MemberUrIVerificationFilter(jwtTokenizer);
+
             builder
+                .addFilterBefore(new LogFilter(), ChannelProcessingFilter.class)
                 .addFilter(jwtAuthenticationFilter)
                 .addFilterAfter(jwtVerificationFilter, JwtAuthenticationFilter.class)
-                .addFilterBefore(new LogFilter(), JwtAuthenticationFilter.class);
-//                    .cors().configurationSource(corsConfigurationSource)  // 추가
-//                    .and();   // (3)추가
+                .addFilterAfter(memberUrIVerificationFilter, JwtVerificationFilter.class);;
         }
     }
 }

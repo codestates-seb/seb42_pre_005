@@ -11,7 +11,6 @@ import com.group5.stackoverflow.member.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
@@ -32,6 +31,7 @@ public class MemberAuthenticationSuccessHandler implements AuthenticationSuccess
         this.memberMapper = memberMapper;
     }
 
+
     // (2)
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
@@ -46,14 +46,14 @@ public class MemberAuthenticationSuccessHandler implements AuthenticationSuccess
         Member member =  optionalMember.orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
 
 
+        response.addHeader("memeber-id", String.valueOf(member.getMemberId()));
+
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
 
         MemberDto.Response memberResponseDto = memberMapper.memberToMemberResponse(member);
         response.getWriter().write(new ObjectMapper().writeValueAsString(new SingleResponseDto<>(memberResponseDto)));
-
-
 
     }
 }
