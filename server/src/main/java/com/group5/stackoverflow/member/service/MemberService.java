@@ -80,15 +80,10 @@ public class MemberService {
 
     public Page<Member> findMembers(int page, int size, String  mode) {
         // TODO 리버스 만들기
-        String property;
-        switch (mode) {
-            case "vote":
-                property = "memberId";
-            default:
-                property = "voteCount";
-        }
+        String property = "memberId";
+       if (mode == "vote") property = "voteCount";
 
-        return memberRepository.findAll(PageRequest.of(page, size,
+       return memberRepository.findAll(PageRequest.of(page, size,
                 Sort.by(property).descending()));
     }
 

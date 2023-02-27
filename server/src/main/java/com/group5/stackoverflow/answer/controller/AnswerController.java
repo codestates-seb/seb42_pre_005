@@ -115,7 +115,7 @@ public class AnswerController {
     }
 
     @GetMapping("/answers/my")
-    public ResponseEntity getMyQuestions(@RequestParam("page") int page,
+    public ResponseEntity getMyAnswers(@RequestParam("page") int page,
                                          @RequestParam("size") int size,
                                          HttpServletRequest request) {
         Page<Answer> pageAnswers = answerService.findMyAnswers(Checker.getMemberId(jwtTokenizer, request), page - 1, size);
