@@ -6,7 +6,7 @@ public enum ExceptionCode {
     MEMBER_NOT_FOUND(404, "Member not found"),
     MEMBER_EXISTS(409, "Member exists"),
     NOT_IMPLEMENTATION(501, "Not Implementation"),
-    ANSWER_NOT_FOUNT(404, "Answer not found"),
+    ANSWER_NOT_FOUND(404, "Answer not found"),
     QUESTION_NOT_FOUND(404, "Question not found"),
     INVALID_MEMBER_STATUS(400, "Invalid member status"),
     REQUEST_FORBIDDEN(403,"Request forbidden"),
