@@ -4,7 +4,9 @@ import com.group5.stackoverflow.exception.BusinessLogicException;
 import com.group5.stackoverflow.exception.ExceptionCode;
 import com.group5.stackoverflow.member.service.MemberService;
 import com.group5.stackoverflow.question.entity.Question;
+import com.group5.stackoverflow.question.entity.QuestionTag;
 import com.group5.stackoverflow.question.repository.QuestionRepository;
+import com.group5.stackoverflow.tag.entity.Tag;
 import com.group5.stackoverflow.tag.repository.TagRepository;
 import com.group5.stackoverflow.tag.service.TagService;
 import org.springframework.data.domain.Page;
@@ -37,7 +39,7 @@ public class QuestionService {
 
     // 질문 생성
     public Question createQuestion(Question question) {
-        verifyQuestion(question);
+        memberService.findVerifiedMember(question.getMember().getMemberId()); // member 확인
         return repository.save(question);
     }
 
@@ -105,11 +107,6 @@ public class QuestionService {
                         new BusinessLogicException(ExceptionCode.QUESTION_NOT_FOUND));
 
         return findQuestion;
-    }
-
-    private void verifyQuestion(Question question) {
-        // member 존재 확인
-        memberService.findVerifiedMember(question.getMember().getMemberId());
     }
 
     // 추천 로직
