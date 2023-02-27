@@ -13,6 +13,9 @@ public enum ExceptionCode {
     MEMBER_UNAUTHORIZED(401, "UNAUTHORIZED"),
     ACCESS_DENIED(401, "Access Denied");
 
+    
+
+
     @Getter
     private int status;
 

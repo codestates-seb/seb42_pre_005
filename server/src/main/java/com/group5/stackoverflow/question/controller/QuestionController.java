@@ -22,6 +22,8 @@ import java.util.List;
 @RequestMapping("/questions")
 @Validated
 @Slf4j
+@CrossOrigin(value = {"http://bucket-stackoverflow.s3-website.ap-northeast-2.amazonaws.com",
+        "http://seb42-pre5.s3-website.ap-northeast-2.amazonaws.com/"})
 public class QuestionController {
     public final static String QUESTION_DEFAULT_URL = "/questions";
     private final QuestionService questionService;
