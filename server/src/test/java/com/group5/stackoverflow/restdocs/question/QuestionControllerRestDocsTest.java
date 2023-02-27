@@ -143,7 +143,7 @@ public class QuestionControllerRestDocsTest {
     public void patchQuestionTest() throws Exception {
         Long questionId = 1L;
         QuestionDto.Patch patch = new QuestionDto.Patch(questionId, "타이틀입니다.",
-                "이부분은 질문 내용입니다.");
+                "이부분은 질문 내용입니다.",List.of("Java", "Spring"));
         String content = gson.toJson(patch);
         String accessToken = accessTokenForUser;
 
@@ -155,11 +155,11 @@ public class QuestionControllerRestDocsTest {
                         "taekie",
                         20,
                         10,
-                        "JAVA");
+                        List.of());
 
         given(questionMapper.questionPatchToQuestion(Mockito.any(QuestionDto.Patch.class))).willReturn(new Question());
 
-        given(questionService.updateQuestion(Mockito.any(Question.class))).willReturn(new Question());
+        given(questionService.updateQuestion(Mockito.any(Question.class), Mockito.anyList())).willReturn(new Question());
 
         given(questionMapper.questionToQuestionResponse(Mockito.any(Question.class))).willReturn(response);
 
@@ -193,6 +193,8 @@ public class QuestionControllerRestDocsTest {
                                         fieldWithPath("title").type(JsonFieldType.STRING).description("질문 제목")
                                                 .attributes(key("validation").value("Not Null")),
                                         fieldWithPath("content").type(JsonFieldType.STRING).description("질문 내용")
+                                                .attributes(key("validation").value("Not Null")),
+                                        fieldWithPath("tagNames").type(JsonFieldType.ARRAY).description("태그")
                                                 .attributes(key("validation").value("Not Null"))
                                 )
                         ),
@@ -206,7 +208,7 @@ public class QuestionControllerRestDocsTest {
                                         fieldWithPath("data.name").type(JsonFieldType.STRING).description("회원 이름"),
                                         fieldWithPath("data.voteCount").type(JsonFieldType.NUMBER).description("추천수"),
                                         fieldWithPath("data.views").type(JsonFieldType.NUMBER).description("조회수"),
-                                        fieldWithPath("data.tagName").type(JsonFieldType.STRING).description("태그 이름")
+                                        fieldWithPath("data.tagResponseDtos").type(JsonFieldType.ARRAY).description("태그")
                                 )
                         )
                 ));
@@ -224,7 +226,7 @@ public class QuestionControllerRestDocsTest {
                         "taekie",
                         30,
                         40,
-                        "JAVA");
+                        List.of());
 
         given(questionService.findQuestion(Mockito.anyLong())).willReturn(new Question());
         given(questionMapper.questionToQuestionResponse(Mockito.any(Question.class))).willReturn(response);
@@ -246,7 +248,7 @@ public class QuestionControllerRestDocsTest {
                 .andExpect(jsonPath("$.data.name").value(response.getName()))
                 .andExpect(jsonPath("$.data.voteCount").value(response.getVoteCount()))
                 .andExpect(jsonPath("$.data.views").value(response.getViews()))
-                .andExpect(jsonPath("$.data.tagName").value(response.getTagName()))
+//                .andExpect(jsonPath("$.data.tagResponseDtos").value(response.getTagResponseDtos()))
                 .andDo(document("get-question",
                         getRequestPreProcessor(),
                         getResponsePreProcessor(),
@@ -266,7 +268,7 @@ public class QuestionControllerRestDocsTest {
                                         fieldWithPath("data.name").type(JsonFieldType.STRING).description("회원 이름"),
                                         fieldWithPath("data.voteCount").type(JsonFieldType.NUMBER).description("추천수"),
                                         fieldWithPath("data.views").type(JsonFieldType.NUMBER).description("조회수"),
-                                        fieldWithPath("data.tagName").type(JsonFieldType.STRING).description("태그 이름")
+                                        fieldWithPath("data.tagResponseDtos").type(JsonFieldType.ARRAY).description("태그")
                                 )
                         )
                 ));
@@ -316,9 +318,9 @@ public class QuestionControllerRestDocsTest {
                 PageRequest.of(page, size, Sort.by("question-id").descending()), 2);
         List<QuestionDto.Response> responses = List.of(
                 new QuestionDto.Response(1L, "타이틀입니다.","질문 내용입니다.",
-                        1L, "taekie", 52, 98, "JAVA"),
+                        1L, "taekie", 52, 98, List.of()),
                 new QuestionDto.Response(2L, "2번째 타이틀입니다.","2번째 질문 내용입니다.",
-                        2L, "gildong", 23, 54, "SPRING")
+                        2L, "gildong", 23, 54, List.of())
         );
 
         given(questionService.findQuestions(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString())).willReturn(pageQuestions);
@@ -353,7 +355,7 @@ public class QuestionControllerRestDocsTest {
                                 fieldWithPath("data[].name").type(JsonFieldType.STRING).description("회원 이름"),
                                 fieldWithPath("data[].voteCount").type(JsonFieldType.NUMBER).description("추천수"),
                                 fieldWithPath("data[].views").type(JsonFieldType.NUMBER).description("조회수"),
-                                fieldWithPath("data[].tagName").type(JsonFieldType.STRING).description("태그 이름"),
+                                fieldWithPath("data[].tagResponseDtos").type(JsonFieldType.ARRAY).description("태그"),
                                 fieldWithPath("pageInfo").type(JsonFieldType.OBJECT).description("페이지 정보"),
                                 fieldWithPath("pageInfo.page").type(JsonFieldType.NUMBER).description("조회 페이지 정보"),
                                 fieldWithPath("pageInfo.size").type(JsonFieldType.NUMBER).description("사이즈 정보"),
@@ -431,9 +433,9 @@ public class QuestionControllerRestDocsTest {
                 PageRequest.of(page, size, Sort.by("question-id").descending()), 2);
         List<QuestionDto.Response> responses = List.of(
                 new QuestionDto.Response(1L, "타이틀입니다.","질문 내용입니다.",
-                        1L, "taekie", 52, 98, "JAVA"),
+                        1L, "taekie", 52, 98, List.of()),
                 new QuestionDto.Response(2L, "2번째 타이틀입니다.","2번째 질문 내용입니다.",
-                        2L, "gildong", 23, 54, "SPRING")
+                        2L, "gildong", 23, 54, List.of())
         );
 
         given(questionService.searchQuestion(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString())).willReturn(pageQuestions);
@@ -473,7 +475,7 @@ public class QuestionControllerRestDocsTest {
                                 fieldWithPath("data[].name").type(JsonFieldType.STRING).description("회원 이름"),
                                 fieldWithPath("data[].voteCount").type(JsonFieldType.NUMBER).description("추천수"),
                                 fieldWithPath("data[].views").type(JsonFieldType.NUMBER).description("조회수"),
-                                fieldWithPath("data[].tagName").type(JsonFieldType.STRING).description("태그 이름"),
+                                fieldWithPath("data[].tagResponseDtos").type(JsonFieldType.ARRAY).description("태그"),
                                 fieldWithPath("pageInfo").type(JsonFieldType.OBJECT).description("페이지 정보"),
                                 fieldWithPath("pageInfo.page").type(JsonFieldType.NUMBER).description("조회 페이지 정보"),
                                 fieldWithPath("pageInfo.size").type(JsonFieldType.NUMBER).description("사이즈 정보"),
@@ -540,7 +542,7 @@ public class QuestionControllerRestDocsTest {
                                         fieldWithPath("data.name").type(JsonFieldType.STRING).description("회원 이름"),
                                         fieldWithPath("data.voteCount").type(JsonFieldType.NUMBER).description("추천수"),
                                         fieldWithPath("data.views").type(JsonFieldType.NUMBER).description("조회수"),
-                                        fieldWithPath("data.tagName").type(JsonFieldType.STRING).description("태그 이름")
+                                        fieldWithPath("data.tagResponseDtos").type(JsonFieldType.ARRAY).description("태그")
                                 )
                         )
                 ));

@@ -54,7 +54,7 @@ public class QuestionService {
 
     // 질문 수정
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
-    public Question updateQuestion(Question question) {
+    public Question updateQuestion(Question question, List<String> tagNames) {
         Question findQuestion = findVerifiedQuestion(question.getQuestionId());
         // 다른 사람 질문 수정 못하게 하기
         // 토큰 확인
@@ -66,7 +66,7 @@ public class QuestionService {
         Optional.ofNullable(question.getContent())
                 .ifPresent(content -> findQuestion.setContent(content));
 
-        List<Tag> tags = tagService.updateQuestionTags(findQuestion, tagName);
+        List<Tag> tags = tagService.updateQuestionTags(findQuestion, tagNames);
         tags.forEach(tag -> new QuestionTag(question, tag));
 
         return repository.save(findQuestion);
