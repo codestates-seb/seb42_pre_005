@@ -33,7 +33,7 @@ function QuestionView() {
   useEffect(() => {
       axios.get(`${process.env.REACT_APP_API_URL}/questions/${id}`,{
         headers: {
-          Authorization: `Bearer ${getAccessToken()}`
+          Authorization: getAccessToken(),
         }
       })
       .then((res) => {
