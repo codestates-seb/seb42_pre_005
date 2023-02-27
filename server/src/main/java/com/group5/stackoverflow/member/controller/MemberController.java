@@ -44,9 +44,6 @@ public class MemberController {
     @PostMapping()
     public ResponseEntity postMember(@Valid  @RequestBody MemberDto.Post memberDtoPost){
         Member member =  mapper.memberPostToMember(memberDtoPost);
-
-
-
         Member createdMember =  memberService.createMember(member);
         URI location = UriCreator.createUri(MEMBER_DEFAULT_URL, createdMember.getMemberId());
 
@@ -108,6 +105,21 @@ public class MemberController {
         Checker.checkVerified(request);
         memberService.deleteMember(memberId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/{member-id}/questions")
+    public ResponseEntity getQuestions(@RequestParam @Positive int page,
+                                     @RequestParam @Positive int size,
+                                     @RequestParam(required = false, defaultValue = "base") String mode,
+                                     HttpServletRequest request){
+        Page<Member> pageMembers = memberService.findMembers(page-1, size, mode);
+        List<Member> members = pageMembers.getContent();
+        List<MemberDto.Response>  response = Checker.checkVerified(request) ?
+                mapper.membersToMemberResponses(members):
+                mapper.membersToMemberResponsesForPublic(members);
+        return new ResponseEntity<>(new MultiResponseDto<>(response, pageMembers),
+                HttpStatus.OK);
+
     }
 
 }

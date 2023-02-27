@@ -23,6 +23,7 @@ public class Checker {
 
     public static boolean isAdmin(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication == null) return false;
         List<String> currentUserRole = authentication.getAuthorities()
                 .stream().map(Object::toString)
                 .collect(Collectors.toList());
