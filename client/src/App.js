@@ -55,6 +55,7 @@ function App() {
         <Route path="/" element={<Main />}>
           <Route path="/" element={<TopQuestions/>}/>
           <Route path="/questions" element={<AllQuestions/>}/>
+          <Route path="/questions/:id/edit" element={<EditQuestion />} />
           <Route path="/tags" element={<Tags />} />
           <Route path="/view" element={<QuestionView />} />
           <Route path='/users/:id/:name' element={<UserDetail/>}/>
@@ -66,7 +67,6 @@ function App() {
         <Route path="/ask" element={<AskQuestion />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/edit" element={<EditQuestion />} />
       </Routes>
     </div>
   );

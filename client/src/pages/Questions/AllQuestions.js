@@ -23,24 +23,24 @@ const QustionList = styled.div`
 `;
 
 function AllQuestions() {
-    const [questionList, setQuestionList] = useState([]);
+    const [questionList, setQuestionList] = useState([]); // 뿌려줄 질문 리스트
     const [currentPage, setCurrentPage] = useState(1); // 페이지 정보 가져오기
     const [currentSize, setCurrentSize] = useState(10); // 보여줄 사이즈
     const [totalPages, setTotalPages] = useState(); // 전체 페이지
 
     useEffect(() => {
-        const fetchData = async () => {
-            const response = await axios.get("http://localhost:8000/data")
-            // await axios.get(`http://localhost:8000/questions?page=${currentPage}&size=${currentSize}`) // 받아올 API 주소
+        const fetch = async () => {
+          axios.defaults.withCredentials = true;
+          await axios
+            .get(`${process.env.REACT_APP_API_URL}?page=${currentPage}&size=${currentSize}`)
             .then((res) => {
-                const {data} = res;
-                setQuestionList(data.data);
-                response = questionList;
-            })
-        }
-        fetchData()
-    }, []);
-    console.log(questionList)
+                console.log(res.data);
+                setQuestionList(res.data);
+                setTotalPages(res.pageInfo);
+            });
+        };
+        fetch();
+      }, [currentPage, currentSize]);
 
     return (
         <>
@@ -49,7 +49,12 @@ function AllQuestions() {
                 <QustionList>
                     {questionList && questionList.map((e) => <QuestionItem key={e.questionId} questionItem={e}/>)}
                 </QustionList>
-                <Paging qustionList={questionList.pageInfo}/>
+                <Paging 
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
+                    currentSize={currentSize}
+                    setCurrentSize={setCurrentSize}
+                    totalPages={totalPages}/>
             </QuestionsBox>
             <RightSideBar />
         </>

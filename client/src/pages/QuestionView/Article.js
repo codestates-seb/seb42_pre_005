@@ -102,7 +102,7 @@ function Article( {QuestionData} ) {
         <InfoBox>
           <Info>
             <div>Share</div>
-            <div onClick={() => navigate("/edit")}>Edit</div>
+            <div onClick={() => navigate(`/questions/${QuestionData.questionId}/edit`)}>Edit</div>
             <div>Follow</div>
           </Info>
           <UserBox>
