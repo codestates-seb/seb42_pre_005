@@ -23,7 +23,7 @@ export const UsersTop = styled.div`
 `;
 
 export const UserImage = styled.div`
-    /* background-color: yellow; */
+    background-color: yellow;
     display: table-cell;
     vertical-align: middle;
     overflow-y: hidden;
@@ -112,7 +112,9 @@ function UserDetail() {
         <UsersPage>
             <ContentsContainer>
                 <UsersTop>
-                    <UserImage><img alt="user_img" src="https://i.pravatar.cc/128"/></UserImage>
+                    <UserImage>
+                        {/* <img alt="user_img" src="https://i.pravatar.cc/128"/> */}
+                    </UserImage>
                     <UserInfo>
                         { !isPending && <h1>{userData.name}</h1> }
                     </UserInfo>

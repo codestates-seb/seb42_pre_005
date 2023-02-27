@@ -17,6 +17,7 @@ const UserImage = styled.div`
     width: 48px;
     height: 48px;
     overflow-y: hidden;
+    background-color: yellow;
 `
 
 const UserInfo = styled.div`
@@ -27,7 +28,9 @@ function UserCard({user}) {
     const random = Math.random()*69+1
     return (
         <CardContainer>
-            <UserImage><img alt="user_img" src={`https://i.pravatar.cc/48?img=${random}`}/></UserImage>
+            <UserImage>
+                {/* <img alt="user_img" src={`https://i.pravatar.cc/48?img=${random}`}/> */}
+            </UserImage>
             <UserInfo>
                 <span onClick={() => navigate(`/users/${user.memberId}/${user.name}`)}>{user.name}</span>
             </UserInfo>
