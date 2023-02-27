@@ -39,8 +39,8 @@ public class MemberDto {
         @Nullable
         String name;
 
-        @Nullable
-        String password;
+//        @Nullable
+//        String password;
 
         @Nullable
         int age;
