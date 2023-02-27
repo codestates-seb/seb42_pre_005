@@ -96,14 +96,14 @@ function QuestionItem( {questionItem} ) {
       </InfoBox>
       <ContentsBox>
         <ContentsHeader>
-          <QuestionTitle onClick={() => navigate("/view")}>{questionItem.title} </QuestionTitle>
+          <QuestionTitle onClick={() => navigate(`/questions/${questionItem.questionId}`)}>{questionItem.title} </QuestionTitle>
           <QuestionDetail>{questionItem.content}</QuestionDetail>
         </ContentsHeader>
         <ContentsFooter>
           <TagBox>{questionItem.tagName}</TagBox>
           <UserBox>
             <UserImg>😀</UserImg>
-            <UserName>{questionItem.name}</UserName>
+            <UserName onClick={() => navigate(`/users/${questionItem.memberId}/${questionItem.name}`)}>{questionItem.name}</UserName>
             <UserLog>asked 1min ago</UserLog>
           </UserBox >
         </ContentsFooter>

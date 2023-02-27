@@ -24,37 +24,33 @@ const QustionList = styled.div`
 
 function AllQuestions() {
     const [questionList, setQuestionList] = useState([]); // 뿌려줄 질문 리스트
-    const [currentPage, setCurrentPage] = useState(1); // 페이지 정보 가져오기
-    const [currentSize, setCurrentSize] = useState(10); // 보여줄 사이즈
-    const [totalPages, setTotalPages] = useState(); // 전체 페이지
+    const [page, setPage] = useState(1); // 페이지 정보 가져오기
+    const [isPending, setIsPending] = useState(true);
+    const [size, setSize] = useState(10); //  한 페이지에 보여줄 아이템 수
+    const [total, setTotal] = useState(); // 전체 아이템 수
 
     useEffect(() => {
-        const fetch = async () => {
-          axios.defaults.withCredentials = true;
-          await axios
-            .get(`${process.env.REACT_APP_API_URL}?page=${currentPage}&size=${currentSize}`)
-            .then((res) => {
-                console.log(res.data);
-                setQuestionList(res.data);
-                setTotalPages(res.pageInfo);
-            });
-        };
-        fetch();
-      }, [currentPage, currentSize]);
+        // axios.defaults.withCredentials = true;
+        axios.get(`${process.env.REACT_APP_API_URL}/questions?page=${page}&size=${size}`)
+        .then((res) => {
+            setQuestionList(res.data.data);
+            setTotal(res.data.pageInfo.totalElements)
+        })
+        .then(()=> setIsPending(false));
+    }, []);
 
     return (
         <>
             <QuestionsBox>
                 <AllQuestionHeader qustionList={questionList}/>
                 <QustionList>
-                    {questionList && questionList.map((e) => <QuestionItem key={e.questionId} questionItem={e}/>)}
+                    {!isPending && 
+                    questionList.map((e) => <QuestionItem 
+                    key={e.questionId} 
+                    questionItem={e}/>)}
                 </QustionList>
                 <Paging 
-                    currentPage={currentPage}
-                    setCurrentPage={setCurrentPage}
-                    currentSize={currentSize}
-                    setCurrentSize={setCurrentSize}
-                    totalPages={totalPages}/>
+                    total={total} size={size} page={page} setPage={setPage}/>
             </QuestionsBox>
             <RightSideBar />
         </>
