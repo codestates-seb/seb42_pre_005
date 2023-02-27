@@ -1,5 +1,7 @@
 package com.group5.stackoverflow.utils;
 
+import lombok.Getter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.sql.Connection;
@@ -10,14 +12,19 @@ import java.time.LocalDateTime;
 import java.util.Random;
 
 public class InsertDummyData {
+
     public static void main(String[] args) {
         Connection conn = null;
         PreparedStatement pstmt = null;
 
-//        String url = "jdbc:mysql://localhost:3306/stackoverflow?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8&useSSL=true"; // 데이터베이스 URL
-        String url = "jdbc:mysql://localhost:3306/stackoverflow";
-        String id = "root"; // 데이터베이스 ID
-        String password = "pass!"; // 데이터베이스 비밀번호
+        String id = System.getenv("RDS_MYSQL_ADMIN_ID");
+
+        String password = System.getenv("RDS_MYSQL_ADMIN_PASSWORD");
+
+        String url = "jdbc:mysql://"+System.getenv("AWS_RDS_ENDPOINT") + "/stackoverflow";
+
+
+
 
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(); // 패스워드 인코더 생성
 
