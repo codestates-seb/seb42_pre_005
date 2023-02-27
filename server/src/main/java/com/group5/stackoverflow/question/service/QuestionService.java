@@ -2,8 +2,10 @@ package com.group5.stackoverflow.question.service;
 
 import com.group5.stackoverflow.exception.BusinessLogicException;
 import com.group5.stackoverflow.exception.ExceptionCode;
+import com.group5.stackoverflow.member.entity.Member;
 import com.group5.stackoverflow.member.service.MemberService;
 import com.group5.stackoverflow.question.entity.Question;
+import com.group5.stackoverflow.question.entity.QuestionTag;
 import com.group5.stackoverflow.question.repository.QuestionRepository;
 import com.group5.stackoverflow.tag.entity.Tag;
 import com.group5.stackoverflow.tag.repository.TagRepository;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -40,8 +43,12 @@ public class QuestionService {
     }
 
     // 질문 생성
-    public Question createQuestion(Question question) {
-//        verifyQuestion(question);
+    public Question createQuestion(Question question, List<String> tagName) {
+        memberService.findVerifiedMember(question.getMember().getMemberId()); // member 확인
+
+        List<Tag> tags = tagService.findTagsElseCreateTags(tagName);
+        tags.forEach(tag -> new QuestionTag(question, tag));
+
         return repository.save(question);
     }
 
@@ -58,6 +65,9 @@ public class QuestionService {
                 .ifPresent(title -> findQuestion.setTitle(title));
         Optional.ofNullable(question.getContent())
                 .ifPresent(content -> findQuestion.setContent(content));
+
+        List<Tag> tags = tagService.updateQuestionTags(findQuestion, tagName);
+        tags.forEach(tag -> new QuestionTag(question, tag));
 
         return repository.save(findQuestion);
     }

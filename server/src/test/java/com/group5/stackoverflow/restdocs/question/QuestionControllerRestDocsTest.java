@@ -498,7 +498,8 @@ public class QuestionControllerRestDocsTest {
                         "taekie",
                         20,
                         10,
-                        List.of());
+                        List.of()
+                );
 
         given(questionService.updateVote(Mockito.anyLong(), Mockito.anyString())).willReturn(new Question());
 

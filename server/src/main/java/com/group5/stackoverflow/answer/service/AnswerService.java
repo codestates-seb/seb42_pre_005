@@ -83,7 +83,7 @@ public class AnswerService {
     public Answer findVerifiedAnswer(Long answerId) {
         Optional<Answer> findAnswer = answerRepository.findById(answerId);
         Answer answer = findAnswer.orElseThrow(() ->
-                new BusinessLogicException(ExceptionCode.ANSWER_NOT_FOUNT));
+                new BusinessLogicException(ExceptionCode.ANSWER_NOT_FOUND));
 
         return answer;
     }

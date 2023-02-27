@@ -58,4 +58,8 @@ public class Question extends Auditable {
             questionTag.setQuestion(this);
         }
     }
+
+    public void setQuestionTag(QuestionTag questionTag) {
+        questionTags.add(questionTag);
+    }
 }

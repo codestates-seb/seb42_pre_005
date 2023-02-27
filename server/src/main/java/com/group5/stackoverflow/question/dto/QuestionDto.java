@@ -1,10 +1,15 @@
 package com.group5.stackoverflow.question.dto;
 
+import com.group5.stackoverflow.answer.dto.AnswerDto;
+import com.group5.stackoverflow.question.entity.QuestionTag;
+import com.group5.stackoverflow.tag.dto.TagDto;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 public class QuestionDto {
 
@@ -20,9 +25,12 @@ public class QuestionDto {
 
         private Long memberId;
 
+        private List<String> tagNames;
+
         public void addMemberId(Long memberId) {
             this.memberId = memberId;
         }
+
     }
 
     @Getter
@@ -36,6 +44,8 @@ public class QuestionDto {
 
         @NotBlank
         private String content;
+
+        private List<String> tagNames;
 
         public void addQuestionId(Long questionId) {
             this.questionId = questionId;
@@ -55,6 +65,7 @@ public class QuestionDto {
 
     @AllArgsConstructor
     @Getter
+    @Builder
     public static class Response {
         private Long questionId;
         private String title;
@@ -63,6 +74,6 @@ public class QuestionDto {
         private String name;
         private int voteCount;
         private int views;
-        private String tagName;
+        private List<TagDto.ResponseDto> tagResponseDtos;
     }
 }

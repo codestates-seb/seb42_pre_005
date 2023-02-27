@@ -1,5 +1,8 @@
 package com.group5.stackoverflow.tag.service;
 
+import com.group5.stackoverflow.question.entity.Question;
+import com.group5.stackoverflow.question.entity.QuestionTag;
+import com.group5.stackoverflow.question.repository.QuestionRepository;
 import com.group5.stackoverflow.question.repository.QuestionTagRepository;
 import com.group5.stackoverflow.tag.entity.Tag;
 import com.group5.stackoverflow.tag.repository.TagRepository;
@@ -21,10 +24,13 @@ import java.util.stream.Collectors;
 public class TagService {
 
     private final TagRepository tagRepository;
+    private final QuestionRepository questionRepository;
     private final QuestionTagRepository questionTagRepository;
 
-    public TagService(TagRepository tagRepository, QuestionTagRepository questionTagRepository) {
+    public TagService(TagRepository tagRepository, QuestionRepository questionRepository,
+                      QuestionTagRepository questionTagRepository) {
         this.tagRepository = tagRepository;
+        this.questionRepository = questionRepository;
         this.questionTagRepository = questionTagRepository;
     }
 
@@ -74,6 +80,30 @@ public class TagService {
     public void updateQuestionCount(Tag tag) {
         tag.calQuestionCount();
         tagRepository.save(tag);
+    }
+
+    // 태그 수정
+    public List<Tag> updateQuestionTags(Question question, List<String> tagNames) {
+
+        // 기존 태그 삭제
+        questionTagRepository.findAllByQuestion(question).stream()
+                .forEach(questionTag -> {
+                    questionTagRepository.delete(questionTag);
+                    updateQuestionCount(questionTag.getTag());
+                });
+
+        // 새로운 태그 유효성 검사
+        List<Tag> findTags = findTagsElseCreateTags(tagNames);
+
+        // 새로운 questionTag 저장
+        findTags.stream()
+                .forEach(tag -> {
+                    QuestionTag questionTag = new QuestionTag(question, tag);
+                    QuestionTag saveQuestionTag = questionTagRepository.save(questionTag);
+                    updateQuestionCount(saveQuestionTag.getTag());
+                });
+
+        return findTags;
     }
 
     // 태그 검색

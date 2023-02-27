@@ -141,7 +141,7 @@ public class MemberController {
                                                HttpServletRequest request) {
         Long memberId = Checker.getMemberId(jwtTokenizer, request);
         requestBody.addMemberId(memberId);
-        Question createdQuestion = questionService.createQuestion(questionMapper.questionPostToQuestion(requestBody));
+        Question createdQuestion = questionService.createQuestion(questionMapper.questionPostToQuestion(requestBody), requestBody.getTagNames());
         URI location = UriCreator.createUri(QUESTION_DEFAULT_URL, createdQuestion.getQuestionId());
 
         return ResponseEntity.created(location).build();

@@ -3,7 +3,6 @@ package com.group5.stackoverflow.question.entity;
 import com.group5.stackoverflow.tag.entity.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -11,7 +10,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
+@AllArgsConstructor
 public class QuestionTag {
 
     @Id
@@ -25,4 +24,20 @@ public class QuestionTag {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TAG_ID")
     private Tag tag;
+
+    public QuestionTag(Question question, Tag tag) {
+        addQuestion(question);
+        addTag(tag);
+    }
+
+    public void addQuestion(Question question) {
+        this.question = question;
+        question.setQuestionTag(this);
+    }
+
+    public void addTag(Tag tag) {
+        this.tag = tag;
+        tag.setQuestionTag(this);
+    }
+
 }
