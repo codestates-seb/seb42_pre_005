@@ -9,6 +9,10 @@ import com.group5.stackoverflow.member.dto.MemberDto;
 import com.group5.stackoverflow.member.entity.Member;
 import com.group5.stackoverflow.member.mapper.MemberMapper;
 import com.group5.stackoverflow.member.service.MemberService;
+import com.group5.stackoverflow.question.dto.QuestionDto;
+import com.group5.stackoverflow.question.entity.Question;
+import com.group5.stackoverflow.question.mapper.QuestionMapper;
+import com.group5.stackoverflow.question.service.QuestionService;
 import com.group5.stackoverflow.utils.Checker;
 import com.group5.stackoverflow.utils.UriCreator;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +28,8 @@ import javax.validation.constraints.Positive;
 import java.net.URI;
 import java.util.List;
 
+import static com.group5.stackoverflow.question.controller.QuestionController.QUESTION_DEFAULT_URL;
+
 @RestController
 @RequestMapping("/members")
 @Validated
@@ -31,10 +37,15 @@ import java.util.List;
 public class MemberController {
     private final MemberService memberService;
     private final MemberMapper mapper;
+    private final QuestionService questionService;
+    private final QuestionMapper questionMapper;
 
-    public MemberController(MemberService memberService, MemberMapper mapper) {
+    public MemberController(MemberService memberService, MemberMapper mapper,
+                            QuestionService questionService, QuestionMapper questionMapper) {
         this.memberService = memberService;
         this.mapper = mapper;
+        this.questionService = questionService;
+        this.questionMapper = questionMapper;
     }
 
     private final static String MEMBER_DEFAULT_URL = "/members";
@@ -122,4 +133,13 @@ public class MemberController {
 
     }
 
+    @PostMapping("/{member-id}/questions")
+    public ResponseEntity postQuestionOfMember(@PathVariable("member-id") @Positive long memberId,
+                                               @Valid @RequestBody QuestionDto.Post requestBody) {
+        requestBody.addMemberId(memberId);
+        Question createdQuestion = questionService.createQuestion(questionMapper.questionPostToQuestion(requestBody));
+        URI location = UriCreator.createUri(QUESTION_DEFAULT_URL, createdQuestion.getQuestionId());
+
+        return ResponseEntity.created(location).build();
+    }
 }
