@@ -439,7 +439,8 @@ public class MemberControllerRestDocsTest implements MemberControllerTestHelper 
     @Test
     public void postQuestionByMemberTest() throws Exception {
 
-        QuestionDto.Post post = new QuestionDto.Post("타이틀 입니다.", "이곳은 질문을 적는 곳입니다.", 1L);
+        QuestionDto.Post post = new QuestionDto.Post("타이틀 입니다.", "이곳은 질문을 적는 곳입니다.", 1L,
+                List.of("Java", "Spring"));
         long memberId = post.getMemberId();
 
         String content = gson.toJson(post);
@@ -449,7 +450,7 @@ public class MemberControllerRestDocsTest implements MemberControllerTestHelper 
         Question mockResultQuestion = new Question();
         mockResultQuestion.setQuestionId(1L);
 
-        given(questionService.createQuestion(Mockito.any(Question.class))).willReturn(mockResultQuestion);
+        given(questionService.createQuestion(Mockito.any(Question.class), Mockito.anyList())).willReturn(mockResultQuestion);
 
 
 
@@ -479,6 +480,8 @@ public class MemberControllerRestDocsTest implements MemberControllerTestHelper 
                                         fieldWithPath("content").type(JsonFieldType.STRING).description("질문 내용")
                                                 .attributes(key("validation").value("Not Null")),
                                         fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("회원 식별자")
+                                                .attributes(key("validation").value("Not Null")),
+                                        fieldWithPath("tagNames").type(JsonFieldType.ARRAY).description("태그")
                                                 .attributes(key("validation").value("Not Null"))
                                 )
                         ),

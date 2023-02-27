@@ -75,7 +75,5 @@ public class QuestionDto {
         private int voteCount;
         private int views;
         private List<TagDto.ResponseDto> tagResponseDtos;
-
-
     }
 }
