@@ -321,6 +321,7 @@ public class QuestionControllerRestDocsTest {
                         get("/questions")
                                 .param("page","1")
                                 .param("size", "10")
+                                .param("tab", "newest")
                                 .accept(MediaType.APPLICATION_JSON)
                 );
 
@@ -332,7 +333,8 @@ public class QuestionControllerRestDocsTest {
                         getResponsePreProcessor(),
                         requestParameters(
                                 parameterWithName("page").description("조회 페이지"),
-                                parameterWithName("size").description("페이지당 조회 수")
+                                parameterWithName("size").description("페이지당 조회 수"),
+                                parameterWithName("tab").description("tab 조회")
                         ),
                         responseFields(
                                 fieldWithPath("data").type(JsonFieldType.ARRAY).description("결과 데이터"),
@@ -375,5 +377,164 @@ public class QuestionControllerRestDocsTest {
                                         headerWithName("Authorization").description("Bearer (accessToken)")
                                 )
                         ));
+    }
+
+    @Test
+    public void searchQuestionTest() throws Exception {
+
+        int page = 1;
+        int size = 10;
+
+        Member member1 = new Member();
+        member1.setMemberId(1L);
+        member1.setName("taekie");
+        member1.setAge(30);
+        member1.setEmail("taekie@example.com");
+        member1.setVoteCount(0);
+        member1.setPassword("mysecretpassword");
+        member1.setMemberStatus(Member.MemberStatus.MEMBER_NEW);
+
+        Question question1 = new Question();
+        question1.setMember(member1);
+        question1.setQuestionId(1L);
+        question1.setTitle("타이틀입니다.");
+        question1.setContent("질문 내용입니다.");
+        question1.setVoteCount(20);
+        question1.setViews(30);
+
+        Member member2 = new Member();
+        member2.setMemberId(2L);
+        member2.setName("gildong");
+        member2.setAge(25);
+        member2.setEmail("gildong@example.com");
+        member2.setVoteCount(0);
+        member2.setPassword("mypassword123");
+        member2.setMemberStatus(Member.MemberStatus.MEMBER_NEW);
+
+        Question question2 = new Question();
+        question2.setMember(member2);
+        question2.setQuestionId(2L);
+        question2.setTitle("2번째 타이틀입니다.");
+        question2.setContent("2번째 질문 내용입니다.");
+        question2.setVoteCount(10);
+        question2.setViews(50);
+
+        Page<Question> pageQuestions = new PageImpl<>(List.of(question1, question2),
+                PageRequest.of(page, size, Sort.by("question-id").descending()), 2);
+        List<QuestionDto.Response> responses = List.of(
+                new QuestionDto.Response(1L, "타이틀입니다.","질문 내용입니다.",
+                        1L, "taekie", 52, 98, "JAVA"),
+                new QuestionDto.Response(2L, "2번째 타이틀입니다.","2번째 질문 내용입니다.",
+                        2L, "gildong", 23, 54, "SPRING")
+        );
+
+        given(questionService.searchQuestion(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString())).willReturn(pageQuestions);
+        given(questionMapper.questionsToQuestionResponses(Mockito.anyList())).willReturn(responses);
+
+        ResultActions actions =
+                mockMvc.perform(
+                        get("/questions/search")
+                                .header("Authorization", "Bearer ".concat(accessTokenForAdmin))
+                                .param("page", "1")
+                                .param("size", "10")
+                                .param("keyword", "타이틀")
+                                .accept(MediaType.APPLICATION_JSON)
+                );
+
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data").isArray())
+                .andDo(document(
+                        "search-question",
+                        getRequestPreProcessor(),
+                        getResponsePreProcessor(),
+                        requestHeaders(
+                                headerWithName("Authorization").description("Bearer (accessToken")
+                        ),
+                        requestParameters(
+                                parameterWithName("page").description("페이지 번호"),
+                                parameterWithName("size").description("페이지당 조회 수"),
+                                parameterWithName("keyword").description("검색어")
+                        ),
+                        responseFields(
+                                fieldWithPath("data").type(JsonFieldType.ARRAY).description("결과 데이터"),
+                                fieldWithPath("data[].questionId").type(JsonFieldType.NUMBER).description("질문 식별자"),
+                                fieldWithPath("data[].title").type(JsonFieldType.STRING).description("질문 제목"),
+                                fieldWithPath("data[].content").type(JsonFieldType.STRING).description("질문 내용"),
+                                fieldWithPath("data[].memberId").type(JsonFieldType.NUMBER).description("회원 식별자"),
+                                fieldWithPath("data[].name").type(JsonFieldType.STRING).description("회원 이름"),
+                                fieldWithPath("data[].voteCount").type(JsonFieldType.NUMBER).description("추천수"),
+                                fieldWithPath("data[].views").type(JsonFieldType.NUMBER).description("조회수"),
+                                fieldWithPath("data[].tagName").type(JsonFieldType.STRING).description("태그 이름"),
+                                fieldWithPath("pageInfo").type(JsonFieldType.OBJECT).description("페이지 정보"),
+                                fieldWithPath("pageInfo.page").type(JsonFieldType.NUMBER).description("조회 페이지 정보"),
+                                fieldWithPath("pageInfo.size").type(JsonFieldType.NUMBER).description("사이즈 정보"),
+                                fieldWithPath("pageInfo.totalElements").type(JsonFieldType.NUMBER).description("전체 조회 건 수"),
+                                fieldWithPath("pageInfo.totalPages").type(JsonFieldType.NUMBER).description("전체 페이지 수")
+                        )
+                ));
+    }
+
+    @Test
+    public void patchQuestionVote() throws Exception {
+        Long questionId = 1L;
+
+        QuestionDto.PatchVote patch = new QuestionDto.PatchVote(1L, 1L);
+        String content = gson.toJson(patch);
+
+        QuestionDto.Response response =
+                new QuestionDto.Response(1L,
+                        "타이틀입니다.",
+                        "이부분은 질문 내용입니다.",
+                        1L,
+                        "taekie",
+                        20,
+                        10,
+                        "JAVA");
+
+        given(questionService.updateVote(Mockito.anyLong(), Mockito.anyString())).willReturn(new Question());
+
+        given(questionMapper.questionToQuestionResponse(Mockito.any(Question.class))).willReturn(response);
+
+        ResultActions actions =
+                mockMvc.perform(
+                        patch("/questions/{question-id}/vote", questionId)
+                                .header("Authorization", "Bearer ".concat(accessTokenForUser))
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(content)
+                                .param("updown", "up")
+                );
+
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.questionId").value(patch.getQuestionId()))
+                .andDo(document("patch-question-vote",
+                        getRequestPreProcessor(),
+                        getResponsePreProcessor(),
+                        pathParameters(
+                                parameterWithName("question-id").description("질문 식별자")
+                        ),
+                        requestHeaders(
+                                headerWithName("Authorization").description("Bearer (accessToken")
+                        ),
+                        requestParameters(
+                                parameterWithName("updown").description("추천 업 or 추천 다운")
+                        ),
+                        responseFields(
+                                List.of(
+                                        fieldWithPath("data").type(JsonFieldType.OBJECT).description("결과 데이터"),
+                                        fieldWithPath("data.questionId").type(JsonFieldType.NUMBER).description("질문 식별자"),
+                                        fieldWithPath("data.title").type(JsonFieldType.STRING).description("질문 제목"),
+                                        fieldWithPath("data.content").type(JsonFieldType.STRING).description("질문 내용"),
+                                        fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("회원 식별자"),
+                                        fieldWithPath("data.name").type(JsonFieldType.STRING).description("회원 이름"),
+                                        fieldWithPath("data.voteCount").type(JsonFieldType.NUMBER).description("추천수"),
+                                        fieldWithPath("data.views").type(JsonFieldType.NUMBER).description("조회수"),
+                                        fieldWithPath("data.tagName").type(JsonFieldType.STRING).description("태그 이름")
+                                )
+                        )
+                ));
+
     }
 }
