@@ -35,24 +35,22 @@ public class MemberUrIVerificationFilter extends OncePerRequestFilter {  // (1)
         URI uri = URI.create(request.getRequestURI());
         String method = request.getMethod();
 
-        // get members는 유저 정보에 따라 다른 정보를 준다.
-        String flag = "TARGET";
-        if(antPathMatcher.match("/members", uri.getPath()))  flag = "ALL";
-        // else /members/*
         request.setAttribute("verified", false);
-
-        if ("TARGET".equals(flag)) {
-            if (Checker.isVerified(jwtTokenizer, request, Long.parseLong(uri.getPath().split("/", 3)[2]))) {
+        // 특정 멤버를 타겟으로 하는 경우
+        if (antPathMatcher.match("/members/\\d+", uri.getPath())
+                || antPathMatcher.match("/members/\\d+/**", uri.getPath())) {
+            Long memberId = Long.parseLong(uri.getPath().split("/")[2]);
+            if (Checker.isVerified(jwtTokenizer, request, memberId)) {
                 request.setAttribute("verified", true);
             }
-        } else if ("ALL".equals(flag)) {
+        } else {
             if (Checker.isAdmin()) {
                 request.setAttribute("verified", true);
             }
+
+
+            filterChain.doFilter(request, response);
         }
-
-
-        filterChain.doFilter(request, response);
     }
 
     @Override

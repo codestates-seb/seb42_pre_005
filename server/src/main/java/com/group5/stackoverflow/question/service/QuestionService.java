@@ -84,6 +84,10 @@ public class QuestionService {
         return result;
     }
 
+    public Page<Question> findMyQuestions(Long memberId, int page, int size) {
+        return repository.findAllByMemberMemberId(PageRequest.of(page, size, Sort.by("questionId").descending()), memberId);
+    }
+
     // 검색에 맞는 질문 찾기
     public Page<Question> searchQuestion(int page, int size, String keyword) {
         Page<Question> questionPage =
