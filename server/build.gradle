@@ -40,7 +40,6 @@ dependencies {
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
 	runtimeOnly 'mysql:mysql-connector-java:8.0.32'
 	implementation 'com.google.code.findbugs:jsr305:3.0.2'
-
 	implementation 'com.google.code.gson:gson'
 
 	//JAVA DOCS
