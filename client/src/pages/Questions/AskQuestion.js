@@ -128,7 +128,7 @@ function AskQuestion() {
       content : value,
     },{
       headers: {
-        Authorization: `Bearer ${getAccessToken()}`
+        Authorization: getAccessToken()
       }
     })
     .then(res => {
