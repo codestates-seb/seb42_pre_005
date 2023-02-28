@@ -1,5 +1,7 @@
 package com.group5.stackoverflow.question.mapper;
 
+import com.group5.stackoverflow.answer.dto.AnswerDto;
+import com.group5.stackoverflow.answer.entity.Answer;
 import com.group5.stackoverflow.question.dto.QuestionDto;
 import com.group5.stackoverflow.question.entity.Question;
 import com.group5.stackoverflow.question.entity.QuestionTag;
@@ -30,6 +32,24 @@ public interface QuestionMapper {
                 .collect(Collectors.toList());
     }
 
+    default List<AnswerDto.Response> answersToAnswerResponseDtos(List<Answer> answers) {
+        return answers.stream()
+                .map(answer -> {
+                    AnswerDto.Response response = new AnswerDto.Response();
+                    response.setAnswerId(answer.getAnswerId());
+                    response.setMemberId(answer.getMember().getMemberId());
+                    response.setQuestionId(answer.getQuestion().getQuestionId());
+                    response.setName(answer.getMember().getName());
+                    response.setContent(answer.getContent());
+                    response.setVoteCount(answer.getVoteCount());
+
+                    return response;
+                })
+                .collect(Collectors.toList());
+
+
+    }
+
     default QuestionDto.Response questionToQuestionResponse(Question question) {
         if (question == null) {
             return null;
@@ -44,6 +64,7 @@ public interface QuestionMapper {
                 .name(question.getMember().getName())
                 .voteCount(question.getVoteCount())
                 .views(question.getViews())
+                .answerResponseDtos(answersToAnswerResponseDtos(question.getAnswers()))
                 .tagResponseDtos(questionTagsToTagResponse(question.getQuestionTags()))
                 .build();
     }

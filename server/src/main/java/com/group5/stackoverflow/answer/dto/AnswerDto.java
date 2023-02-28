@@ -1,9 +1,6 @@
 package com.group5.stackoverflow.answer.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.swing.plaf.SpinnerUI;
 import javax.validation.constraints.NotBlank;
@@ -68,6 +65,7 @@ public class AnswerDto {
     @Setter
     @Builder
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class Response {
 
         private Long answerId;
