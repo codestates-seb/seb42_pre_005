@@ -3,8 +3,6 @@ package com.group5.stackoverflow.member.controller;
 import com.group5.stackoverflow.auth.tokenizer.JwtTokenizer;
 import com.group5.stackoverflow.dto.MultiResponseDto;
 import com.group5.stackoverflow.dto.SingleResponseDto;
-import com.group5.stackoverflow.exception.BusinessLogicException;
-import com.group5.stackoverflow.exception.ExceptionCode;
 import com.group5.stackoverflow.member.dto.MemberDto;
 import com.group5.stackoverflow.member.entity.Member;
 import com.group5.stackoverflow.member.mapper.MemberMapper;
@@ -70,7 +68,7 @@ public class MemberController {
             @Valid @RequestBody MemberDto.Patch requestBody,
                                 HttpServletRequest request) throws IllegalAccessException {
 
-        Checker.checkVerified(request);
+        Checker.checkVerificationResult(request);
         requestBody.setMemberId(memberId);
         Member member = memberService.updateMember(mapper.memberPatchToMember(requestBody));
 
@@ -87,7 +85,7 @@ public class MemberController {
         Member findmember =
                 memberService.findMember(memberId);
 
-        MemberDto.Response  response = Checker.checkVerified(request) ?
+        MemberDto.Response  response = Checker.checkVerificationResult(request) ?
                                         mapper.memberToMemberResponse(findmember):
                                         mapper.memberToMemberResponseForPublic(findmember);
 
@@ -104,7 +102,7 @@ public class MemberController {
                                      HttpServletRequest request){
         Page<Member> pageMembers = memberService.findMembers(page-1, size, mode);
         List<Member> members = pageMembers.getContent();
-        List<MemberDto.Response>  response = Checker.checkVerified(request) ?
+        List<MemberDto.Response>  response = Checker.checkVerificationResult(request) ?
                 mapper.membersToMemberResponses(members):
                 mapper.membersToMemberResponsesForPublic(members);
         return new ResponseEntity<>(new MultiResponseDto<>(response, pageMembers),
@@ -116,7 +114,7 @@ public class MemberController {
     @DeleteMapping("/{member-id}")
     public ResponseEntity deleteMember(@PathVariable("member-id") @Positive long memberId,
                                        HttpServletRequest request){
-        Checker.checkVerified(request);
+        Checker.checkVerificationResult(request);
         memberService.deleteMember(memberId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -128,7 +126,7 @@ public class MemberController {
                                      HttpServletRequest request){
         Page<Member> pageMembers = memberService.findMembers(page-1, size, mode);
         List<Member> members = pageMembers.getContent();
-        List<MemberDto.Response>  response = Checker.checkVerified(request) ?
+        List<MemberDto.Response>  response = Checker.checkVerificationResult(request) ?
                 mapper.membersToMemberResponses(members):
                 mapper.membersToMemberResponsesForPublic(members);
         return new ResponseEntity<>(new MultiResponseDto<>(response, pageMembers),
@@ -139,7 +137,7 @@ public class MemberController {
     @PostMapping("/questions")
     public ResponseEntity postQuestionOfMember(@Valid @RequestBody QuestionDto.Post requestBody,
                                                HttpServletRequest request) {
-        Long memberId = Checker.getMemberId(jwtTokenizer, request);
+        Long memberId = Checker.getMemberId();
         requestBody.addMemberId(memberId);
         Question createdQuestion = questionService.createQuestion(questionMapper.questionPostToQuestion(requestBody));
         URI location = UriCreator.createUri(QUESTION_DEFAULT_URL, createdQuestion.getQuestionId());

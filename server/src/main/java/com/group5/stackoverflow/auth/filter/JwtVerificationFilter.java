@@ -1,5 +1,6 @@
 package com.group5.stackoverflow.auth.filter;
 
+import com.group5.stackoverflow.auth.Token.CustomAuthenticationToken;
 import com.group5.stackoverflow.auth.tokenizer.JwtTokenizer;
 import com.group5.stackoverflow.auth.utils.CustomAuthorityUtils;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -63,9 +64,10 @@ public class JwtVerificationFilter extends OncePerRequestFilter {  // (1)
     }
 
     private void setAuthenticationToContext(Map<String, Object> claims) {
-        String username = (String) claims.get("username");   // (4-1)
-        List<GrantedAuthority> authorities = authorityUtils.createAuthorities((List)claims.get("roles"));  // (4-2)
-        Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, authorities);  // (4-3)
+        String username = (String) claims.get("username");
+        String memberId = (String) claims.get("memberId");
+        List<GrantedAuthority> authorities = authorityUtils.createAuthorities((List)claims.get("roles"));
+        Authentication authentication = new CustomAuthenticationToken(username, null,  memberId, authorities);
         SecurityContextHolder.getContext().setAuthentication(authentication); // (4-4)
     }
 }

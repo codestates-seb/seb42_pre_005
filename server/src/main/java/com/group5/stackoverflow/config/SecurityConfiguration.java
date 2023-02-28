@@ -105,7 +105,7 @@ public class SecurityConfiguration {
 
             JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtTokenizer, authorityUtils);
 
-            MemberUrIVerificationFilter memberUrIVerificationFilter = new MemberUrIVerificationFilter(jwtTokenizer);
+            MemberUrIVerificationFilter memberUrIVerificationFilter = new MemberUrIVerificationFilter();
 
             builder
                 .addFilterBefore(new LogFilter(), ChannelProcessingFilter.class)
