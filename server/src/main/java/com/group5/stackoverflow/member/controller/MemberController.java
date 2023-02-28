@@ -102,7 +102,7 @@ public class MemberController {
                                      HttpServletRequest request){
         Page<Member> pageMembers = memberService.findMembers(page-1, size, mode);
         List<Member> members = pageMembers.getContent();
-        List<MemberDto.Response>  response = Checker.checkVerificationResult(request) ?
+        List<MemberDto.Response>  response = Checker.checkAdmin() ?
                 mapper.membersToMemberResponses(members):
                 mapper.membersToMemberResponsesForPublic(members);
         return new ResponseEntity<>(new MultiResponseDto<>(response, pageMembers),
