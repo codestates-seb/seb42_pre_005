@@ -52,8 +52,6 @@ public class QuestionService {
             new QuestionTag(question, tag);
         });
 
-        question.setCreatedAt(LocalDateTime.now());
-
         return repository.save(question);
     }
 

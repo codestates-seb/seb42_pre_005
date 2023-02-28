@@ -34,6 +34,7 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -155,6 +156,7 @@ public class QuestionControllerRestDocsTest {
                         "taekie",
                         20,
                         10,
+                        LocalDateTime.now(),
                         List.of(),
                         List.of());
 
@@ -211,6 +213,7 @@ public class QuestionControllerRestDocsTest {
                                         fieldWithPath("data.name").type(JsonFieldType.STRING).description("회원 이름"),
                                         fieldWithPath("data.voteCount").type(JsonFieldType.NUMBER).description("추천수"),
                                         fieldWithPath("data.views").type(JsonFieldType.NUMBER).description("조회수"),
+                                        fieldWithPath("data.createdAt").type(JsonFieldType.STRING).description("생성 시간"),
                                         fieldWithPath("data.tagResponseDtos").type(JsonFieldType.ARRAY).description("태그"),
                                         fieldWithPath("data.answerResponseDtos").type(JsonFieldType.ARRAY).description("답변")
                                 )
@@ -230,6 +233,7 @@ public class QuestionControllerRestDocsTest {
                         "taekie",
                         30,
                         40,
+                        LocalDateTime.now(),
                         List.of(),
                         List.of());
 
@@ -273,6 +277,7 @@ public class QuestionControllerRestDocsTest {
                                         fieldWithPath("data.name").type(JsonFieldType.STRING).description("회원 이름"),
                                         fieldWithPath("data.voteCount").type(JsonFieldType.NUMBER).description("추천수"),
                                         fieldWithPath("data.views").type(JsonFieldType.NUMBER).description("조회수"),
+                                        fieldWithPath("data.createdAt").type(JsonFieldType.STRING).description("생성 시간"),
                                         fieldWithPath("data.tagResponseDtos").type(JsonFieldType.ARRAY).description("태그"),
                                         fieldWithPath("data.answerResponseDtos").type(JsonFieldType.ARRAY).description("답변")
                                 )
@@ -324,9 +329,11 @@ public class QuestionControllerRestDocsTest {
                 PageRequest.of(page, size, Sort.by("question-id").descending()), 2);
         List<QuestionDto.Response> responses = List.of(
                 new QuestionDto.Response(1L, "타이틀입니다.","질문 내용입니다.",
-                        1L, "taekie", 52, 98, List.of(), List.of()),
+                        1L, "taekie", 52, 98, LocalDateTime.now(),
+                        List.of(), List.of()),
                 new QuestionDto.Response(2L, "2번째 타이틀입니다.","2번째 질문 내용입니다.",
-                        2L, "gildong", 23, 54, List.of(), List.of())
+                        2L, "gildong", 23, 54, LocalDateTime.now(),
+                        List.of(), List.of())
         );
 
         given(questionService.findQuestions(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString())).willReturn(pageQuestions);
@@ -361,6 +368,7 @@ public class QuestionControllerRestDocsTest {
                                 fieldWithPath("data[].name").type(JsonFieldType.STRING).description("회원 이름"),
                                 fieldWithPath("data[].voteCount").type(JsonFieldType.NUMBER).description("추천수"),
                                 fieldWithPath("data[].views").type(JsonFieldType.NUMBER).description("조회수"),
+                                fieldWithPath("data[].createdAt").type(JsonFieldType.STRING).description("생성 시간"),
                                 fieldWithPath("data[].tagResponseDtos").type(JsonFieldType.ARRAY).description("태그"),
                                 fieldWithPath("data[].answerResponseDtos").type(JsonFieldType.ARRAY).description("답변"),
                                 fieldWithPath("pageInfo").type(JsonFieldType.OBJECT).description("페이지 정보"),
@@ -440,9 +448,11 @@ public class QuestionControllerRestDocsTest {
                 PageRequest.of(page, size, Sort.by("question-id").descending()), 2);
         List<QuestionDto.Response> responses = List.of(
                 new QuestionDto.Response(1L, "타이틀입니다.","질문 내용입니다.",
-                        1L, "taekie", 52, 98, List.of(), List.of()),
+                        1L, "taekie", 52, 98, LocalDateTime.now(),
+                        List.of(), List.of()),
                 new QuestionDto.Response(2L, "2번째 타이틀입니다.","2번째 질문 내용입니다.",
-                        2L, "gildong", 23, 54, List.of(), List.of())
+                        2L, "gildong", 23, 54, LocalDateTime.now(),
+                        List.of(), List.of())
         );
 
         given(questionService.searchQuestion(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString())).willReturn(pageQuestions);
@@ -482,6 +492,7 @@ public class QuestionControllerRestDocsTest {
                                 fieldWithPath("data[].name").type(JsonFieldType.STRING).description("회원 이름"),
                                 fieldWithPath("data[].voteCount").type(JsonFieldType.NUMBER).description("추천수"),
                                 fieldWithPath("data[].views").type(JsonFieldType.NUMBER).description("조회수"),
+                                fieldWithPath("data[].createdAt").type(JsonFieldType.STRING).description("생성 시간"),
                                 fieldWithPath("data[].tagResponseDtos").type(JsonFieldType.ARRAY).description("태그"),
                                 fieldWithPath("data[].answerResponseDtos").type(JsonFieldType.ARRAY).description("답변"),
                                 fieldWithPath("pageInfo").type(JsonFieldType.OBJECT).description("페이지 정보"),
@@ -508,6 +519,7 @@ public class QuestionControllerRestDocsTest {
                         "taekie",
                         20,
                         10,
+                        LocalDateTime.now(),
                         List.of(),
                         List.of()
                 );
@@ -551,6 +563,7 @@ public class QuestionControllerRestDocsTest {
                                         fieldWithPath("data.name").type(JsonFieldType.STRING).description("회원 이름"),
                                         fieldWithPath("data.voteCount").type(JsonFieldType.NUMBER).description("추천수"),
                                         fieldWithPath("data.views").type(JsonFieldType.NUMBER).description("조회수"),
+                                        fieldWithPath("data.createdAt").type(JsonFieldType.STRING).description("생성 시간"),
                                         fieldWithPath("data.tagResponseDtos").type(JsonFieldType.ARRAY).description("태그"),
                                         fieldWithPath("data.answerResponseDtos").type(JsonFieldType.ARRAY).description("답변")
                                 )
@@ -594,9 +607,11 @@ public class QuestionControllerRestDocsTest {
                 PageRequest.of(page, size, Sort.by("question-id").descending()), 1);
         List<QuestionDto.Response> responses = List.of(
                 new QuestionDto.Response(1L, "타이틀입니다.","질문 내용입니다.",
-                        1L, "taekie", 52, 98, List.of(), List.of()),
+                        1L, "taekie", 52, 98, LocalDateTime.now(),
+                        List.of(), List.of()),
                 new QuestionDto.Response(2L, "2번째 타이틀입니다.","2번째 질문 내용입니다.",
-                        1L, "taekie", 23, 54, List.of(), List.of())
+                        1L, "taekie", 23, 54, LocalDateTime.now(),
+                        List.of(), List.of())
         );
 
         given(questionService.findMyQuestions(Mockito.anyLong(), Mockito.anyInt(), Mockito.anyInt())).willReturn(pageQuestions);
@@ -634,6 +649,7 @@ public class QuestionControllerRestDocsTest {
                                 fieldWithPath("data[].name").type(JsonFieldType.STRING).description("회원 이름"),
                                 fieldWithPath("data[].voteCount").type(JsonFieldType.NUMBER).description("추천수"),
                                 fieldWithPath("data[].views").type(JsonFieldType.NUMBER).description("조회수"),
+                                fieldWithPath("data[].createdAt").type(JsonFieldType.STRING).description("생성 시간"),
                                 fieldWithPath("data[].tagResponseDtos").type(JsonFieldType.ARRAY).description("태그"),
                                 fieldWithPath("data[].answerResponseDtos").type(JsonFieldType.ARRAY).description("답변"),
                                 fieldWithPath("pageInfo").type(JsonFieldType.OBJECT).description("페이지 정보"),
@@ -690,9 +706,11 @@ public class QuestionControllerRestDocsTest {
                 PageRequest.of(page, size, Sort.by("question-id").descending()), 1);
         List<QuestionDto.Response> responses = List.of(
                 new QuestionDto.Response(1L, "타이틀입니다.","질문 내용입니다.",
-                        1L, "taekie", 52, 98, List.of(), List.of()),
+                        1L, "taekie", 52, 98, LocalDateTime.now(),
+                        List.of(), List.of()),
                 new QuestionDto.Response(2L, "2번째 타이틀입니다.","2번째 질문 내용입니다.",
-                        2L, "gildong", 23, 54, List.of(), List.of())
+                        2L, "gildong", 23, 54, LocalDateTime.now(),
+                        List.of(), List.of())
         );
 
         given(tagService.findQuestionByTag(Mockito.any(), Mockito.anyString())).willReturn(pageQuestions);
@@ -732,6 +750,7 @@ public class QuestionControllerRestDocsTest {
                                 fieldWithPath("data[].name").type(JsonFieldType.STRING).description("회원 이름"),
                                 fieldWithPath("data[].voteCount").type(JsonFieldType.NUMBER).description("추천수"),
                                 fieldWithPath("data[].views").type(JsonFieldType.NUMBER).description("조회수"),
+                                fieldWithPath("data[].createdAt").type(JsonFieldType.STRING).description("생성 시간"),
                                 fieldWithPath("data[].tagResponseDtos").type(JsonFieldType.ARRAY).description("태그"),
                                 fieldWithPath("data[].answerResponseDtos").type(JsonFieldType.ARRAY).description("답변"),
                                 fieldWithPath("pageInfo").type(JsonFieldType.OBJECT).description("페이지 정보"),

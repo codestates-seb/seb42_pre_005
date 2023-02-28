@@ -2,22 +2,26 @@ package com.group5.stackoverflow.question.entity;
 
 
 import com.group5.stackoverflow.answer.entity.Answer;
-import com.group5.stackoverflow.audit.Auditable;
 import com.group5.stackoverflow.member.entity.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity
-public class Question extends Auditable {
+public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long questionId;
@@ -33,6 +37,14 @@ public class Question extends Auditable {
 
     @Column(nullable = false)
     private int views;
+
+    @CreatedDate
+    @Column(name = "CREATED_AT", updatable = false)
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "MODIFIED_AT")
+    private LocalDateTime modifiedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
