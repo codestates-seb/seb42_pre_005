@@ -116,8 +116,8 @@ public class QuestionController {
                 HttpStatus.OK);
     }
     // 질문을 태그로 조회
-    @GetMapping("/questions/tagged/{tagName}")
-    public ResponseEntity getQuestionsByTag(@PathVariable("tagName") String tagName,
+    @GetMapping("/questions/tagged/{tag-name}")
+    public ResponseEntity getQuestionsByTag(@PathVariable("tag-name") String tagName,
                                             @Positive @RequestParam(required = false, defaultValue = "1") int page,
                                             @Positive @RequestParam(required = false, defaultValue = "10") int size) {
 

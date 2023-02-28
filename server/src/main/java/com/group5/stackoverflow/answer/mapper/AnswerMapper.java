@@ -66,6 +66,7 @@ public interface AnswerMapper {
                 .answerId(answer.getAnswerId())
                 .questionId(answer.getQuestion().getQuestionId())
                 .content(answer.getContent())
+                .voteCount(answer.getVoteCount())
                 .memberId(answer.getMember().getMemberId())
                 .name(answer.getMember().getName())
                 .build();

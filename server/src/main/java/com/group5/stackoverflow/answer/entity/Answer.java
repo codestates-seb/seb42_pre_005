@@ -28,7 +28,7 @@ public class Answer extends Auditable{
     private String content;
 
     @Column(nullable = false)
-    private int voteCount = 0;
+    private int voteCount;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "QUESTION_ID")

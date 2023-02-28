@@ -47,7 +47,10 @@ public class QuestionService {
         memberService.findVerifiedMember(question.getMember().getMemberId()); // member 확인
 
         List<Tag> tags = tagService.findTagsElseCreateTags(tagName);
-        tags.forEach(tag -> new QuestionTag(question, tag));
+        tags.forEach(tag -> {
+            tagService.updateQuestionCount(tag);
+            new QuestionTag(question, tag);
+        });
 
         return repository.save(question);
     }

@@ -78,7 +78,12 @@ public class TagService {
     }
 
     public void updateQuestionCount(Tag tag) {
-        tag.calQuestionCount();
+        Tag name = findVerifiedTag(tag.getTagName());
+
+        if (name.equals(tag)) {
+            int count = tag.getQuestionCount() + 1;
+            tag.setQuestionCount(count);
+        }
         tagRepository.save(tag);
     }
 
