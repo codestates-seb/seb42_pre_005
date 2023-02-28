@@ -6,44 +6,55 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.Random;
 
-public class UpdateDummyData {
+public class InsertRolesDummyData {
+
     public static void main(String[] args) {
         Connection conn = null;
         PreparedStatement pstmt = null;
 
-//        String url = "jdbc:mysql://localhost:3306/stackoverflow";
-//        String id = "root"; // 데이터베이스 ID
-//        String password = "pass!"; // 데이터베이스 비밀번호
         String id = System.getenv("RDS_MYSQL_ADMIN_ID"); //root
+
         String password = System.getenv("RDS_MYSQL_ADMIN_PASSWORD"); //password!
+
         String url = "jdbc:mysql://"+System.getenv("AWS_RDS_ENDPOINT") + "/stackoverflow";
+
+
+
+
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(); // 패스워드 인코더 생성
 
         try {
             // MySQL 데이터베이스에 연결
             Class.forName("com.mysql.cj.jdbc.Driver");
+            
             conn = DriverManager.getConnection(url, id, password);
 
-            // UPDATE 문 생성
-            String sql = "UPDATE member SET password = ? WHERE name = ?";
-            pstmt = conn.prepareStatement(sql);
-            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(); // 패스워드 인코더 생성
+            // 100개의 더미 데이터 생성
+            for (int i = 14 +1; i <= 14 + 100; i++) {
+                int voteCount = (int) (Math.random() * 20 + 1) + 30; // 투표 수 (평균 30, 표준편차 5인 정규분포)
 
-            for (int i = 1 ; i <= 100; i++){
-                String rawPassword = "password" + i; // 패스워드
-                String encodedPassword = "{bcrypt}"+passwordEncoder.encode(rawPassword);
-                pstmt.setString(1, encodedPassword);
+                // 패스워드 인코딩
 
-                String name = "name" + i;
-                pstmt.setString(2, name);
-                // UPDATE 문 실행
-                int result = pstmt.executeUpdate();
-                System.out.println(result + " rows updated successfully for name = " + name);
+                // INSERT 문 생성
+                String sql = "INSERT INTO member_roles (member_member_id, roles) VALUES (?, ?)";
+//                String sql = "DELETE FROM member_roles WHERE member_member_id = 15 LIMIT 1";
 
+                pstmt = conn.prepareStatement(sql);
+
+                // INSERT 문 파라미터 설정
+                pstmt.setInt(1, i);
+                pstmt.setString(2, "USER");
+
+                // INSERT 문 실행
+                pstmt.executeUpdate();
             }
 
-        } catch (ClassNotFoundException | SQLException e) {
+            System.out.println("100 rows inserted successfully.");
+
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         } finally {
             try {
