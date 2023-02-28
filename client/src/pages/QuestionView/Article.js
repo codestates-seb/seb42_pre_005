@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 // ----- 컴포넌트 및 이미지 파일
+import Markdown from "../../components/Markdown";
 
 // ----- CSS 영역
 const ArticleBox = styled.div`
@@ -92,7 +93,6 @@ function Article({QuestionData}) {
   const DeleteAction = () => {
     return axios.delete(`${process.env.REACT_APP_API_URL}/questions/${QuestionData.data.questionId}`)
   }
-  
   return (
     <ArticleBox>
       <VoteBox>
@@ -103,7 +103,7 @@ function Article({QuestionData}) {
         <RxCounterClockwiseClock className="markicon" />
       </VoteBox>
       <IndexBox>
-        <div className="contents">{QuestionData.data.content}</div>
+        <Markdown className="contents" markdown={QuestionData.data.content} />
         <button className="tags">{QuestionData.data.tagName}</button>
         <InfoBox>
           <Info>
