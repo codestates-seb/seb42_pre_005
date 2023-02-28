@@ -120,7 +120,6 @@ public class MemberControllerRestDocsTest implements MemberControllerTestHelper 
                         post("/members")
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
-//                                .header("Authorization", "Bearer ".concat(accessTokenForAdmin))
                                 .content(content)
                 );
 
@@ -138,6 +137,8 @@ public class MemberControllerRestDocsTest implements MemberControllerTestHelper 
                                                 .attributes(key("validation").value("Not Null")),
                                         fieldWithPath("email").type(JsonFieldType.STRING).description("이메일")
                                                 .attributes(key("validation").value("Email")),
+                                        fieldWithPath("password").type(JsonFieldType.STRING).description("암호")
+                                                .attributes(key("validation").value("Not Null")),
                                         fieldWithPath("age").type(JsonFieldType.NUMBER).description("나이") //// (7-5)
                                                 .attributes(key("validation").value("- ")).optional()
                                 )
@@ -152,8 +153,6 @@ public class MemberControllerRestDocsTest implements MemberControllerTestHelper 
     public void patchMemberTest() throws Exception {
         // given
         long memberId = 1L;
-//        MemberDto.Patch patch = new MemberDto.Patch(memberId, "홍길동", "password", 23
-//                , 100,  Member.MemberStatus.MEMBER_ACTIVE);
                 MemberDto.Patch patch = new MemberDto.Patch(memberId, "홍길동",  23
                 , 100,  Member.MemberStatus.MEMBER_ACTIVE);
         String content = gson.toJson(patch);
@@ -247,6 +246,7 @@ public class MemberControllerRestDocsTest implements MemberControllerTestHelper 
         // willReturn()이 최소한 null은 아니어야 한다.
         given(memberService.findMember(Mockito.anyLong())).willReturn(new Member());
         given(mapper.memberToMemberResponse(Mockito.any(Member.class))).willReturn(responseDto);
+        given(mapper.memberToMemberResponseForPublic(Mockito.any(Member.class))).willReturn(responseDto);
 
         // when
         ResultActions actions =
@@ -254,7 +254,7 @@ public class MemberControllerRestDocsTest implements MemberControllerTestHelper 
                         get("/members/{member-id}", 1L)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .header("Authorization", "Bearer ".concat(accessTokenForUser))
+                                .header("Authorization", "Bearer ".concat(accessTokenForAdmin))
                 );
 
         // then
@@ -277,10 +277,10 @@ public class MemberControllerRestDocsTest implements MemberControllerTestHelper 
                         responseFields(      // (4)
                                 List.of(
                                         fieldWithPath("data").type(JsonFieldType.OBJECT).description("결과 데이터"),
-                                        fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("회원 식별자"),           // (5)
+                                        fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("회원 식별자 (검증된 요청에만 제공)"),           // (5)
                                         fieldWithPath("data.name").type(JsonFieldType.STRING).description("이름"),
                                         fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
-                                        fieldWithPath("data.age").type(JsonFieldType.NUMBER).description("나이"),
+                                        fieldWithPath("data.age").type(JsonFieldType.NUMBER).description("나이 (검증된 요청에만 제공)"),
                                         fieldWithPath("data.voteCount").type(JsonFieldType.NUMBER).description("추천수"),
                                         fieldWithPath("data.memberStatus").type(JsonFieldType.STRING).description("회원 상태: 신규 / 활동중 / 휴면 상태 / 탈퇴 상태")
                                 )
@@ -338,6 +338,7 @@ public class MemberControllerRestDocsTest implements MemberControllerTestHelper 
         // willReturn()이 최소한 null은 아니어야 한다.
         given(memberService.findMembers(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString())).willReturn(pageMembers);
         given(mapper.membersToMemberResponses(Mockito.anyList())).willReturn(responses);
+        given(mapper.membersToMemberResponsesForPublic(Mockito.anyList())).willReturn(responses);
 
         // when
         ResultActions actions =
@@ -345,6 +346,7 @@ public class MemberControllerRestDocsTest implements MemberControllerTestHelper 
                         get("/members")
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
+                                .header("Authorization", "Bearer ".concat(accessTokenForAdmin))
                                 .param("page", String.valueOf(page))
                                 .param("size", String.valueOf(size))
                                 .param("mode", "base")
@@ -380,10 +382,10 @@ public class MemberControllerRestDocsTest implements MemberControllerTestHelper 
                         responseFields(
                                 List.of(
                                         fieldWithPath("data").type(JsonFieldType.ARRAY).description("결과 데이터"),
-                                        fieldWithPath("data.[].memberId").type(JsonFieldType.NUMBER).description("회원 식별자"),           // (5)
+                                        fieldWithPath("data.[].memberId").type(JsonFieldType.NUMBER).description("회원 식별자 (검증된 요청에만 제공)"),           // (5)
                                         fieldWithPath("data.[].name").type(JsonFieldType.STRING).description("이름"),
                                         fieldWithPath("data.[].email").type(JsonFieldType.STRING).description("이메일"),
-                                        fieldWithPath("data.[].age").type(JsonFieldType.NUMBER).description("나이"),
+                                        fieldWithPath("data.[].age").type(JsonFieldType.NUMBER).description("나이 (검증된 요청에만 제공)"),
                                         fieldWithPath("data.[].voteCount").type(JsonFieldType.NUMBER).description("추천수"),
                                         fieldWithPath("data.[].memberStatus").type(JsonFieldType.STRING).description("회원 상태: 신규 / 활동중 / 휴면 상태 / 탈퇴 상태"),
                                         fieldWithPath("pageInfo").type(JsonFieldType.OBJECT).description("페이지 정보"),

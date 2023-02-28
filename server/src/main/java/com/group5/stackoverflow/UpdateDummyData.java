@@ -1,4 +1,4 @@
-package com.group5.stackoverflow.utils;
+package com.group5.stackoverflow;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 

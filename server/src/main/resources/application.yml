@@ -1,9 +1,12 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${AWS_RDS_ENDPOINT}/stackoverflow?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8&useSSL=true
-    username: ${RDS_MYSQL_ADMIN_ID}
-    password: ${RDS_MYSQL_ADMIN_PASSWORD}
+    url: jdbc:mysql://localhost:3306/stackoverflow?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8&useSSL=true
+    username: root
+    password: ${MYSQL_PASSWORD}
+#    url: jdbc:mysql://${AWS_RDS_ENDPOINT}/stackoverflow?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8&useSSL=true
+#    username: ${RDS_MYSQL_ADMIN_ID}
+#    password: ${RDS_MYSQL_ADMIN_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
@@ -19,3 +22,5 @@ jwt:
 mail:
   address:
     admin: ${ADMIN_MAIL}
+config:
+  domain: ${AWS_S3_ENDPOINT}
