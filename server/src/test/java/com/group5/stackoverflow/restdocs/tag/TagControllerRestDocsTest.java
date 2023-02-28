@@ -13,6 +13,7 @@ import com.group5.stackoverflow.tag.entity.Tag;
 import com.group5.stackoverflow.tag.mapper.TagMapper;
 import com.group5.stackoverflow.tag.service.TagService;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mock;
@@ -74,6 +75,7 @@ public class TagControllerRestDocsTest {
     private QuestionService questionService;
 
     @Test
+    @DisplayName("태그 조회 및 정렬")
     void getTagsTest() throws Exception {
         //given
         int page = 1;
