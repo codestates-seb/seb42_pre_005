@@ -105,13 +105,13 @@ public class SecurityConfiguration {
 
             JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtTokenizer, authorityUtils);
 
-            MemberUrIVerificationFilter memberUrIVerificationFilter = new MemberUrIVerificationFilter();
+            MemberUrIVerificationFilter memberUrIVerificationFilter = new MemberUrIVerificationFilter(jwtTokenizer);
 
             builder
                 .addFilterBefore(new LogFilter(), ChannelProcessingFilter.class)
                 .addFilter(jwtAuthenticationFilter)
                 .addFilterAfter(jwtVerificationFilter, JwtAuthenticationFilter.class)
-                .addFilterAfter(memberUrIVerificationFilter, JwtVerificationFilter.class);
+                .addFilterAfter(memberUrIVerificationFilter, JwtVerificationFilter.class);;
         }
     }
 }
