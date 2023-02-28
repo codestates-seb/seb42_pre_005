@@ -1,8 +1,7 @@
 package com.group5.stackoverflow.utils;
 
+import com.group5.stackoverflow.auth.Token.CustomAuthenticationToken;
 import com.group5.stackoverflow.auth.tokenizer.JwtTokenizer;
-import com.group5.stackoverflow.exception.BusinessLogicException;
-import com.group5.stackoverflow.exception.ExceptionCode;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -11,32 +10,32 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Checker {
-    public static boolean isVerified(JwtTokenizer jwtTokenizer,  HttpServletRequest request, Long memberId){
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        List<String> currentUserRole = authentication.getAuthorities()
-                                        .stream().map(Object::toString)
-                                        .collect(Collectors.toList());
+    public static boolean checkVerified(Long targetId){
+        List<String> currentUserRole = getRoles();
         if(currentUserRole.contains("ROLE_ADMIN")) return true;
-        return jwtTokenizer.getMemberId(request.getHeader("Authorization")) == memberId;
+        return getMemberId() == targetId;
     }
 
-    public static boolean isAdmin(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication == null) return false;
-        List<String> currentUserRole = authentication.getAuthorities()
-                .stream().map(Object::toString)
-                .collect(Collectors.toList());
+    public static boolean checkAdmin(){
+        List<String> currentUserRole = getRoles();
         return currentUserRole.contains("ROLE_ADMIN");
     }
 
-    public static boolean checkVerified(HttpServletRequest request){
+    public static boolean checkVerificationResult(HttpServletRequest request){
        return request.getAttribute("verified").equals(false);
     }
 
-    public static Long getMemberId(JwtTokenizer jwtTokenizer,  HttpServletRequest request){
-        if(jwtTokenizer.getMemberId(request.getHeader("Authorization")) == null) return -1L;
-        return jwtTokenizer.getMemberId(request.getHeader("Authorization")) ;
+    public static Long getMemberId(){
+        CustomAuthenticationToken customAuthenticationToken = (CustomAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        return customAuthenticationToken.getMemberId();
+    }
+
+    public static List<String> getRoles(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication == null) return List.of("null");
+        return authentication.getAuthorities()
+                .stream().map(Object::toString)
+                .collect(Collectors.toList());
     }
 
 }
