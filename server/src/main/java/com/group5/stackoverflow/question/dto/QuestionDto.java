@@ -1,7 +1,6 @@
 package com.group5.stackoverflow.question.dto;
 
 import com.group5.stackoverflow.answer.dto.AnswerDto;
-import com.group5.stackoverflow.question.entity.QuestionTag;
 import com.group5.stackoverflow.tag.dto.TagDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -74,7 +73,7 @@ public class QuestionDto {
         private String name;
         private int voteCount;
         private int views;
-        private List<AnswerDto.Response> answerResponseDtos;
         private List<TagDto.ResponseDto> tagResponseDtos;
+        private List<AnswerDto.Response> answerResponseDtos;
     }
 }
