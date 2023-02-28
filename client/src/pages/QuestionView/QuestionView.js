@@ -2,7 +2,7 @@
 
 // ----- 필요 라이브러리
 import styled from "styled-components";
-import Article from "./Article";
+import Article from "./Article_temp";
 import Answer from "./Answer";
 import RightSideBar from "../../components/Main/RightSideBar";
 import ArticleHeader from "./ArticleHeader";
