@@ -74,6 +74,7 @@ public class QuestionDto {
         private String name;
         private int voteCount;
         private int views;
+        private List<AnswerDto.Response> answerResponseDtos;
         private List<TagDto.ResponseDto> tagResponseDtos;
         private List<AnswerDto.Response> answerResponseDtos;
     }

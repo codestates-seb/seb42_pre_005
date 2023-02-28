@@ -32,19 +32,22 @@ public interface QuestionMapper {
                 .collect(Collectors.toList());
     }
 
-    default List<AnswerDto.Response> questionAnswersToAnswerResponse(List<Answer> answers) {
+    default List<AnswerDto.Response> answersToAnswerResponseDtos(List<Answer> answers) {
         return answers.stream()
                 .map(answer -> {
                     AnswerDto.Response response = new AnswerDto.Response();
                     response.setAnswerId(answer.getAnswerId());
+                    response.setMemberId(answer.getMember().getMemberId());
                     response.setQuestionId(answer.getQuestion().getQuestionId());
                     response.setName(answer.getMember().getName());
                     response.setContent(answer.getContent());
                     response.setVoteCount(answer.getVoteCount());
 
                     return response;
-                    })
+                })
                 .collect(Collectors.toList());
+
+
     }
 
     default QuestionDto.Response questionToQuestionResponse(Question question) {
@@ -61,8 +64,8 @@ public interface QuestionMapper {
                 .name(question.getMember().getName())
                 .voteCount(question.getVoteCount())
                 .views(question.getViews())
+                .answerResponseDtos(answersToAnswerResponseDtos(question.getAnswers()))
                 .tagResponseDtos(questionTagsToTagResponse(question.getQuestionTags()))
-                .answerResponseDtos(questionAnswersToAnswerResponse(question.getAnswers()))
                 .build();
     }
     List<QuestionDto.Response> questionsToQuestionResponses(List<Question> questions);
