@@ -123,7 +123,7 @@ function AskQuestion() {
   }
   const ReviewButtonSubmit = (e) => { // 다 쓴 질문 제출 버튼 함수
     e.preventDefault();
-    axios.post(`${process.env.REACT_APP_API_URL}/questions`, {
+    axios.post(`${process.env.REACT_APP_API_URL}/members/questions`, {
       title : title,
       content : value,
     },{
