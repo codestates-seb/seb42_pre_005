@@ -100,7 +100,7 @@ function Header() {
   // const [isLogin, setisLogin] = useState(false); // 로그인 여부를 결정짓는 상태
   const navigate = useNavigate();
   const isLogin = useSelector(state => state.isLogin);
-  const userData = useSelector(state => state.userData);
+  const loginUser = useSelector(state => state.loginUser);
 
   return (
     <HeaderBox>
@@ -124,7 +124,7 @@ function Header() {
         {isLogin 
           ? // 로그인을 했을 때는 유저 프로필 사진과 아이콘들이 보임
           <UserBox>
-            <img src={defaultProfile} alt="user profile img" onClick={() => navigate(`/users/${userData.id}/${userData.name}`)} height="24px" />
+            <img src={defaultProfile} alt="user profile img" onClick={() => navigate(`/users/${loginUser.id}/${loginUser.name}`)} height="24px" />
             {/* <MdInbox /> */}
           </UserBox> 
           : // 로그인 하지 않았을 때는 login과 signup 버튼이 보임

@@ -47,21 +47,17 @@ const PageBox = styled.div`
 
 
 // ----- 컴포넌트 영역
-function Paging( {qustionList} ) {
-  console.log(qustionList)
- 
-  const [page, setpage] = useState(1); // 페이지 상태 관리
+function Paging( {total, size, page, setPage} ) {
   const pageHandler = (page) => {
-    setpage(page);
+    setPage(page);
   }
 
-  
   return (
     <PageBox>
       <Pagination 
         activePage={page} // 현재 페이지
-        itemsCountPerPage={5} // 한 페이지에 보여줄 아이템 수
-        totalItemsCount={50} // 전체 페이지
+        itemsCountPerPage={size} // 한 페이지에 보여줄 아이템 수
+        totalItemsCount={total} // 전체 아이템 수
         pageRangeDisplayed={5} // 페이지네이터에서 보여줄 범위
         prevPageText={"Prev"} // 이전 페이지 가기
         nextPageText={"Next"} // 다음 페이지 가기

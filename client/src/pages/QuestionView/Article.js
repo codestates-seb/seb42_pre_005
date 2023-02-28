@@ -4,9 +4,13 @@
 import styled from "styled-components";
 import { TiArrowSortedUp,TiArrowSortedDown } from "react-icons/ti"
 import { RxBookmark, RxCounterClockwiseClock } from "react-icons/rx"
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { getAccessToken } from "../../storage/cookie";
 
 // ----- 컴포넌트 및 이미지 파일
+import Markdown from "../../components/Markdown";
 
 // ----- CSS 영역
 const ArticleBox = styled.div`
@@ -62,7 +66,7 @@ const Info = styled.div` // 공유 수정 팔로우 버튼
 `
 const UserBox = styled.div` // 답변부분 전체 박스
   background-color: #DCE9F6;
-  padding: 10px;
+  padding: 11px;
   border-radius: 5px;
   width: 200px;
   margin-bottom: 20px;
@@ -85,33 +89,51 @@ const UserProfile = styled.div` // 유저사진, 이름
 `
 
 // ----- 컴포넌트 영역
-function Article( {QuestionData} ) {
+function Article({QuestionData}) {
   const navigate = useNavigate();
+  const DeleteAction = () => {
+    return axios.delete(`${process.env.REACT_APP_API_URL}/questions/${QuestionData.data.questionId}`)
+  }
+
+  const voteHandler = (type) => {
+    if(type === "voteUp"){
+      axios.patch(`${process.env.REACT_APP_API_URL}/questions/${QuestionData.data.questionId}/vote?updown=up`, {},{
+        headers: {
+          Authorization: getAccessToken()
+        }
+      })
+    }else{
+      axios.patch(`${process.env.REACT_APP_API_URL}/questions/${QuestionData.data.questionId}/vote?updown=down`, {},{
+        headers: {
+          Authorization: getAccessToken()
+        }
+      })
+    }
+  }
   return (
     <ArticleBox>
       <VoteBox>
-        <TiArrowSortedUp className="counticon" />
-        {QuestionData.voteCount}
-        <TiArrowSortedDown className="counticon" />
+        <TiArrowSortedUp className="counticon" name="voteUp" onClick={(e)=>voteHandler(e.target.name)} />
+        {QuestionData.data.voteCount}
+        <TiArrowSortedDown className="counticon" name="voteDown" onClick={(e)=>voteHandler(e.target.name)}/>
         <RxBookmark className="markicon" />
         <RxCounterClockwiseClock className="markicon" />
       </VoteBox>
       <IndexBox>
-        <div className="contents">{QuestionData.content}</div>
-        <button className="tags">{QuestionData.tagName}</button>
+        <Markdown className="contents" markdown={QuestionData.data.content} />
+        <button className="tags">{QuestionData.data.tagName}</button>
         <InfoBox>
           <Info>
-            <div>Share</div>
-            <div onClick={() => navigate("/edit")}>Edit</div>
-            <div>Follow</div>
+            <div onClick={() => navigate(`/questions/${QuestionData.data.questionId}/edit`)}>Edit</div>
+            <div onClick={() => DeleteAction()}>Delete</div>
           </Info>
           <UserBox>
             <div className="creatday">asked Feb 23, 2018 at 14:32</div>
             <UserProfile>
-              <div className="img">{QuestionData.name}</div>
+              <div className="img">{QuestionData.data.name}</div>
               <div className="info">
-                <a>{QuestionData.name}</a>
-                <div>{QuestionData.questionId}</div>
+                <div onClick={() => navigate(`/users/${QuestionData.data.memberId}/${QuestionData.data.name}`)}>{QuestionData.data.name}</div>
+                <div>{QuestionData.data.questionId}</div>
               </div>
             </UserProfile>
           </UserBox>

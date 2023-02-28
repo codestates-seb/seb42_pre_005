@@ -57,12 +57,12 @@ function ArticleHeader ( {QuestionData} ) {
           <span className="text">today</span>
         </ArticleInfo>
         <ArticleInfo>
-          <span className="title">Viewed </span>
-          <span className="text">5 times</span>
+          <span className="title">Modified </span>
+          <span className="text">today</span>
         </ArticleInfo>
         <ArticleInfo>
-          <span className="title">Asked </span>
-          <span className="text">today</span>
+          <span className="title">Viewed </span>
+          <span className="text">{QuestionData.views} times</span>
         </ArticleInfo>
       </ArticleInfoBox>
     </HeaderBox>
