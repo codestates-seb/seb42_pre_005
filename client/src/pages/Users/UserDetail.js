@@ -33,11 +33,14 @@ export const UserImage = styled.div`
 
 const UserInfo = styled.div`
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    /* align-items: center; */
     h1 {
         margin-left: 12px;
         font-weight: normal;
     }
+`
+const EditButton = styled.button`
 `
 
 export const UsersMain = styled.div`
@@ -93,15 +96,15 @@ function UserDetail() {
     const activityTabList = ["activity", "summary", "answers", "tags", "questions"]
     
     useEffect(()=>{
-        console.log(params);
+        // console.log(params);
         axios.get(`${process.env.REACT_APP_API_URL}/members/${params.id}`,{
             headers : {
-                Authorization: `Bearer ${getAccessToken()}`,
+                Authorization: getAccessToken(),
             }
         })
         .then(res => {
             setUserData(res.data.data);
-            console.log(userData);
+            // console.log(userData);
             setIsPending(false);
         })
         const {tab} = queryString.parse(location.search)
@@ -115,9 +118,14 @@ function UserDetail() {
                     <UserImage>
                         {/* <img alt="user_img" src="https://i.pravatar.cc/128"/> */}
                     </UserImage>
+                    { !isPending &&
                     <UserInfo>
-                        { !isPending && <h1>{userData.name}</h1> }
+                        {loginUser.id === userData.memberId 
+                        ? <EditButton>Edit Profile</EditButton>
+                        : null }
+                        <h1>{userData.name}</h1>
                     </UserInfo>
+                    }
                 </UsersTop>
                 <UsersMenu>
                     <li onClick={() => navigate(`/users/${userData.memberId}/${userData.name}?tab=profile`)} className={currentTab === "profile" ? "current-tab" : null }>Profile</li>

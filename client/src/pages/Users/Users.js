@@ -97,7 +97,7 @@ function Users() {
     const [total, setTotal] = useState(); // 전체 아이템 수
 
     useEffect(() => {
-        axios.get(`${process.env.REACT_APP_API_URL}/members?page=1&size=${size}&by=base`)
+        axios.get(`${process.env.REACT_APP_API_URL}/members?page=${page}&size=${size}&by=base`)
         .then(res => {
             // console.log(res.data.data)
             // console.log(res.data.pageInfo)
@@ -105,7 +105,7 @@ function Users() {
             setTotal(res.data.pageInfo.totalElements)
         })
         .then(()=> setIsPending(false));
-    },[])
+    },[page])
     return (
         <UsersPage>
             <ContentsContainer>
