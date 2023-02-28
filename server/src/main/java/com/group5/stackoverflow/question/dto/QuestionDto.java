@@ -1,7 +1,6 @@
 package com.group5.stackoverflow.question.dto;
 
 import com.group5.stackoverflow.answer.dto.AnswerDto;
-import com.group5.stackoverflow.question.entity.QuestionTag;
 import com.group5.stackoverflow.tag.dto.TagDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
