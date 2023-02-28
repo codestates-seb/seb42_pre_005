@@ -90,33 +90,33 @@ const UserProfile = styled.div` // 유저사진, 이름
 function Article({QuestionData}) {
   const navigate = useNavigate();
   const DeleteAction = () => {
-    return axios.delete(`${process.env.REACT_APP_API_URL}/questions/${QuestionData.questionId}`)
+    return axios.delete(`${process.env.REACT_APP_API_URL}/questions/${QuestionData.data.questionId}`)
   }
   
   return (
     <ArticleBox>
       <VoteBox>
-        <TiArrowSortedUp className="counticon" onClick={QuestionData.voteCount+1} />
+        <TiArrowSortedUp className="counticon" onClick={QuestionData.data.voteCount+1} />
         {QuestionData.voteCount}
-        <TiArrowSortedDown className="counticon" onClick={QuestionData.voteCount-1}/>
+        <TiArrowSortedDown className="counticon" onClick={QuestionData.data.voteCount-1}/>
         <RxBookmark className="markicon" />
         <RxCounterClockwiseClock className="markicon" />
       </VoteBox>
       <IndexBox>
-        <div className="contents">{QuestionData.content}</div>
-        <button className="tags">{QuestionData.tagName}</button>
+        <div className="contents">{QuestionData.data.content}</div>
+        <button className="tags">{QuestionData.data.tagName}</button>
         <InfoBox>
           <Info>
-            <div onClick={() => navigate(`/questions/${QuestionData.questionId}/edit`)}>Edit</div>
+            <div onClick={() => navigate(`/questions/${QuestionData.data.questionId}/edit`)}>Edit</div>
             <div onClick={() => DeleteAction()}>Delete</div>
           </Info>
           <UserBox>
             <div className="creatday">asked Feb 23, 2018 at 14:32</div>
             <UserProfile>
-              <div className="img">{QuestionData.name}</div>
+              <div className="img">{QuestionData.data.name}</div>
               <div className="info">
-                <div onClick={() => navigate(`/users/${QuestionData.memberId}/${QuestionData.name}`)}>{QuestionData.name}</div>
-                <div>{QuestionData.questionId}</div>
+                <div onClick={() => navigate(`/users/${QuestionData.data.memberId}/${QuestionData.data.name}`)}>{QuestionData.data.name}</div>
+                <div>{QuestionData.data.questionId}</div>
               </div>
             </UserProfile>
           </UserBox>

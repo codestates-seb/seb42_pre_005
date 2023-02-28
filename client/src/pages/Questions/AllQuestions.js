@@ -34,19 +34,19 @@ function AllQuestions() {
 
     useEffect(() => {
         // axios.defaults.withCredentials = true;
-        axios.get(`${process.env.REACT_APP_API_URL}/questions?page=1&size=${size}`)
+        axios.get(`${process.env.REACT_APP_API_URL}/questions?page=${page}&size=${size}`)
         .then((res) => {
             // console.log(res.data)
             setQuestionList(res.data.data);
             setTotal(res.data.pageInfo.totalElements)
         })
         .then(()=> setIsPending(false));
-    }, []);
+    }, [page]);
 
     return (
         <>
             <QuestionsBox>
-                <AllQuestionHeader qustionList={questionList}/>
+                <AllQuestionHeader total={total}/>
                 <QustionList>
                     {!isPending && 
                     questionList.map((questionItem) => <QuestionItem 
