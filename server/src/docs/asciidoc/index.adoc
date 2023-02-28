@@ -215,6 +215,41 @@ include::{snippets}/patch-question-vote/http-response.adoc[]
 .response-fields
 include::{snippets}/patch-question-vote/response-fields.adoc[]
 
+=== 내 질문 조회
+.curl-request
+include::{snippets}/my-question/curl-request.adoc[]
+
+.http-request
+include::{snippets}/my-question/http-request.adoc[]
+
+
+.request-parameters
+include::{snippets}/my-question/request-parameters.adoc[]
+
+
+.http-response
+include::{snippets}/my-question/http-response.adoc[]
+
+.response-fields
+include::{snippets}/my-question/response-fields.adoc[]
+
+=== 태그로 질문 조회
+.curl-request
+include::{snippets}/tag-question/curl-request.adoc[]
+
+.http-request
+include::{snippets}/tag-question/http-request.adoc[]
+
+
+.request-parameters
+include::{snippets}/tag-question/request-parameters.adoc[]
+
+
+.http-response
+include::{snippets}/tag-question/http-response.adoc[]
+
+.response-fields
+include::{snippets}/tag-question/response-fields.adoc[]
 
 
 === 질문 삭제
