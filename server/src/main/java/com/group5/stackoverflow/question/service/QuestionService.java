@@ -116,23 +116,6 @@ public class QuestionService {
         return questionPage;
     }
 
-    // 질문을 태그로 조회
-    @Transactional(readOnly = true)
-    public Page<Question> findQuestionsByTag(int page, int size, Optional<Tag> optionalTag) {
-        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("questionId").descending());
-
-        if (optionalTag.isEmpty()) { // optionalTag 객체가 빈값일 경우 전체 질문을 조회한다.
-            return repository.findAll(pageRequest);
-        }
-
-        List<Question> questions = optionalTag.get().getQuestionTags().stream()
-                .map(questionTag -> questionTag.getQuestion())
-                .collect(Collectors.toList());
-
-        Page<Question> pageQuestions = new PageImpl<>(questions, pageRequest, questions.size());
-
-        return pageQuestions;
-    }
 
     @Transactional(readOnly = true)
     public Question findVerifiedQuestion(long questionId) {
