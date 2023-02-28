@@ -118,7 +118,7 @@ public class AnswerController {
     public ResponseEntity getMyAnswers(@RequestParam("page") int page,
                                          @RequestParam("size") int size,
                                          HttpServletRequest request) {
-        Page<Answer> pageAnswers = answerService.findMyAnswers(Checker.getMemberId(jwtTokenizer, request), page - 1, size);
+        Page<Answer> pageAnswers = answerService.findMyAnswers(Checker.getMemberId(), page - 1, size);
         List<Answer> answers = pageAnswers.getContent();
 
         return new ResponseEntity<>(
