@@ -65,7 +65,7 @@ const Info = styled.div` // 공유 수정 팔로우 버튼
 `
 const UserBox = styled.div` // 답변부분 전체 박스
   background-color: #DCE9F6;
-  padding: 10px;
+  padding: 11px;
   border-radius: 5px;
   width: 200px;
   margin-bottom: 20px;
