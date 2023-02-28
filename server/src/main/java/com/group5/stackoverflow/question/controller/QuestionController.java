@@ -12,6 +12,9 @@ import com.group5.stackoverflow.utils.Checker;
 import com.group5.stackoverflow.utils.UriCreator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -115,18 +118,16 @@ public class QuestionController {
                 new MultiResponseDto<>(questionMapper.questionsToQuestionResponses(questions), pageQuestions),
                 HttpStatus.OK);
     }
-    // 질문을 태그로 조회
-    @GetMapping("/questions/tagged/{tagName}")
-    public ResponseEntity getQuestionsByTag(@PathVariable("tagName") String tagName,
-                                            @Positive @RequestParam(required = false, defaultValue = "1") int page,
-                                            @Positive @RequestParam(required = false, defaultValue = "10") int size) {
+    // 태그이름으로 질문 조회
+    @GetMapping("/tags")
+    public ResponseEntity getQuestionsByTag(@RequestParam String tagName,
+                                            @Positive @RequestParam(defaultValue = "1") int page,
+                                            @Positive @RequestParam(defaultValue = "10") int size){
+        Page<Question> questionPage = tagService.findQuestionByTag(PageRequest.of(page, size, Sort.by("questionId").descending()),tagName);
+        List<Question> questions = questionPage.getContent();
 
-        Page<Question> pageQuestions = questionService.findQuestionsByTag(page, size, tagService.findOptionalTagByTagName(tagName));
 
-        return new ResponseEntity(
-                new MultiResponseDto<>(questionMapper.questionsToQuestionResponses(pageQuestions.getContent()), pageQuestions),
-                HttpStatus.OK
-        );
+        return new ResponseEntity<>(new MultiResponseDto<>(questionMapper.questionsToQuestionResponses(questions), questionPage), HttpStatus.OK);
     }
 
     // 추천수 updown 기능

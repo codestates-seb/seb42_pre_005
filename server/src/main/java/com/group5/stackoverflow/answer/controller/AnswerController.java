@@ -93,13 +93,13 @@ public class AnswerController {
                 new SingleResponseDto<>(mapper.answerToAnswerResponse(response)), HttpStatus.OK);
     }
 
-    // 추천수 upDown 기능
+    // 추천수 updown 기능
     @PatchMapping("/answers/{answer-id}/vote")
     public ResponseEntity patchAnswerVote(@PathVariable("answer-id") @Positive Long answerId,
-                                          @RequestParam String upDown,
+                                          @RequestParam String updown,
                                           @Valid @RequestBody AnswerDto.PatchVote requestBody ) {
         requestBody.addAnswerId(answerId);
-        Answer answer = answerService.updateVote(requestBody.getAnswerId(), upDown);
+        Answer answer = answerService.updateVote(requestBody.getAnswerId(), updown);
 
         return new ResponseEntity<>(
                 new SingleResponseDto<>(mapper.answerToAnswerResponse(answer)), HttpStatus.OK);

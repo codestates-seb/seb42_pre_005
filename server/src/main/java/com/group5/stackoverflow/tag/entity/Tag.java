@@ -26,7 +26,7 @@ public class Tag extends Auditable {
     @Column(unique = true, nullable = false, length = 35)
     private String tagName;
 
-    private int questionCount = 0;
+    private int questionCount;
 
     @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL)
     private List<QuestionTag> questionTags = new ArrayList<>();
@@ -34,9 +34,5 @@ public class Tag extends Auditable {
 
     public void setQuestionTag(QuestionTag questionTag) {
         questionTags.add(questionTag);
-    }
-
-    public void calQuestionCount() {
-        this.questionCount = questionTags.size();
     }
 }

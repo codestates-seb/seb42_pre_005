@@ -15,6 +15,7 @@ import com.group5.stackoverflow.member.mapper.MemberMapper;
 import com.group5.stackoverflow.member.repository.MemberRepository;
 import com.group5.stackoverflow.member.service.MemberService;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mockito;
@@ -91,9 +92,10 @@ public class AnswerControllerRestDocsTest {
 
 
     @Test
+    @DisplayName("답변 등록")
     public void postAnswerTest() throws Exception {
 
-        AnswerDto.Post post = new AnswerDto.Post(1L, 1L,"이곳은 답변을 적는 곳입니다.");
+        AnswerDto.Post post = new AnswerDto.Post(1L, 1L, "이곳은 답변을 적는 곳입니다.");
         String content = gson.toJson(post);
 
         AnswerDto.Response responseDto = new AnswerDto.Response(
@@ -174,10 +176,11 @@ public class AnswerControllerRestDocsTest {
 
 
     @Test
+    @DisplayName("답변 수정")
     public void patchAnswerTest() throws Exception {
 
         AnswerDto.Patch patch = new AnswerDto.Patch(
-                1L, 1L, 1L,"이곳은 답변을 적는 곳입니다.");
+                1L, 1L, 1L, "이곳은 답변을 적는 곳입니다.");
         String content = gson.toJson(patch);
 
         AnswerDto.Response response = new AnswerDto.Response(
@@ -257,6 +260,7 @@ public class AnswerControllerRestDocsTest {
     }
 
     @Test
+    @DisplayName("답변 삭제")
     public void deleteAnswerTest() throws Exception {
 
         Long answerId = 1L;
@@ -280,6 +284,64 @@ public class AnswerControllerRestDocsTest {
                                 headerWithName("Authorization").description("Bearer (accessToken)")
                         )
                 ));
+    }
 
+    @Test
+    @DisplayName("답변 추천 기능")
+    public void answerPatchVote() throws Exception {
+        Long answerId = 1L;
+
+        AnswerDto.PatchVote patchVote = new AnswerDto.PatchVote(1L, 1L);
+        String content = gson.toJson(patchVote);
+
+        AnswerDto.Response response = new AnswerDto.Response(
+                1L,
+                1L,
+                1L,
+                "홍길동",
+                "답변 내용입니다.",
+                1
+        );
+
+        given(answerService.updateVote(Mockito.anyLong(), Mockito.anyString())).willReturn(new Answer());
+
+        given(mapper.answerToAnswerResponse(Mockito.any(Answer.class))).willReturn(response);
+
+        ResultActions actions =
+                mockMvc.perform(
+                        patch("/answers/{answer-id}/vote")
+                                .header("Authorization", "Bearer ".concat(accessTokenForUser))
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(content)
+                                .param("updown", "up")
+                );
+
+        actions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.answerId").value(patchVote.getAnswerId()))
+                .andDo(document("patch-answer-vote",
+                        getRequestPreProcessor(),
+                        getResponsePreProcessor(),
+                        pathParameters(
+                                parameterWithName("answer-id").description("답변 식별자")
+                        ),
+                        requestHeaders(
+                                headerWithName("Authorization").description("Bearer (accessToken")
+                        ),
+                        requestParameters(
+                                parameterWithName("updown").description("추천 업 or 추천 다운")
+                        ),
+                        responseFields(
+                                List.of(
+                                        fieldWithPath("data").type(JsonFieldType.OBJECT).description("결과 데이터"),
+                                        fieldWithPath("data.answerId").type(JsonFieldType.NUMBER).description("답변 식별자"),
+                                        fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("회원 식별자"),
+                                        fieldWithPath("data.questionId").type(JsonFieldType.NUMBER).description("질문 식별자"),
+                                        fieldWithPath("data.name").type(JsonFieldType.STRING).description("회원 이름"),
+                                        fieldWithPath("data.content").type(JsonFieldType.STRING).description("답변 내용"),
+                                        fieldWithPath("data.voteCount").type(JsonFieldType.NUMBER).description("추천수")
+                                )
+                        )
+                ));
     }
 }

@@ -7,13 +7,11 @@ import com.group5.stackoverflow.question.repository.QuestionTagRepository;
 import com.group5.stackoverflow.tag.entity.Tag;
 import com.group5.stackoverflow.tag.repository.TagRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -77,8 +75,14 @@ public class TagService {
         return tags;
     }
 
+    // 태그달린 questionCount
     public void updateQuestionCount(Tag tag) {
-        tag.calQuestionCount();
+        Tag name = findVerifiedTag(tag.getTagName());
+
+        if (name.equals(tag)) {
+            int count = tag.getQuestionCount() + 1;
+            tag.setQuestionCount(count);
+        }
         tagRepository.save(tag);
     }
 
@@ -106,10 +110,20 @@ public class TagService {
         return findTags;
     }
 
-    // 태그 검색
-    @Transactional(readOnly = true)
-    public Optional<Tag> findOptionalTagByTagName(String tagName) {
-        return tagRepository.findByTagName(tagName);
+    // 태그이름으로 질문조회
+    public Page<Question> findQuestionByTag(Pageable pageable,String tagName){
+        Tag findTag = findVerifiedTag(tagName);
+        List<QuestionTag> questionTags = findTag.getQuestionTags();
+        List<Long> questionIdList = new ArrayList<>();
+        for(QuestionTag questionTag:questionTags){
+            Long questionId = questionTag.getQuestion().getQuestionId();
+            questionIdList.add(questionId);
+        }
+        List<Question> questions = questionRepository.findAllById(questionIdList);
+
+        Page<Question> questionPage = new PageImpl<>(questions, pageable, questions.size());
+
+        return questionPage;
     }
 
     public Tag findVerifiedTag(String tagName) {
@@ -121,24 +135,4 @@ public class TagService {
         }
     }
 
-
-//    // popular, name, new 기준별 정렬 페이지
-//    public List<Tag> findTagsPopular(int page) {
-//        Page<Tag> tagPage = tagRepository.findByOrderByAskedTotal(PageRequest.of(page, 36));
-//        List<Tag> content = tagPage.getContent();
-//        return content;
-//    }
-//
-//    public List<Tag> findTagsName(int page) {
-//        Page<Tag> tagPage = tagRepository.findByOrderByTagNameAsc(PageRequest.of(page, 36));
-//        List<Tag> content = tagPage.getContent();
-//        return content;
-//    }
-//
-//    public List<Tag> findTagsNew(int page) {
-//        Page<Tag> tagPage = tagRepository.findByOrderByCreatedAtDesc(PageRequest.of(page, 36));
-//        List<Tag> content = tagPage.getContent();
-//
-//        return content;
-//    }
 }
