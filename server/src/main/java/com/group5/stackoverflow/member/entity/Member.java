@@ -58,7 +58,7 @@ public class Member extends Auditable {
     List<Answer> answers = new ArrayList<>();
 
     @Setter(AccessLevel.NONE)
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Question> questions = new ArrayList<>();
 
     public void setQuestion(Question question) {

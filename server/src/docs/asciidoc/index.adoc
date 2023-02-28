@@ -179,6 +179,43 @@ include::{snippets}/get-questions/http-response.adoc[]
 .response-fields
 include::{snippets}/get-questions/response-fields.adoc[]
 
+=== 질문 검색 조회
+.curl-request
+include::{snippets}/search-question/curl-request.adoc[]
+
+.http-request
+include::{snippets}/search-question/http-request.adoc[]
+
+
+.request-parameters
+include::{snippets}/search-question/request-parameters.adoc[]
+
+
+.http-response
+include::{snippets}/search-question/http-response.adoc[]
+
+.response-fields
+include::{snippets}/search-question/response-fields.adoc[]
+
+=== 질문 추천
+.curl-request
+include::{snippets}/patch-question-vote/curl-request.adoc[]
+
+.http-request
+include::{snippets}/patch-question-vote/http-request.adoc[]
+
+
+.request-parameters
+include::{snippets}/patch-question-vote/request-parameters.adoc[]
+
+
+.http-response
+include::{snippets}/patch-question-vote/http-response.adoc[]
+
+.response-fields
+include::{snippets}/patch-question-vote/response-fields.adoc[]
+
+
 
 === 질문 삭제
 .curl-request
