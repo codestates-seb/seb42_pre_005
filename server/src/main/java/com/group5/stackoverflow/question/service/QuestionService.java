@@ -50,7 +50,6 @@ public class QuestionService {
         List<Tag> tags = tagService.findTagsElseCreateTags(tagName);
         tags.forEach(tag -> {
             tagService.updateQuestionCount(tag);
-            new QuestionTag(question, tag);
         });
 
         question.setCreatedAt(LocalDateTime.now());
