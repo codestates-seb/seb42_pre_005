@@ -111,7 +111,7 @@ public class SecurityConfiguration {
                 .addFilterBefore(new LogFilter(), ChannelProcessingFilter.class)
                 .addFilter(jwtAuthenticationFilter)
                 .addFilterAfter(jwtVerificationFilter, JwtAuthenticationFilter.class)
-                .addFilterAfter(memberUrIVerificationFilter, JwtVerificationFilter.class);;
+                .addFilterAfter(memberUrIVerificationFilter, JwtVerificationFilter.class);
         }
     }
 }
