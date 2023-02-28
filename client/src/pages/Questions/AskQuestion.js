@@ -112,24 +112,20 @@ function AskQuestion() {
   const navigate = useNavigate();
 
   const [title, setTitle] = useState(""); // 질문 제목 입력칸의 상태 관리창
-  const [problemText, setProblemText] = useState(""); // 질문 내용 입력칸의 상태 관리창
-  const [tags, setTags] = useState("") // 태그 내용 입력칸의 상태 관리창
+  const [value, setValue] = useState(""); // 질문 내용 입력칸의 상태 관리창
+  const [tags, setTags] = useState("") // 태그 내용 입력칸의 상태 관리창, 만들긴 했지만 요청 가지는 않음
 
   const askTitle = (e) => { // 질문 제목 입력칸 상태 함수
     setTitle(e.target.value)
   }
-  const askText = (e) => { // 질문 내용 입력칸 상태 함수
-    setProblemText(e.target.value)
-  }
   const editTag = (e) => { // 태그 내용 입력칸 상태 함수
     setTags(e.target.value)
   }
-
   const ReviewButtonSubmit = (e) => { // 다 쓴 질문 제출 버튼 함수
     e.preventDefault();
     axios.post(`${process.env.REACT_APP_API_URL}/questions`, {
       title : title,
-      content : problemText,
+      content : value,
     },{
       headers: {
         Authorization: `Bearer ${getAccessToken()}`
@@ -172,8 +168,8 @@ function AskQuestion() {
         <EditText>Introduce the problem and expand on what you put in the title. Minimum 20 characters.</EditText>
         <ReactQuill 
           theme="snow"
-          value={problemText}
-          onChange={askText}
+          value={value} 
+          onChange={setValue}
           />
       </EditBox>
       <EditBox>

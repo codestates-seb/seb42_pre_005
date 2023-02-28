@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom';
 import axios from "axios";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { getAccessToken } from "../../storage/cookie";
 
 // ----- 컴포넌트 및 이미지 파일
 
@@ -40,31 +41,32 @@ const CreateButton = styled.button` // 답변 등록 버튼
 
 // ----- 컴포넌트 영역
 function AnswerCreate() {
-  const [answerText, setAnswerText] = useState(""); // 질문 내용 입력칸의 상태 관리창
+  const [value, setValue] = useState(""); // 질문 내용 입력칸의 상태 관리창
   const { id } = useParams();
-
 
   const Answerpost = () => {
     // 댓글 포스트 요청 함수
-    axios({
-      method: 'post',
-      url: `${process.env.REACT_APP_API_URL}/questions/${id}/answers`,
-      data: {content : {answerText}}
+    axios.post(`${process.env.REACT_APP_API_URL}/questions/${id}/answers`, {
+      content : value,
+    },{
+      headers: {
+        Authorization: `Bearer ${getAccessToken()}`
+      }
     })
     .then(res => {
-      console.log(res)
-      window.location.reload()
-    })
+        console.log(res)
+        window.location.reload() // 화면 새로고침
+      })
   }
 
   return (
     <CreateBox>
       <h1>Your answer</h1>
       <ReactQuill 
-        theme="snow"
-        value={answerText}
-        onChange={(e) => setAnswerText(e)} 
-      />
+          theme="snow"
+          value={value} 
+          onChange={setValue}
+          />
       <CreateButton onClick={Answerpost}>Post Your Answer</CreateButton>
     </CreateBox>
   )

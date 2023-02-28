@@ -90,27 +90,15 @@ const UserProfile = styled.div` // 유저사진, 이름
 `
 
 // ----- 컴포넌트 영역
-function Answer() {
+function Answer( {QuestionData} ) {
   const navigate = useNavigate();
-  const [answerList, setAnswerList] = useState([]); // 뿌려줄 답변 리스트
-  const { id } = useParams(); // 
-
-  useEffect(() => {
-    const fetch = async () => {
-      await axios
-      .get(`${process.env.REACT_APP_API_URL}/questions/${id}`)
-      .then(res => {
-        console.log(res.data)
-        setAnswerList(res.data.filter((e)=>e.questionId === id))
-        console.log(setAnswerList)
-    });
-    }
-    fetch()
-  }, [])
+  const DeleteAction = () => {
+    return axios.delete(`${process.env.REACT_APP_API_URL}/answers/${QuestionData.answerId}`)
+  }
 
   return (
     <>
-      {answerList && answerList.map((e)=> 
+      {QuestionData && QuestionData.map((e)=> 
       <AnswerBox key={e.answerId}>
         <VoteBox>
           <TiArrowSortedUp className="counticon" />
@@ -123,9 +111,8 @@ function Answer() {
           <div className="contents">{e.content}</div>
             <InfoBox>
               <Info>
-                <div>Share</div>
-                <div>Edit</div>
-                <div>Follow</div>
+                <div onClick={() => navigate(`/answers/${QuestionData.answerId}/edit`)}>Edit</div>
+                <div onClick={() => DeleteAction()}>Delete</div>
               </Info>
               <UserBox>
                 <div className="creatday">asked Feb 23, 2018 at 14:32</div>
