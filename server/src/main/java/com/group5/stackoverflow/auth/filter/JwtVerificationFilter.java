@@ -3,8 +3,9 @@ package com.group5.stackoverflow.auth.filter;
 import com.group5.stackoverflow.auth.Token.CustomAuthenticationToken;
 import com.group5.stackoverflow.auth.tokenizer.JwtTokenizer;
 import com.group5.stackoverflow.auth.utils.CustomAuthorityUtils;
+import com.group5.stackoverflow.utils.Checker;
 import io.jsonwebtoken.ExpiredJwtException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,10 +16,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.security.SignatureException;
 import java.util.List;
 import java.util.Map;
 
+
+@Slf4j
 public class JwtVerificationFilter extends OncePerRequestFilter {  // (1)
     private final JwtTokenizer jwtTokenizer;
     private final CustomAuthorityUtils authorityUtils;
@@ -36,7 +38,9 @@ public class JwtVerificationFilter extends OncePerRequestFilter {  // (1)
         try {
             Map<String, Object> claims = verifyJws(request);
             setAuthenticationToContext(claims);
+            logRequestInfo();
         } catch (ExpiredJwtException ee) {
+            log.warn("Expired JWT Exception");
             request.setAttribute("exception", ee);
         } catch (Exception e) {
             request.setAttribute("exception", e);
@@ -69,5 +73,11 @@ public class JwtVerificationFilter extends OncePerRequestFilter {  // (1)
         List<GrantedAuthority> authorities = authorityUtils.createAuthorities((List)claims.get("roles"));
         Authentication authentication = new CustomAuthenticationToken(username, null,  memberId, authorities);
         SecurityContextHolder.getContext().setAuthentication(authentication); // (4-4)
+
+    }
+
+    private void logRequestInfo(){
+        log.info("Request ID: {}", Checker.getMemberId());
+        log.info("Request roles: {}", Checker.getRoles().toString());
     }
 }
