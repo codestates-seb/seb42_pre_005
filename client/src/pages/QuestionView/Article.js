@@ -7,6 +7,7 @@ import { RxBookmark, RxCounterClockwiseClock } from "react-icons/rx"
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { getAccessToken } from "../../storage/cookie";
 
 // ----- 컴포넌트 및 이미지 파일
 import Markdown from "../../components/Markdown";
@@ -93,12 +94,28 @@ function Article({QuestionData}) {
   const DeleteAction = () => {
     return axios.delete(`${process.env.REACT_APP_API_URL}/questions/${QuestionData.data.questionId}`)
   }
+
+  const voteHandler = (type) => {
+    if(type === "voteUp"){
+      axios.patch(`${process.env.REACT_APP_API_URL}/questions/${QuestionData.data.questionId}/vote?updown=up`, {},{
+        headers: {
+          Authorization: getAccessToken()
+        }
+      })
+    }else{
+      axios.patch(`${process.env.REACT_APP_API_URL}/questions/${QuestionData.data.questionId}/vote?updown=down`, {},{
+        headers: {
+          Authorization: getAccessToken()
+        }
+      })
+    }
+  }
   return (
     <ArticleBox>
       <VoteBox>
-        <TiArrowSortedUp className="counticon" onClick={QuestionData.data.voteCount+1} />
-        {QuestionData.voteCount}
-        <TiArrowSortedDown className="counticon" onClick={QuestionData.data.voteCount-1}/>
+        <TiArrowSortedUp className="counticon" name="voteUp" onClick={(e)=>voteHandler(e.target.name)} />
+        {QuestionData.data.voteCount}
+        <TiArrowSortedDown className="counticon" name="voteDown" onClick={(e)=>voteHandler(e.target.name)}/>
         <RxBookmark className="markicon" />
         <RxCounterClockwiseClock className="markicon" />
       </VoteBox>
