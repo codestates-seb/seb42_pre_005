@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -47,7 +48,12 @@ public class QuestionService {
         memberService.findVerifiedMember(question.getMember().getMemberId()); // member 확인
 
         List<Tag> tags = tagService.findTagsElseCreateTags(tagName);
-        tags.forEach(tag -> new QuestionTag(question, tag));
+        tags.forEach(tag -> {
+            tagService.updateQuestionCount(tag);
+            new QuestionTag(question, tag);
+        });
+
+        question.setCreatedAt(LocalDateTime.now());
 
         return repository.save(question);
     }
@@ -93,7 +99,7 @@ public class QuestionService {
                 result = repository.findAll(PageRequest.of(page, size, Sort.by("answers").ascending()));
                 break;
             default:
-                result = repository.findAll(PageRequest.of(page, size, Sort.by("questionId")));
+                result = repository.findAll(PageRequest.of(page, size, Sort.by("questionId").ascending()));
         }
         return result;
     }
@@ -110,23 +116,6 @@ public class QuestionService {
         return questionPage;
     }
 
-    // 질문을 태그로 조회
-    @Transactional(readOnly = true)
-    public Page<Question> findQuestionsByTag(int page, int size, Optional<Tag> optionalTag) {
-        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("questionId").descending());
-
-        if (optionalTag.isEmpty()) { // optionalTag 객체가 빈값일 경우 전체 질문을 조회한다.
-            return repository.findAll(pageRequest);
-        }
-
-        List<Question> questions = optionalTag.get().getQuestionTags().stream()
-                .map(questionTag -> questionTag.getQuestion())
-                .collect(Collectors.toList());
-
-        Page<Question> pageQuestions = new PageImpl<>(questions, pageRequest, questions.size());
-
-        return pageQuestions;
-    }
 
     @Transactional(readOnly = true)
     public Question findVerifiedQuestion(long questionId) {

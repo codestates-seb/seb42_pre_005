@@ -34,7 +34,7 @@ public class Question extends Auditable {
     @Column(nullable = false)
     private int views;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 

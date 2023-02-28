@@ -69,9 +69,9 @@ public class AnswerService {
     }
 
     // 추천 로직
-    public Answer updateVote(Long answerId, String upDown) {
+    public Answer updateVote(Long answerId, String updown) {
         Answer findAnswer = findVerifiedAnswer(answerId);
-        int vote = (upDown.equals("up")) ? findAnswer.getVoteCount() + 1 : findAnswer.getVoteCount() - 1;
+        int vote = (updown.equals("up")) ? findAnswer.getVoteCount() + 1 : findAnswer.getVoteCount() - 1;
 
         findAnswer.setVoteCount(vote);
         return answerRepository.save(findAnswer);
