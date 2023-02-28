@@ -8,6 +8,7 @@ import com.group5.stackoverflow.member.dto.MemberDto;
 import com.group5.stackoverflow.member.entity.Member;
 import com.group5.stackoverflow.member.mapper.MemberMapper;
 import com.group5.stackoverflow.member.repository.MemberRepository;
+import com.group5.stackoverflow.utils.Checker;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -45,8 +46,8 @@ public class MemberAuthenticationSuccessHandler implements AuthenticationSuccess
         Optional<Member> optionalMember = memberRepository.findByEmail(authentication.getName());
         Member member =  optionalMember.orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
 
-
-        response.addHeader("memeber-id", String.valueOf(member.getMemberId()));
+        String memberId =String.valueOf(member.getMemberId());
+        response.addHeader("memeber-id", memberId);
 
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
@@ -54,6 +55,8 @@ public class MemberAuthenticationSuccessHandler implements AuthenticationSuccess
 
         MemberDto.Response memberResponseDto = memberMapper.memberToMemberResponse(member);
         response.getWriter().write(new ObjectMapper().writeValueAsString(new SingleResponseDto<>(memberResponseDto)));
+        log.info("LOGIN ID: {}", memberId);
+
 
     }
 }

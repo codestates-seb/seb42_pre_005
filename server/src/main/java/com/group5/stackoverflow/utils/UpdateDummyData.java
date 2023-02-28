@@ -1,5 +1,7 @@
 package com.group5.stackoverflow.utils;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -11,9 +13,12 @@ public class UpdateDummyData {
         Connection conn = null;
         PreparedStatement pstmt = null;
 
-        String url = "jdbc:mysql://localhost:3306/stackoverflow";
-        String id = "root"; // 데이터베이스 ID
-        String password = "pass!"; // 데이터베이스 비밀번호
+//        String url = "jdbc:mysql://localhost:3306/stackoverflow";
+//        String id = "root"; // 데이터베이스 ID
+//        String password = "pass!"; // 데이터베이스 비밀번호
+        String id = System.getenv("RDS_MYSQL_ADMIN_ID"); //root
+        String password = System.getenv("RDS_MYSQL_ADMIN_PASSWORD"); //password!
+        String url = "jdbc:mysql://"+System.getenv("AWS_RDS_ENDPOINT") + "/stackoverflow";
 
         try {
             // MySQL 데이터베이스에 연결
@@ -21,14 +26,16 @@ public class UpdateDummyData {
             conn = DriverManager.getConnection(url, id, password);
 
             // UPDATE 문 생성
-            String sql = "UPDATE member SET member_status = ? WHERE name = ?";
+            String sql = "UPDATE member SET password = ? WHERE name = ?";
             pstmt = conn.prepareStatement(sql);
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(); // 패스워드 인코더 생성
 
-            for (int i = 1 ; i < 100; i++){
+            for (int i = 1 ; i <= 100; i++){
+                String rawPassword = "password" + i; // 패스워드
+                String encodedPassword = "{bcrypt}"+passwordEncoder.encode(rawPassword);
+                pstmt.setString(1, encodedPassword);
+
                 String name = "name" + i;
-                String[] memberStatusList = {"MEMBER_NEW", "MEMBER_ACTIVE", "MEMBER_SLEEP", "MEMBER_QUIT"};
-                String memberStatus = memberStatusList[new Random().nextInt(memberStatusList.length)];
-                pstmt.setString(1, memberStatus);
                 pstmt.setString(2, name);
                 // UPDATE 문 실행
                 int result = pstmt.executeUpdate();

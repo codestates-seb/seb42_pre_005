@@ -1,12 +1,7 @@
 package com.group5.stackoverflow.auth.filter;
 
-import com.group5.stackoverflow.auth.tokenizer.JwtTokenizer;
 import com.group5.stackoverflow.utils.Checker;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -16,17 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 public class MemberUrIVerificationFilter extends OncePerRequestFilter {  // (1)
-    private final JwtTokenizer jwtTokenizer;
-
-    // (2)
-    public MemberUrIVerificationFilter(JwtTokenizer jwtTokenizer) {
-        this.jwtTokenizer = jwtTokenizer;
-    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -40,11 +27,11 @@ public class MemberUrIVerificationFilter extends OncePerRequestFilter {  // (1)
         if (antPathMatcher.match("/members/\\d+", uri.getPath())
                 || antPathMatcher.match("/members/\\d+/**", uri.getPath())) {
             Long memberId = Long.parseLong(uri.getPath().split("/")[2]);
-            if (Checker.isVerified(jwtTokenizer, request, memberId)) {
+            if (Checker.checkVerified(memberId)) {
                 request.setAttribute("verified", true);
             }
         } else {
-            if (Checker.isAdmin()) {
+            if (Checker.checkAdmin()) {
                 request.setAttribute("verified", true);
             }
 
