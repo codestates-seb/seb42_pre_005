@@ -98,7 +98,7 @@ public class QuestionService {
                 result = repository.findAll(PageRequest.of(page, size, Sort.by("answers").ascending()));
                 break;
             default:
-                result = repository.findAll(PageRequest.of(page, size, Sort.by("questionId").ascending()));
+                result = repository.findAll(PageRequest.of(page, size, Sort.by("questionId").descending()));
         }
         return result;
     }
