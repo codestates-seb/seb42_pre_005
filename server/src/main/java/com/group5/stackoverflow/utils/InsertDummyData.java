@@ -17,9 +17,9 @@ public class InsertDummyData {
         Connection conn = null;
         PreparedStatement pstmt = null;
 
-        String id = System.getenv("RDS_MYSQL_ADMIN_ID");
+        String id = System.getenv("RDS_MYSQL_ADMIN_ID"); //root
 
-        String password = System.getenv("RDS_MYSQL_ADMIN_PASSWORD");
+        String password = System.getenv("RDS_MYSQL_ADMIN_PASSWORD"); //password!
 
         String url = "jdbc:mysql://"+System.getenv("AWS_RDS_ENDPOINT") + "/stackoverflow";
 
@@ -31,6 +31,7 @@ public class InsertDummyData {
         try {
             // MySQL 데이터베이스에 연결
             Class.forName("com.mysql.cj.jdbc.Driver");
+            
             conn = DriverManager.getConnection(url, id, password);
 
             // 100개의 더미 데이터 생성
