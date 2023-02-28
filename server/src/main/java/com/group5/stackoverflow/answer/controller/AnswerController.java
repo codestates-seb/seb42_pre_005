@@ -55,6 +55,7 @@ public class AnswerController {
         this.jwtTokenizer = jwtTokenizer;
     }
 
+    // 답변 등록
     @PostMapping("/{member-id}/questions/{question-id}/answers")
     public ResponseEntity postAnswer(@PathVariable("member-id") @Positive Long memberId,
             @PathVariable("question-id") @Positive Long questionId,
@@ -75,6 +76,7 @@ public class AnswerController {
                 new SingleResponseDto<>(mapper.answerToAnswerResponse(response)), HttpStatus.CREATED);
     }
 
+    // 답변 수정
     @PatchMapping("/{member-id}/answers/{answer-id}")
     public ResponseEntity patchAnswer(@PathVariable("member-id") @Positive Long memberId,
                                       @PathVariable("answer-id") @Positive Long answerId,
@@ -105,6 +107,7 @@ public class AnswerController {
                 new SingleResponseDto<>(mapper.answerToAnswerResponse(answer)), HttpStatus.OK);
     }
 
+    // 답변 삭제
     @DeleteMapping("/answers/{answer-id}")
     public ResponseEntity deleteAnswer(@PathVariable("answer-id") @Positive Long answerId) {
         // 헤더에 담겨서 넘어온 JWT토큰을 해독하여 email 정보를 가져옴
@@ -114,6 +117,7 @@ public class AnswerController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    // 내가 쓴 답변 조회
     @GetMapping("/answers/my")
     public ResponseEntity getMyAnswers(@RequestParam("page") int page,
                                          @RequestParam("size") int size,

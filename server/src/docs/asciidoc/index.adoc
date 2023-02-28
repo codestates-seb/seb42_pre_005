@@ -267,6 +267,43 @@ include::{snippets}/patch-answer/http-response.adoc[]
 .response-fields
 include::{snippets}/patch-answer/response-fields.adoc[]
 
+=== 내가 쓴 답변 조회
+.curl-request
+include::{snippets}/get-my-answers/curl-request.adoc[]
+
+.http-request
+include::{snippets}/get-my-answers/http-request.adoc[]
+
+
+.request-parameters
+include::{snippets}/get-my-answers/request-parameters.adoc[]
+
+
+.http-response
+include::{snippets}/get-my-answers/http-response.adoc[]
+
+.response-fields
+include::{snippets}/get-my-answers/response-fields.adoc[]
+
+=== 답변 추천
+.curl-request
+include::{snippets}/patch-answer/curl-request.adoc[]
+
+.http-request
+include::{snippets}/patch-answer/http-request.adoc[]
+
+.path-parameters
+include::{snippets}/patch-answer/path-parameters.adoc[]
+
+.request-fields
+include::{snippets}/patch-answer/request-fields.adoc[]
+
+.http-response
+include::{snippets}/patch-answer/http-response.adoc[]
+
+.response-fields
+include::{snippets}/patch-answer/response-fields.adoc[]
+
 === 답변 삭제
 .curl-request
 include::{snippets}/delete-answer/curl-request.adoc[]

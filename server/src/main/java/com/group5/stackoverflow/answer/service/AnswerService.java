@@ -36,7 +36,7 @@ public class AnswerService {
         this.memberService = memberService;
     }
 
-    // 답변 생성
+    // 답변 등록
     public Answer createAnswer(Answer answer, Long questionId) {
         Question question = questionService.findVerifiedQuestion(questionId);
         answer.setQuestion(question);
@@ -86,6 +86,7 @@ public class AnswerService {
         return answer;
     }
 
+    // 내가 쓴 답변 조회
     public Page<Answer> findMyAnswers(Long memberId, int page, int size) {
         return answerRepository.findAllByMemberMemberId(PageRequest.of(page, size, Sort.by("answerId").descending()), memberId);
     }
