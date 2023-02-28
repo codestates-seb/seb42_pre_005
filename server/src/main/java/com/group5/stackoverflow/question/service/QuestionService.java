@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -48,6 +49,8 @@ public class QuestionService {
 
         List<Tag> tags = tagService.findTagsElseCreateTags(tagName);
         tags.forEach(tag -> new QuestionTag(question, tag));
+
+        question.setCreatedAt(LocalDateTime.now());
 
         return repository.save(question);
     }
@@ -93,7 +96,7 @@ public class QuestionService {
                 result = repository.findAll(PageRequest.of(page, size, Sort.by("answers").ascending()));
                 break;
             default:
-                result = repository.findAll(PageRequest.of(page, size, Sort.by("questionId")));
+                result = repository.findAll(PageRequest.of(page, size, Sort.by("questionId").ascending()));
         }
         return result;
     }
