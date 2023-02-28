@@ -56,6 +56,9 @@ const SortButton = styled.button` // sort 버튼
   font-size: 13px;
   color: gray;
   background-color: white;
+  :hover {
+    color: black;
+  }
 `
 const FilterButton = styled.button` // filter 버튼
   padding: 8px 15px;

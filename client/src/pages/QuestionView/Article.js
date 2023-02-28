@@ -89,13 +89,16 @@ const UserProfile = styled.div` // 유저사진, 이름
 // ----- 컴포넌트 영역
 function Article({QuestionData}) {
   const navigate = useNavigate();
-
+  const DeleteAction = () => {
+    return axios.delete(`${process.env.REACT_APP_API_URL}/questions/${QuestionData.questionId}`)
+  }
+  
   return (
     <ArticleBox>
       <VoteBox>
-        <TiArrowSortedUp className="counticon" />
+        <TiArrowSortedUp className="counticon" onClick={QuestionData.voteCount+1} />
         {QuestionData.voteCount}
-        <TiArrowSortedDown className="counticon" />
+        <TiArrowSortedDown className="counticon" onClick={QuestionData.voteCount-1}/>
         <RxBookmark className="markicon" />
         <RxCounterClockwiseClock className="markicon" />
       </VoteBox>
@@ -104,9 +107,8 @@ function Article({QuestionData}) {
         <button className="tags">{QuestionData.tagName}</button>
         <InfoBox>
           <Info>
-            <div>Share</div>
             <div onClick={() => navigate(`/questions/${QuestionData.questionId}/edit`)}>Edit</div>
-            <div>Follow</div>
+            <div onClick={() => DeleteAction()}>Delete</div>
           </Info>
           <UserBox>
             <div className="creatday">asked Feb 23, 2018 at 14:32</div>

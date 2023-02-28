@@ -1,4 +1,4 @@
-// 글 수정란입니다
+// 답변 수정란입니다.
 
 // ----- 필요 라이브러리
 import styled from "styled-components";
@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import axios from "axios";
+
 
 // ----- 컴포넌트 및 이미지 파일
 
@@ -19,18 +20,6 @@ const AllEditBox = styled.div` // 편집 공간 전체 창
     margin-bottom: 50px;
     font-size: 28px;
     font-weight: 600;
-  }
-`
-const YellowBox = styled.div` // 가장 첫줄 노란색 박스
-  margin-bottom: 20px;
-  padding: 30px 25px;
-  background-color: #fdf7e2;
-  border: 1px solid #e6cf79;
-  border-radius: 5px;
-  line-height: 135%;
-  p {
-    font-size: 14px;
-    margin-bottom: 10px;
   }
 `
 const EditBox = styled.div` // 각 입력칸 기본 포맷
@@ -81,23 +70,12 @@ const CancelButton = styled.button` // 질문 작성 취소(삭제) 버튼
 
 // ----- 컴포넌트 영역
 
-function EditQuestion( {QuestionData} ) {
+function EditAnswer() {
   const navigate = useNavigate();
-  const [title, setTitle] = useState("title"); // 질문 제목 입력칸의 상태 관리창
   const [value, setValue] = useState("text"); // 질문 내용 입력칸의 상태 관리창
-  const [tags, setTags] = useState("tags") // 태그 내용 입력칸의 상태 관리창, 만들긴 했지만 요청 가지는 않음
-
-  const editTitle = (e) => { // 질문 제목 입력칸 상태 함수
-    setTitle(e.target.value)
-  }
-
-  const editTag = (e) => { // 태그 내용 입력칸 상태 함수
-    setTags(e.target.value)
-  }
-
+  
   const EditButtonSubmit = (e) => { // 다 수정한 질문 제출 버튼 함수
-    axios.patch(`${process.env.REACT_APP_API_URL}/questions`, {
-      title : title,
+    axios.patch(`${process.env.REACT_APP_API_URL}/answers/{answer-id}`, {
       content : value,
     })
     .then(res => {
@@ -110,19 +88,8 @@ function EditQuestion( {QuestionData} ) {
         alert("Failed!");
       });
   }
-
   return (
     <AllEditBox>
-      <YellowBox>
-        <p>Your edit will be placed in a queue until it is peer reviewed.</p>
-        <p>We welcome edits that make the post easier to understand and more valuable for readers. Because community members review edits, please try to make the post substantially better than how you found it, for example, by fixing grammar or adding additional resources and hyperlinks.</p>
-      </YellowBox>
-      <EditBox className="title">
-        <p>Title</p>
-        <input
-          value={title}
-          onChange={editTitle}></input>
-      </EditBox>
       <EditBox className="body">
         <p>Body</p>
         <ReactQuill 
@@ -131,16 +98,10 @@ function EditQuestion( {QuestionData} ) {
           onChange={setValue}
           />
       </EditBox>
-      <EditBox className="tags">
-        <p>Tags</p>
-        <input 
-          value={tags} 
-          onChange={editTag}></input>
-      </EditBox>
       <SaveButton onClick={EditButtonSubmit}>Save edits</SaveButton>
       <CancelButton onClick={() => navigate("/questions")}>Cancel</CancelButton>
     </AllEditBox>
   )
 }
 
-export default EditQuestion;
+export default EditAnswer;

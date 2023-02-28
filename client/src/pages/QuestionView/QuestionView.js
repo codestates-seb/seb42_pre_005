@@ -48,7 +48,7 @@ function QuestionView() {
       <ContentsBox>
         <Contents>
           <Article QuestionData={QuestionData} />
-          <Answer QuestionData={QuestionData} />
+          <Answer QuestionData={QuestionData.answers} />
         </Contents>
         <RightSideBar />
       </ContentsBox>

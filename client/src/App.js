@@ -22,6 +22,7 @@ import NotFound from './components/NotFound';
 import EditQuestion from './pages/Questions/EditQustions';
 import { useEffect } from 'react';
 import { getAccessToken } from './storage/cookie';
+import EditAnswer from './pages/QuestionView/EditAnswer';
 
 
 
@@ -57,6 +58,7 @@ function App() {
           <Route path="/questions" element={<AllQuestions/>}/>
           <Route path="/questions/:id" element={<QuestionView/>}/>
           <Route path="/questions/:id/edit" element={<EditQuestion />} />
+          <Route path="/answers/:id/edit" element={<EditAnswer />} />
           <Route path="/tags" element={<Tags />} />
           <Route path="/view" element={<QuestionView />} />
           <Route path='/users/:id/:name' element={<UserDetail/>}/>

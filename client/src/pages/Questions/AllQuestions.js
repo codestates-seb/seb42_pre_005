@@ -16,7 +16,10 @@ const QuestionsBox = styled.div`
     // 전체 박스 구성
     align-items: center;
     max-width: 800px;
-    padding-top: 40px;
+    padding: 40px 0px;
+    .pagenation {
+        margin-left: 20px;
+    }
 `;
 const QustionList = styled.div`
     // 질문 목록 박스
@@ -31,8 +34,9 @@ function AllQuestions() {
 
     useEffect(() => {
         // axios.defaults.withCredentials = true;
-        axios.get(`${process.env.REACT_APP_API_URL}/questions?page=${page}&size=${size}`)
+        axios.get(`${process.env.REACT_APP_API_URL}/questions?page=1&size=${size}`)
         .then((res) => {
+            // console.log(res.data)
             setQuestionList(res.data.data);
             setTotal(res.data.pageInfo.totalElements)
         })
@@ -45,12 +49,14 @@ function AllQuestions() {
                 <AllQuestionHeader qustionList={questionList}/>
                 <QustionList>
                     {!isPending && 
-                    questionList.map((e) => <QuestionItem 
-                    key={e.questionId} 
-                    questionItem={e}/>)}
+                    questionList.map((questionItem) => <QuestionItem 
+                    key={questionItem.questionId} 
+                    questionItem={questionItem}/>)}
                 </QustionList>
+                <div className="pagenation">
                 <Paging 
                     total={total} size={size} page={page} setPage={setPage}/>
+                </div>
             </QuestionsBox>
             <RightSideBar />
         </>
