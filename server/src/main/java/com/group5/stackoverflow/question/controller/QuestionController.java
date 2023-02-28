@@ -92,7 +92,7 @@ public class QuestionController {
     public ResponseEntity getMyQuestions(@RequestParam("page") int page,
                                          @RequestParam("size") int size,
                                          HttpServletRequest request) {
-        Page<Question> pageQuestions = questionService.findMyQuestions(Checker.getMemberId(jwtTokenizer, request), page - 1, size);
+        Page<Question> pageQuestions = questionService.findMyQuestions(Checker.getMemberId(), page - 1, size);
         List<Question> questions = pageQuestions.getContent();
 
         return new ResponseEntity<>(
