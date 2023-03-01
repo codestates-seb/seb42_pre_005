@@ -90,6 +90,8 @@ function UserDetail() {
     const [userData, setUserData] = useState();
     const [isPending, setIsPending] = useState(true);
 
+    const [isOpen, setIsOpen] = useState(false);
+
     const navigate = useNavigate();
     const [currentTab, setCurrentTab] = useState('activity');
     const location = useLocation();
@@ -111,6 +113,10 @@ function UserDetail() {
         if(!(tab === "" || tab === undefined)) setCurrentTab(tab);
     },[location.search, params])
 
+    const modalHandler = () => {
+        setIsOpen(!isOpen);
+    }
+    
     return (
         <UsersPage>
             <ContentsContainer>
@@ -121,7 +127,7 @@ function UserDetail() {
                     { !isPending &&
                     <UserInfo>
                         {loginUser.id === userData.memberId 
-                        ? <EditButton>Edit Profile</EditButton>
+                        ? <EditButton onClick={modalHandler}>Edit Profile</EditButton>
                         : null }
                         <h1>{userData.name}</h1>
                     </UserInfo>
@@ -130,6 +136,7 @@ function UserDetail() {
                 <UsersMenu>
                     <li onClick={() => navigate(`/users/${userData.memberId}/${userData.name}?tab=profile`)} className={currentTab === "profile" ? "current-tab" : null }>Profile</li>
                     <li onClick={() => navigate(`/users/${userData.memberId}/${userData.name}?tab=activity`)} className={currentTab !== "profile" ? "current-tab" : null }>Activity</li>
+                    {/* <li onClick={() => navigate(`/users/edit/${userData.memberId}`)} className={currentTab !== "profile" ? "current-tab" : null }>Settings</li> */}
                 </UsersMenu>
                 <UsersMain>
                     {activityTabList.includes(currentTab) && <UserActivity userData={userData} currentTab={ currentTab === "activity" ? "summary" : currentTab}/>}

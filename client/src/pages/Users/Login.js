@@ -132,7 +132,7 @@ function Login() {
     const fakeLoginHandler = () => {
         dispatch(setIsLogin(true));
         dispatch(setLoginUser({
-            id: 1,
+            memberId: 1,
             name: "dev-jq1",
             age: 20,
             email: "test@test.com",
