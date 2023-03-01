@@ -8,6 +8,7 @@ import lombok.Getter;
 
 
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class QuestionDto {
@@ -73,6 +74,7 @@ public class QuestionDto {
         private String name;
         private int voteCount;
         private int views;
+        private LocalDateTime createdAt;
         private List<TagDto.ResponseDto> tagResponseDtos;
         private List<AnswerDto.Response> answerResponseDtos;
     }
