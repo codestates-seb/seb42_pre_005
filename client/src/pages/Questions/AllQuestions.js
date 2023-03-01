@@ -15,7 +15,7 @@ import Paging from "../../components/Pagination";
 const QuestionsBox = styled.div`
     // 전체 박스 구성
     align-items: center;
-    max-width: 800px;
+    width: 800px;
     padding: 40px 0px;
     .pagenation {
         margin-left: 20px;
@@ -24,6 +24,9 @@ const QuestionsBox = styled.div`
 const QustionList = styled.div`
     // 질문 목록 박스
 `;
+const RightSideBarBox = styled.div`
+    margin-top: 40px;
+`
 
 function AllQuestions() {
     const [questionList, setQuestionList] = useState([]); // 뿌려줄 질문 리스트
@@ -58,7 +61,9 @@ function AllQuestions() {
                     total={total} size={size} page={page} setPage={setPage}/>
                 </div>
             </QuestionsBox>
-            <RightSideBar />
+            <RightSideBarBox>
+                <RightSideBar />
+            </RightSideBarBox>
         </>
     );
 }

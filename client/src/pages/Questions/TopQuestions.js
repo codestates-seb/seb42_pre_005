@@ -16,13 +16,16 @@ import Paging from "../../components/Pagination";
 // ----- CSS 영역
 const QuestionsBox = styled.div` // 전체 박스 구성
   align-items: center;
-  max-width: 800px;
+  width: 800px;
   padding: 40px 0px;
   .pagenation {
     margin-left: 20px;
   }
 `
 const QustionList = styled.div` // 질문 목록 박스
+`
+const RightSideBarBox = styled.div`
+    margin-top: 40px;
 `
 
 function TopQuestions() {
@@ -34,30 +37,32 @@ function TopQuestions() {
 
   useEffect(() => {
         // axios.defaults.withCredentials = true;
-        axios.get(`${process.env.REACT_APP_API_URL}/questions?page=1&size=${size}`)
+        axios.get(`${process.env.REACT_APP_API_URL}/questions?page=${page}&size=${size}`)
         .then((res) => {
             // console.log(res.data)
             setQuestionList(res.data.data);
             setTotal(res.data.pageInfo.totalElements)
         })
         .then(()=> setIsPending(false));
-    }, []);
+    }, [page]);
 
   return (
     <>
-    <QuestionsBox>
-      <TopQuestionHeader qustionList={questionList}/>
-      <QustionList>
-        {!isPending && questionList.map((questionItem) => <QuestionItem 
-        key={questionItem.questionId} 
-        questionItem={questionItem}/>)}
-      </QustionList>
-      <div className="pagenation">
-        <Paging 
-        total={total} size={size} page={page} setPage={setPage}/>
-      </div>
-    </QuestionsBox>
-    <RightSideBar/>
+      <QuestionsBox>
+        <TopQuestionHeader qustionList={questionList}/>
+        <QustionList>
+          {!isPending && questionList.map((questionItem) => <QuestionItem 
+          key={questionItem.questionId} 
+          questionItem={questionItem}/>)}
+        </QustionList>
+        <div className="pagenation">
+          <Paging 
+          total={total} size={size} page={page} setPage={setPage}/>
+        </div>
+      </QuestionsBox>
+      <RightSideBarBox>
+        <RightSideBar />
+      </RightSideBarBox>
     </>
   )
 }

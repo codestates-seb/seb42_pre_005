@@ -91,7 +91,7 @@ function QuestionItem( {questionItem} ) {
     <ItemBox>
       <InfoBox>
         <Info>{questionItem.voteCount} votes</Info>
-        <Info>0 answers</Info>
+        <Info>{(questionItem.answerResponseDtos).length} answers</Info>
         <Info>{questionItem.views} views</Info>
       </InfoBox>
       <ContentsBox>
@@ -104,7 +104,7 @@ function QuestionItem( {questionItem} ) {
           <UserBox>
             <UserImg>😀</UserImg>
             <UserName onClick={() => navigate(`/users/${questionItem.memberId}/${questionItem.name}`)}>{questionItem.name}</UserName>
-            <UserLog>asked 1min ago</UserLog>
+            <UserLog>asked {new Date(questionItem.createdAt).toLocaleDateString('ko-kr')}</UserLog>
           </UserBox >
         </ContentsFooter>
       </ContentsBox>
