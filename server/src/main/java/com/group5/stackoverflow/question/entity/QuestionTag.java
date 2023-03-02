@@ -39,6 +39,8 @@ public class QuestionTag {
 
     public void addTag(Tag tag) {
         this.tag = tag;
+        int count = tag.getQuestionCount() + 1;
+        tag.setQuestionCount(count);
         tag.setQuestionTag(this);
     }
 

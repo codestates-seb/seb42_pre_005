@@ -37,16 +37,13 @@ public class MemberController {
     private final MemberMapper mapper;
     private final QuestionService questionService;
     private final QuestionMapper questionMapper;
-    private final JwtTokenizer jwtTokenizer;
 
     public MemberController(MemberService memberService, MemberMapper mapper,
-                            QuestionService questionService, QuestionMapper questionMapper,
-                            JwtTokenizer jwtTokenizer) {
+                            QuestionService questionService, QuestionMapper questionMapper) {
         this.memberService = memberService;
         this.mapper = mapper;
         this.questionService = questionService;
         this.questionMapper = questionMapper;
-        this.jwtTokenizer = jwtTokenizer;
     }
 
     private final static String MEMBER_DEFAULT_URL = "/members";
@@ -134,14 +131,14 @@ public class MemberController {
 
     }
 
-    @PostMapping("/questions")
-    public ResponseEntity postQuestionOfMember(@Valid @RequestBody QuestionDto.Post requestBody,
-                                               HttpServletRequest request) {
-        Long memberId = Checker.getMemberId();
-        requestBody.addMemberId(memberId);
-        Question createdQuestion = questionService.createQuestion(questionMapper.questionPostToQuestion(requestBody), requestBody.getTagNames());
-        URI location = UriCreator.createUri(QUESTION_DEFAULT_URL, createdQuestion.getQuestionId());
-
-        return ResponseEntity.created(location).build();
-    }
+//    @PostMapping("/questions")
+//    public ResponseEntity postQuestionOfMember(@Valid @RequestBody QuestionDto.Post requestBody,
+//                                               HttpServletRequest request) {
+//        Long memberId = Checker.getMemberId();
+//        requestBody.addMemberId(memberId);
+//        Question createdQuestion = questionService.createQuestion(questionMapper.questionPostToQuestion(requestBody), requestBody.getTagNames());
+//        URI location = UriCreator.createUri(QUESTION_DEFAULT_URL, createdQuestion.getQuestionId());
+//
+//        return ResponseEntity.created(location).build();
+//    }
 }

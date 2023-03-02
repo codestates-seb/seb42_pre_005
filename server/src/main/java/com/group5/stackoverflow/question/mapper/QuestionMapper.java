@@ -64,6 +64,7 @@ public interface QuestionMapper {
                 .name(question.getMember().getName())
                 .voteCount(question.getVoteCount())
                 .views(question.getViews())
+                .createdAt(question.getCreatedAt())
                 .answerResponseDtos(answersToAnswerResponseDtos(question.getAnswers()))
                 .tagResponseDtos(questionTagsToTagResponse(question.getQuestionTags()))
                 .build();

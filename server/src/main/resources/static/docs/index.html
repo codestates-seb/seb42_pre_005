@@ -448,10 +448,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_membercontroller">1. MemberController</a>
 <ul class="sectlevel2">
 <li><a href="#_회원_등록">1.1. 회원 등록</a></li>
-<li><a href="#_회원_정보_수정">1.2. 회원 정보 수정</a></li>
-<li><a href="#_회원_정보_조회">1.3. 회원 정보 조회</a></li>
-<li><a href="#_회원_목록_조회">1.4. 회원 목록 조회</a></li>
-<li><a href="#_회원_삭제">1.5. 회원 삭제</a></li>
+<li><a href="#_로그인">1.2. 로그인</a></li>
+<li><a href="#_회원_정보_수정">1.3. 회원 정보 수정</a></li>
+<li><a href="#_회원_정보_조회">1.4. 회원 정보 조회</a></li>
+<li><a href="#_회원_목록_조회">1.5. 회원 목록 조회</a></li>
+<li><a href="#_회원_삭제">1.6. 회원 삭제</a></li>
 </ul>
 </li>
 <li><a href="#_questioncontroller">2. QuestionController</a>
@@ -460,14 +461,20 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_질문_수정">2.2. 질문 수정</a></li>
 <li><a href="#_질문_조회">2.3. 질문 조회</a></li>
 <li><a href="#_질문_전체_조회">2.4. 질문 전체 조회</a></li>
-<li><a href="#_질문_삭제">2.5. 질문 삭제</a></li>
+<li><a href="#_질문_검색_조회">2.5. 질문 검색 조회</a></li>
+<li><a href="#_질문_추천">2.6. 질문 추천</a></li>
+<li><a href="#_내_질문_조회">2.7. 내 질문 조회</a></li>
+<li><a href="#_태그로_질문_조회">2.8. 태그로 질문 조회</a></li>
+<li><a href="#_질문_삭제">2.9. 질문 삭제</a></li>
 </ul>
 </li>
 <li><a href="#_answercontroller">3. AnswerController</a>
 <ul class="sectlevel2">
 <li><a href="#_답변_등록">3.1. 답변 등록</a></li>
 <li><a href="#_답변_수정">3.2. 답변 수정</a></li>
-<li><a href="#_답변_삭제">3.3. 답변 삭제</a></li>
+<li><a href="#_내가_쓴_답변_조회">3.3. 내가 쓴 답변 조회</a></li>
+<li><a href="#_답변_추천">3.4. 답변 추천</a></li>
+<li><a href="#_답변_삭제">3.5. 답변 삭제</a></li>
 </ul>
 </li>
 <li><a href="#_tagcontroller">4. TagController</a>
@@ -614,18 +621,125 @@ X-Frame-Options: SAMEORIGIN</code></pre>
 </table>
 </div>
 <div class="sect2">
-<h3 id="_회원_정보_수정">1.2. 회원 정보 수정</h3>
+<h3 id="_로그인">1.2. 로그인</h3>
+<div class="listingblock">
+<div class="title">curl-request</div>
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="bash">$ curl 'http://localhost:8080/auth/login' -i -X POST \
+    -H 'Content-Type: application/json;charset=UTF-8' \
+    -H 'Accept: application/json' \
+    -d '{
+  "email" : "testuser@example.com",
+  "password" : "testpassword"
+}'</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">http-request</div>
+<div class="content">
+<pre class="prettyprint highlight nowrap"><code data-lang="http">POST /auth/login HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Content-Length: 72
+Host: localhost:8080
+
+{
+  "email" : "testuser@example.com",
+  "password" : "testpassword"
+}</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. request-fields</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Optional</th>
+<th class="tableblock halign-left valign-top">Custom attribute</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>email</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이메일</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>false</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Email</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">암호</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>false</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Not Null</p></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
+<div class="title">http-response</div>
+<div class="content">
+<pre class="prettyprint highlight nowrap"><code data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJVU0VSIl0sInVzZXJuYW1lIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJtZW1iZXJJZCI6MSwic3ViIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE2Nzc3MjI0MzMsImV4cCI6MTY3NzcyNDIzM30.Zb6D9VQEv5Ov9IzUmEXadShotnBhgrqO-dnQXhkdfSyEODhUJUovpLn4WRx3eEiEMpxnBy9ftRva5ZFytgpgWw
+Refresh: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0dXNlckBleGFtcGxlLmNvbSIsImlhdCI6MTY3NzcyMjQzMywiZXhwIjoxNjc3NzQ3NjMzfQ.iV8ABVtvQEYhQiBm238Pj2as_xrhrLjhCkASQ3u7lKkcqQHnf0WQC3fd-9z29Sj7yE9urKWz7YcEUUUU5WOnZQ
+memeber-id: 1
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: SAMEORIGIN
+Content-Length: 21
+
+{
+  "data" : null
+}</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 4. response-headers</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Authorization Header. 요청자의 JWT</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_회원_정보_수정">1.3. 회원 정보 수정</h3>
 <div class="listingblock">
 <div class="title">curl-request</div>
 <div class="content">
 <pre class="prettyprint highlight"><code data-lang="bash">$ curl 'http://localhost:8080/members/1' -i -X PATCH \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json' \
-    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJVU0VSIl0sIm1lbWJlcklkIjoxLCJzdWIiOiJ0ZXN0IGFjY2VzcyB0b2tlbiIsImlhdCI6MTY3NzEyMDI1OCwiZXhwIjoxNjc3MTIwMzE4fQ.F41H_2TrocbhKLbxZmS27YC8nFJCILItEHJ_tfHhxcDXbBN84V1iPkbyUKySw7onmC2ZIuoP0LfntMVjwuCsow' \
+    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJVU0VSIl0sIm1lbWJlcklkIjoxLCJzdWIiOiJ0ZXN0IGFjY2VzcyB0b2tlbiIsImlhdCI6MTY3NzcyMjQzNCwiZXhwIjoxNjc3NzIyNDk0fQ.aqz7G2L4YtwHhNldHdG75Dm_VEA1dkaobSxJAa2Q8c_mlTmJCUQJEHyGbRgDAFaZhBcgFe0h9q8-rb9TABGpOQ' \
     -d '{
   "memberId" : 1,
   "name" : "홍길동",
-  "password" : "password",
   "age" : 23,
   "voteCount" : 100,
   "memberStatus" : "MEMBER_ACTIVE"
@@ -638,14 +752,13 @@ X-Frame-Options: SAMEORIGIN</code></pre>
 <pre class="prettyprint highlight nowrap"><code data-lang="http">PATCH /members/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJVU0VSIl0sIm1lbWJlcklkIjoxLCJzdWIiOiJ0ZXN0IGFjY2VzcyB0b2tlbiIsImlhdCI6MTY3NzEyMDI1OCwiZXhwIjoxNjc3MTIwMzE4fQ.F41H_2TrocbhKLbxZmS27YC8nFJCILItEHJ_tfHhxcDXbBN84V1iPkbyUKySw7onmC2ZIuoP0LfntMVjwuCsow
-Content-Length: 149
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJVU0VSIl0sIm1lbWJlcklkIjoxLCJzdWIiOiJ0ZXN0IGFjY2VzcyB0b2tlbiIsImlhdCI6MTY3NzcyMjQzNCwiZXhwIjoxNjc3NzIyNDk0fQ.aqz7G2L4YtwHhNldHdG75Dm_VEA1dkaobSxJAa2Q8c_mlTmJCUQJEHyGbRgDAFaZhBcgFe0h9q8-rb9TABGpOQ
+Content-Length: 121
 Host: localhost:8080
 
 {
   "memberId" : 1,
   "name" : "홍길동",
-  "password" : "password",
   "age" : 23,
   "voteCount" : 100,
   "memberStatus" : "MEMBER_ACTIVE"
@@ -653,7 +766,7 @@ Host: localhost:8080
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 3. /members/{member-id}</caption>
+<caption class="title">Table 5. /members/{member-id}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -672,7 +785,7 @@ Host: localhost:8080
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 4. request-fields</caption>
+<caption class="title">Table 6. request-fields</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -694,13 +807,6 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">이름</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>true</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Not Space</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>password</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">암호</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>true</em></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Not Space</p></td>
 </tr>
@@ -728,7 +834,7 @@ Host: localhost:8080
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 5. request-headers</caption>
+<caption class="title">Table 7. request-headers</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -760,14 +866,13 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: SAMEORIGIN
-Content-Length: 212
+Content-Length: 182
 
 {
   "data" : {
     "memberId" : 1,
     "name" : "홍길동",
     "email" : "hgd@gmail.com",
-    "password" : "password",
     "age" : 23,
     "voteCount" : 100,
     "memberStatus" : "MEMBER_ACTIVE"
@@ -776,7 +881,7 @@ Content-Length: 212
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 6. response-fields</caption>
+<caption class="title">Table 8. response-fields</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -811,11 +916,6 @@ Content-Length: 212
 <td class="tableblock halign-left valign-top"><p class="tableblock">이메일</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.password</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">암호</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.age</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">나이</p></td>
@@ -834,14 +934,14 @@ Content-Length: 212
 </table>
 </div>
 <div class="sect2">
-<h3 id="_회원_정보_조회">1.3. 회원 정보 조회</h3>
+<h3 id="_회원_정보_조회">1.4. 회원 정보 조회</h3>
 <div class="listingblock">
 <div class="title">curl-request</div>
 <div class="content">
 <pre class="prettyprint highlight"><code data-lang="bash">$ curl 'http://localhost:8080/members/1' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json' \
-    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJVU0VSIl0sIm1lbWJlcklkIjoxLCJzdWIiOiJ0ZXN0IGFjY2VzcyB0b2tlbiIsImlhdCI6MTY3NzEyMDI1OCwiZXhwIjoxNjc3MTIwMzE4fQ.F41H_2TrocbhKLbxZmS27YC8nFJCILItEHJ_tfHhxcDXbBN84V1iPkbyUKySw7onmC2ZIuoP0LfntMVjwuCsow'</code></pre>
+    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJBRE1JTiJdLCJtZW1iZXJJZCI6MSwic3ViIjoidGVzdCBhY2Nlc3MgdG9rZW4iLCJpYXQiOjE2Nzc3MjI0MzQsImV4cCI6MTY3NzcyMjQ5NH0.tWBLlqw7ElpKttOyjplbQrBAWKrd7-RN-7MvzxLhIcvHqygfH9u4VY0cWimz4a4RBO7QrMHbv8rvU10niuYMyw'</code></pre>
 </div>
 </div>
 <div class="listingblock">
@@ -850,12 +950,12 @@ Content-Length: 212
 <pre class="prettyprint highlight nowrap"><code data-lang="http">GET /members/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJVU0VSIl0sIm1lbWJlcklkIjoxLCJzdWIiOiJ0ZXN0IGFjY2VzcyB0b2tlbiIsImlhdCI6MTY3NzEyMDI1OCwiZXhwIjoxNjc3MTIwMzE4fQ.F41H_2TrocbhKLbxZmS27YC8nFJCILItEHJ_tfHhxcDXbBN84V1iPkbyUKySw7onmC2ZIuoP0LfntMVjwuCsow
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJBRE1JTiJdLCJtZW1iZXJJZCI6MSwic3ViIjoidGVzdCBhY2Nlc3MgdG9rZW4iLCJpYXQiOjE2Nzc3MjI0MzQsImV4cCI6MTY3NzcyMjQ5NH0.tWBLlqw7ElpKttOyjplbQrBAWKrd7-RN-7MvzxLhIcvHqygfH9u4VY0cWimz4a4RBO7QrMHbv8rvU10niuYMyw
 Host: localhost:8080</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 7. /members/{member-id}</caption>
+<caption class="title">Table 9. /members/{member-id}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -874,7 +974,7 @@ Host: localhost:8080</code></pre>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 8. request-headers</caption>
+<caption class="title">Table 10. request-headers</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -906,14 +1006,13 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: SAMEORIGIN
-Content-Length: 212
+Content-Length: 182
 
 {
   "data" : {
     "memberId" : 1,
     "name" : "홍길동",
     "email" : "hgd@gmail.com",
-    "password" : "password",
     "age" : 23,
     "voteCount" : 100,
     "memberStatus" : "MEMBER_ACTIVE"
@@ -922,7 +1021,7 @@ Content-Length: 212
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 9. response-fields</caption>
+<caption class="title">Table 11. response-fields</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -944,7 +1043,7 @@ Content-Length: 212
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.memberId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">회원 식별자</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 식별자 (검증된 요청에만 제공)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.name</code></p></td>
@@ -957,14 +1056,9 @@ Content-Length: 212
 <td class="tableblock halign-left valign-top"><p class="tableblock">이메일</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.password</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">암호</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.age</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">나이</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">나이 (검증된 요청에만 제공)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.voteCount</code></p></td>
@@ -980,13 +1074,14 @@ Content-Length: 212
 </table>
 </div>
 <div class="sect2">
-<h3 id="_회원_목록_조회">1.4. 회원 목록 조회</h3>
+<h3 id="_회원_목록_조회">1.5. 회원 목록 조회</h3>
 <div class="listingblock">
 <div class="title">curl-request</div>
 <div class="content">
 <pre class="prettyprint highlight"><code data-lang="bash">$ curl 'http://localhost:8080/members?page=1&amp;size=5&amp;mode=base' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'Accept: application/json'</code></pre>
+    -H 'Accept: application/json' \
+    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJBRE1JTiJdLCJtZW1iZXJJZCI6MSwic3ViIjoidGVzdCBhY2Nlc3MgdG9rZW4iLCJpYXQiOjE2Nzc3MjI0MzQsImV4cCI6MTY3NzcyMjQ5NH0.tWBLlqw7ElpKttOyjplbQrBAWKrd7-RN-7MvzxLhIcvHqygfH9u4VY0cWimz4a4RBO7QrMHbv8rvU10niuYMyw'</code></pre>
 </div>
 </div>
 <div class="listingblock">
@@ -995,11 +1090,12 @@ Content-Length: 212
 <pre class="prettyprint highlight nowrap"><code data-lang="http">GET /members?page=1&amp;size=5&amp;mode=base HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJBRE1JTiJdLCJtZW1iZXJJZCI6MSwic3ViIjoidGVzdCBhY2Nlc3MgdG9rZW4iLCJpYXQiOjE2Nzc3MjI0MzQsImV4cCI6MTY3NzcyMjQ5NH0.tWBLlqw7ElpKttOyjplbQrBAWKrd7-RN-7MvzxLhIcvHqygfH9u4VY0cWimz4a4RBO7QrMHbv8rvU10niuYMyw
 Host: localhost:8080</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 10. request-parameters</caption>
+<caption class="title">Table 12. request-parameters</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -1039,14 +1135,13 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: SAMEORIGIN
-Content-Length: 540
+Content-Length: 467
 
 {
   "data" : [ {
     "memberId" : 1,
     "name" : "John Doe",
     "email" : "john.doe@example.com",
-    "password" : "mysecretpassword",
     "age" : 30,
     "voteCount" : 0,
     "memberStatus" : "MEMBER_NEW"
@@ -1054,7 +1149,6 @@ Content-Length: 540
     "memberId" : 2,
     "name" : "Alice Smith",
     "email" : "alice.smith@example.com",
-    "password" : "mypassword123",
     "age" : 25,
     "voteCount" : 0,
     "memberStatus" : "MEMBER_NEW"
@@ -1069,7 +1163,7 @@ Content-Length: 540
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 11. response-fields</caption>
+<caption class="title">Table 13. response-fields</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1091,7 +1185,7 @@ Content-Length: 540
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.[].memberId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">회원 식별자</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 식별자 (검증된 요청에만 제공)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.[].name</code></p></td>
@@ -1104,14 +1198,9 @@ Content-Length: 540
 <td class="tableblock halign-left valign-top"><p class="tableblock">이메일</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.[].password</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">암호</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.[].age</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">나이</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">나이 (검증된 요청에만 제공)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.[].voteCount</code></p></td>
@@ -1152,14 +1241,14 @@ Content-Length: 540
 </table>
 </div>
 <div class="sect2">
-<h3 id="_회원_삭제">1.5. 회원 삭제</h3>
+<h3 id="_회원_삭제">1.6. 회원 삭제</h3>
 <div class="listingblock">
 <div class="title">curl-request</div>
 <div class="content">
 <pre class="prettyprint highlight"><code data-lang="bash">$ curl 'http://localhost:8080/members/1' -i -X DELETE \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json' \
-    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJBRE1JTiJdLCJtZW1iZXJJZCI6MSwic3ViIjoidGVzdCBhY2Nlc3MgdG9rZW4iLCJpYXQiOjE2NzcxMjAyNTgsImV4cCI6MTY3NzEyMDMxOH0.fCdGvZl1XT3mEpjL4CxVp-QEP2EOFcLYWVjTBuY7Kdbi3RtsePNitW3NEN00Wep_zPKn_zKJOzx6zEEwI83YAQ'</code></pre>
+    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJBRE1JTiJdLCJtZW1iZXJJZCI6MSwic3ViIjoidGVzdCBhY2Nlc3MgdG9rZW4iLCJpYXQiOjE2Nzc3MjI0MzQsImV4cCI6MTY3NzcyMjQ5NH0.tWBLlqw7ElpKttOyjplbQrBAWKrd7-RN-7MvzxLhIcvHqygfH9u4VY0cWimz4a4RBO7QrMHbv8rvU10niuYMyw'</code></pre>
 </div>
 </div>
 <div class="listingblock">
@@ -1168,12 +1257,12 @@ Content-Length: 540
 <pre class="prettyprint highlight nowrap"><code data-lang="http">DELETE /members/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJBRE1JTiJdLCJtZW1iZXJJZCI6MSwic3ViIjoidGVzdCBhY2Nlc3MgdG9rZW4iLCJpYXQiOjE2NzcxMjAyNTgsImV4cCI6MTY3NzEyMDMxOH0.fCdGvZl1XT3mEpjL4CxVp-QEP2EOFcLYWVjTBuY7Kdbi3RtsePNitW3NEN00Wep_zPKn_zKJOzx6zEEwI83YAQ
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJBRE1JTiJdLCJtZW1iZXJJZCI6MSwic3ViIjoidGVzdCBhY2Nlc3MgdG9rZW4iLCJpYXQiOjE2Nzc3MjI0MzQsImV4cCI6MTY3NzcyMjQ5NH0.tWBLlqw7ElpKttOyjplbQrBAWKrd7-RN-7MvzxLhIcvHqygfH9u4VY0cWimz4a4RBO7QrMHbv8rvU10niuYMyw
 Host: localhost:8080</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 12. /members/{member-id}</caption>
+<caption class="title">Table 14. /members/{member-id}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -1192,7 +1281,7 @@ Host: localhost:8080</code></pre>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 13. request-headers</caption>
+<caption class="title">Table 15. request-headers</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -1238,11 +1327,13 @@ X-Frame-Options: SAMEORIGIN</code></pre>
 <div class="content">
 <pre class="prettyprint highlight"><code data-lang="bash">$ curl 'http://localhost:8080/questions' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJVU0VSIl0sIm1lbWJlcklkIjoxLCJzdWIiOiJ0ZXN0IGFjY2VzcyB0b2tlbiIsImlhdCI6MTY3NzEyMDI2MSwiZXhwIjoxNjc3MTIwMzIxfQ.XwKh9SnnYMeW0gcpQGToLAK04M8pmlPfeenDGdPSP8-nm_hYD038yJ2Ye6m1-z9wxYpppUkGLba9GLw4ZXgD3A' \
+    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJBRE1JTiJdLCJtZW1iZXJJZCI6MSwic3ViIjoidGVzdCBhY2Nlc3MgdG9rZW4iLCJpYXQiOjE2Nzc3MjI0MzYsImV4cCI6MTY3NzcyMjQ5Nn0.jtPKBHmnUUs6-i1r8-QaLxfEps2iBrXPPpHdpjRpofOG3VrOXpS3stSh9oZar5hfNSkmx83c5BwxRxK-Vr4khA' \
     -H 'Accept: application/json' \
     -d '{
-  "title" : "타이틀입니다.",
-  "content" : "이곳은 질문을 적는 곳입니다."
+  "title" : "타이틀 입니다.",
+  "content" : "이곳은 질문을 적는 곳입니다.",
+  "memberId" : 1,
+  "tagNames" : [ "Java", "Spring" ]
 }'</code></pre>
 </div>
 </div>
@@ -1251,19 +1342,21 @@ X-Frame-Options: SAMEORIGIN</code></pre>
 <div class="content">
 <pre class="prettyprint highlight nowrap"><code data-lang="http">POST /questions HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJVU0VSIl0sIm1lbWJlcklkIjoxLCJzdWIiOiJ0ZXN0IGFjY2VzcyB0b2tlbiIsImlhdCI6MTY3NzEyMDI2MSwiZXhwIjoxNjc3MTIwMzIxfQ.XwKh9SnnYMeW0gcpQGToLAK04M8pmlPfeenDGdPSP8-nm_hYD038yJ2Ye6m1-z9wxYpppUkGLba9GLw4ZXgD3A
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJBRE1JTiJdLCJtZW1iZXJJZCI6MSwic3ViIjoidGVzdCBhY2Nlc3MgdG9rZW4iLCJpYXQiOjE2Nzc3MjI0MzYsImV4cCI6MTY3NzcyMjQ5Nn0.jtPKBHmnUUs6-i1r8-QaLxfEps2iBrXPPpHdpjRpofOG3VrOXpS3stSh9oZar5hfNSkmx83c5BwxRxK-Vr4khA
 Accept: application/json
-Content-Length: 98
+Content-Length: 156
 Host: localhost:8080
 
 {
-  "title" : "타이틀입니다.",
-  "content" : "이곳은 질문을 적는 곳입니다."
+  "title" : "타이틀 입니다.",
+  "content" : "이곳은 질문을 적는 곳입니다.",
+  "memberId" : 1,
+  "tagNames" : [ "Java", "Spring" ]
 }</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 14. request-fields</caption>
+<caption class="title">Table 16. request-fields</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -1295,6 +1388,20 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>false</em></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Not Null</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 식별자</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>false</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Not Null</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>tagNames</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">태그</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>false</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Not Null</p></td>
+</tr>
 </tbody>
 </table>
 <div class="listingblock">
@@ -1314,7 +1421,7 @@ X-Frame-Options: SAMEORIGIN</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 15. response-headers</caption>
+<caption class="title">Table 17. response-headers</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -1340,12 +1447,13 @@ X-Frame-Options: SAMEORIGIN</code></pre>
 <div class="content">
 <pre class="prettyprint highlight"><code data-lang="bash">$ curl 'http://localhost:8080/questions/1' -i -X PATCH \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJVU0VSIl0sIm1lbWJlcklkIjoxLCJzdWIiOiJ0ZXN0IGFjY2VzcyB0b2tlbiIsImlhdCI6MTY3NzEyMDI2MSwiZXhwIjoxNjc3MTIwMzIxfQ.XwKh9SnnYMeW0gcpQGToLAK04M8pmlPfeenDGdPSP8-nm_hYD038yJ2Ye6m1-z9wxYpppUkGLba9GLw4ZXgD3A' \
+    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJVU0VSIl0sIm1lbWJlcklkIjoxLCJzdWIiOiJ0ZXN0IGFjY2VzcyB0b2tlbiIsImlhdCI6MTY3NzcyMjQzNiwiZXhwIjoxNjc3NzIyNDk2fQ.ND5JF4VWknOxlPq9nrJDGxY7RzdzP1tBVKKfNCi99RUiwaeXI471ksC-d1RbZIUHJPEt8cyVHElYtt7xQwtWkg' \
     -H 'Accept: application/json' \
     -d '{
   "questionId" : 1,
   "title" : "타이틀입니다.",
-  "content" : "이부분은 질문 내용입니다."
+  "content" : "이부분은 질문 내용입니다.",
+  "tagNames" : [ "Java", "Spring" ]
 }'</code></pre>
 </div>
 </div>
@@ -1354,20 +1462,21 @@ X-Frame-Options: SAMEORIGIN</code></pre>
 <div class="content">
 <pre class="prettyprint highlight nowrap"><code data-lang="http">PATCH /questions/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJVU0VSIl0sIm1lbWJlcklkIjoxLCJzdWIiOiJ0ZXN0IGFjY2VzcyB0b2tlbiIsImlhdCI6MTY3NzEyMDI2MSwiZXhwIjoxNjc3MTIwMzIxfQ.XwKh9SnnYMeW0gcpQGToLAK04M8pmlPfeenDGdPSP8-nm_hYD038yJ2Ye6m1-z9wxYpppUkGLba9GLw4ZXgD3A
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJVU0VSIl0sIm1lbWJlcklkIjoxLCJzdWIiOiJ0ZXN0IGFjY2VzcyB0b2tlbiIsImlhdCI6MTY3NzcyMjQzNiwiZXhwIjoxNjc3NzIyNDk2fQ.ND5JF4VWknOxlPq9nrJDGxY7RzdzP1tBVKKfNCi99RUiwaeXI471ksC-d1RbZIUHJPEt8cyVHElYtt7xQwtWkg
 Accept: application/json
-Content-Length: 115
+Content-Length: 153
 Host: localhost:8080
 
 {
   "questionId" : 1,
   "title" : "타이틀입니다.",
-  "content" : "이부분은 질문 내용입니다."
+  "content" : "이부분은 질문 내용입니다.",
+  "tagNames" : [ "Java", "Spring" ]
 }</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 16. /questions/{question-id}</caption>
+<caption class="title">Table 18. /questions/{question-id}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -1386,7 +1495,7 @@ Host: localhost:8080
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 17. request-fields</caption>
+<caption class="title">Table 19. request-fields</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -1425,6 +1534,13 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>false</em></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Not Null</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>tagNames</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">태그</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>false</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Not Null</p></td>
+</tr>
 </tbody>
 </table>
 <div class="listingblock">
@@ -1441,7 +1557,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: SAMEORIGIN
-Content-Length: 252
+Content-Length: 340
 
 {
   "data" : {
@@ -1452,140 +1568,9 @@ Content-Length: 252
     "name" : "taekie",
     "voteCount" : 20,
     "views" : 10,
-    "tagName" : "JAVA"
-  }
-}</code></pre>
-</div>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 18. response-fields</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">결과 데이터</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.questionId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">질문 식별자</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.title</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">질문 제목</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">질문 내용</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.memberId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">회원 식별자</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">회원 이름</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.voteCount</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">추천수</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.views</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">조회수</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.tagName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">태그 이름</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect2">
-<h3 id="_질문_조회">2.3. 질문 조회</h3>
-<div class="listingblock">
-<div class="title">curl-request</div>
-<div class="content">
-<pre class="prettyprint highlight"><code data-lang="bash">$ curl 'http://localhost:8080/questions/1' -i -X GET \
-    -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJBRE1JTiJdLCJtZW1iZXJJZCI6MSwic3ViIjoidGVzdCBhY2Nlc3MgdG9rZW4iLCJpYXQiOjE2NzcxMjAyNjEsImV4cCI6MTY3NzEyMDMyMX0.2fltIEao0EQm_W0K4Jxu43bhiSSOxn0xNLgzlW0ivZQOOL-AUiQcAI9ALBUK152YMibu9YfA1FQgaJwawKiyvw' \
-    -H 'Accept: application/json'</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="title">http-request</div>
-<div class="content">
-<pre class="prettyprint highlight nowrap"><code data-lang="http">GET /questions/1 HTTP/1.1
-Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJBRE1JTiJdLCJtZW1iZXJJZCI6MSwic3ViIjoidGVzdCBhY2Nlc3MgdG9rZW4iLCJpYXQiOjE2NzcxMjAyNjEsImV4cCI6MTY3NzEyMDMyMX0.2fltIEao0EQm_W0K4Jxu43bhiSSOxn0xNLgzlW0ivZQOOL-AUiQcAI9ALBUK152YMibu9YfA1FQgaJwawKiyvw
-Accept: application/json
-Host: localhost:8080</code></pre>
-</div>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 19. /questions/{question-id}</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>question-id</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">질문 식별자</p></td>
-</tr>
-</tbody>
-</table>
-<div class="listingblock">
-<div class="title">http-response</div>
-<div class="content">
-<pre class="prettyprint highlight nowrap"><code data-lang="http">HTTP/1.1 200 OK
-Vary: Origin
-Vary: Access-Control-Request-Method
-Vary: Access-Control-Request-Headers
-Content-Type: application/json
-X-Content-Type-Options: nosniff
-X-XSS-Protection: 1; mode=block
-Cache-Control: no-cache, no-store, max-age=0, must-revalidate
-Pragma: no-cache
-Expires: 0
-X-Frame-Options: SAMEORIGIN
-Content-Length: 240
-
-{
-  "data" : {
-    "questionId" : 1,
-    "title" : "타이틀 입니다.",
-    "content" : "질문 내용입니다.",
-    "memberId" : 1,
-    "name" : "taekie",
-    "voteCount" : 30,
-    "views" : 40,
-    "tagName" : "JAVA"
+    "createdAt" : "2023-03-02T11:00:36.5483186",
+    "tagResponseDtos" : [ ],
+    "answerResponseDtos" : [ ]
   }
 }</code></pre>
 </div>
@@ -1646,9 +1631,164 @@ Content-Length: 240
 <td class="tableblock halign-left valign-top"><p class="tableblock">조회수</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.tagName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.createdAt</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">태그 이름</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">생성 시간</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.tagResponseDtos</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">태그</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.answerResponseDtos</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">답변</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_질문_조회">2.3. 질문 조회</h3>
+<div class="listingblock">
+<div class="title">curl-request</div>
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="bash">$ curl 'http://localhost:8080/questions/1' -i -X GET \
+    -H 'Content-Type: application/json;charset=UTF-8' \
+    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJBRE1JTiJdLCJtZW1iZXJJZCI6MSwic3ViIjoidGVzdCBhY2Nlc3MgdG9rZW4iLCJpYXQiOjE2Nzc3MjI0MzYsImV4cCI6MTY3NzcyMjQ5Nn0.jtPKBHmnUUs6-i1r8-QaLxfEps2iBrXPPpHdpjRpofOG3VrOXpS3stSh9oZar5hfNSkmx83c5BwxRxK-Vr4khA' \
+    -H 'Accept: application/json'</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">http-request</div>
+<div class="content">
+<pre class="prettyprint highlight nowrap"><code data-lang="http">GET /questions/1 HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJBRE1JTiJdLCJtZW1iZXJJZCI6MSwic3ViIjoidGVzdCBhY2Nlc3MgdG9rZW4iLCJpYXQiOjE2Nzc3MjI0MzYsImV4cCI6MTY3NzcyMjQ5Nn0.jtPKBHmnUUs6-i1r8-QaLxfEps2iBrXPPpHdpjRpofOG3VrOXpS3stSh9oZar5hfNSkmx83c5BwxRxK-Vr4khA
+Accept: application/json
+Host: localhost:8080</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 21. /questions/{question-id}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>question-id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">질문 식별자</p></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
+<div class="title">http-response</div>
+<div class="content">
+<pre class="prettyprint highlight nowrap"><code data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: SAMEORIGIN
+Content-Length: 327
+
+{
+  "data" : {
+    "questionId" : 1,
+    "title" : "타이틀 입니다.",
+    "content" : "질문 내용입니다.",
+    "memberId" : 1,
+    "name" : "taekie",
+    "voteCount" : 30,
+    "views" : 40,
+    "createdAt" : "2023-03-02T11:00:36.956318",
+    "tagResponseDtos" : [ ],
+    "answerResponseDtos" : [ ]
+  }
+}</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 22. response-fields</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">결과 데이터</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.questionId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">질문 식별자</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.title</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">질문 제목</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">질문 내용</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.memberId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 식별자</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.voteCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">추천수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.views</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">조회수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.createdAt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">생성 시간</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.tagResponseDtos</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">태그</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.answerResponseDtos</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">답변</p></td>
 </tr>
 </tbody>
 </table>
@@ -1658,20 +1798,20 @@ Content-Length: 240
 <div class="listingblock">
 <div class="title">curl-request</div>
 <div class="content">
-<pre class="prettyprint highlight"><code data-lang="bash">$ curl 'http://localhost:8080/questions?page=1&amp;size=10' -i -X GET \
+<pre class="prettyprint highlight"><code data-lang="bash">$ curl 'http://localhost:8080/questions?page=1&amp;size=10&amp;tab=newest' -i -X GET \
     -H 'Accept: application/json'</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="title">http-request</div>
 <div class="content">
-<pre class="prettyprint highlight nowrap"><code data-lang="http">GET /questions?page=1&amp;size=10 HTTP/1.1
+<pre class="prettyprint highlight nowrap"><code data-lang="http">GET /questions?page=1&amp;size=10&amp;tab=newest HTTP/1.1
 Accept: application/json
 Host: localhost:8080</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 21. request-parameters</caption>
+<caption class="title">Table 23. request-parameters</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -1691,6 +1831,10 @@ Host: localhost:8080</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>size</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">페이지당 조회 수</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>tab</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">tab 조회</p></td>
+</tr>
 </tbody>
 </table>
 <div class="listingblock">
@@ -1707,7 +1851,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: SAMEORIGIN
-Content-Length: 594
+Content-Length: 768
 
 {
   "data" : [ {
@@ -1718,7 +1862,9 @@ Content-Length: 594
     "name" : "taekie",
     "voteCount" : 52,
     "views" : 98,
-    "tagName" : "JAVA"
+    "createdAt" : "2023-03-02T11:00:36.4773179",
+    "tagResponseDtos" : [ ],
+    "answerResponseDtos" : [ ]
   }, {
     "questionId" : 2,
     "title" : "2번째 타이틀입니다.",
@@ -1727,7 +1873,9 @@ Content-Length: 594
     "name" : "gildong",
     "voteCount" : 23,
     "views" : 54,
-    "tagName" : "SPRING"
+    "createdAt" : "2023-03-02T11:00:36.4773179",
+    "tagResponseDtos" : [ ],
+    "answerResponseDtos" : [ ]
   } ],
   "pageInfo" : {
     "page" : 2,
@@ -1739,7 +1887,7 @@ Content-Length: 594
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 22. response-fields</caption>
+<caption class="title">Table 24. response-fields</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1794,9 +1942,19 @@ Content-Length: 594
 <td class="tableblock halign-left valign-top"><p class="tableblock">조회수</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].tagName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].createdAt</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">태그 이름</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">생성 시간</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].tagResponseDtos</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">태그</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].answerResponseDtos</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">답변</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>pageInfo</code></p></td>
@@ -1827,24 +1985,754 @@ Content-Length: 594
 </table>
 </div>
 <div class="sect2">
-<h3 id="_질문_삭제">2.5. 질문 삭제</h3>
+<h3 id="_질문_검색_조회">2.5. 질문 검색 조회</h3>
+<div class="listingblock">
+<div class="title">curl-request</div>
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="bash">$ curl 'http://localhost:8080/questions/search?page=1&amp;size=10&amp;keyword=%ED%83%80%EC%9D%B4%ED%8B%80' -i -X GET \
+    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJBRE1JTiJdLCJtZW1iZXJJZCI6MSwic3ViIjoidGVzdCBhY2Nlc3MgdG9rZW4iLCJpYXQiOjE2Nzc3MjI0MzYsImV4cCI6MTY3NzcyMjQ5Nn0.jtPKBHmnUUs6-i1r8-QaLxfEps2iBrXPPpHdpjRpofOG3VrOXpS3stSh9oZar5hfNSkmx83c5BwxRxK-Vr4khA' \
+    -H 'Accept: application/json'</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">http-request</div>
+<div class="content">
+<pre class="prettyprint highlight nowrap"><code data-lang="http">GET /questions/search?page=1&amp;size=10&amp;keyword=%ED%83%80%EC%9D%B4%ED%8B%80 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJBRE1JTiJdLCJtZW1iZXJJZCI6MSwic3ViIjoidGVzdCBhY2Nlc3MgdG9rZW4iLCJpYXQiOjE2Nzc3MjI0MzYsImV4cCI6MTY3NzcyMjQ5Nn0.jtPKBHmnUUs6-i1r8-QaLxfEps2iBrXPPpHdpjRpofOG3VrOXpS3stSh9oZar5hfNSkmx83c5BwxRxK-Vr4khA
+Accept: application/json
+Host: localhost:8080</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 25. request-parameters</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>page</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">페이지 번호</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">페이지당 조회 수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>keyword</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">검색어</p></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
+<div class="title">http-response</div>
+<div class="content">
+<pre class="prettyprint highlight nowrap"><code data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: SAMEORIGIN
+Content-Length: 768
+
+{
+  "data" : [ {
+    "questionId" : 1,
+    "title" : "타이틀입니다.",
+    "content" : "질문 내용입니다.",
+    "memberId" : 1,
+    "name" : "taekie",
+    "voteCount" : 52,
+    "views" : 98,
+    "createdAt" : "2023-03-02T11:00:36.7353184",
+    "tagResponseDtos" : [ ],
+    "answerResponseDtos" : [ ]
+  }, {
+    "questionId" : 2,
+    "title" : "2번째 타이틀입니다.",
+    "content" : "2번째 질문 내용입니다.",
+    "memberId" : 2,
+    "name" : "gildong",
+    "voteCount" : 23,
+    "views" : 54,
+    "createdAt" : "2023-03-02T11:00:36.7353184",
+    "tagResponseDtos" : [ ],
+    "answerResponseDtos" : [ ]
+  } ],
+  "pageInfo" : {
+    "page" : 2,
+    "size" : 10,
+    "totalElements" : 12,
+    "totalPages" : 2
+  }
+}</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 26. response-fields</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">결과 데이터</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].questionId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">질문 식별자</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].title</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">질문 제목</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">질문 내용</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].memberId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 식별자</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].voteCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">추천수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].views</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">조회수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].createdAt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">생성 시간</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].tagResponseDtos</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">태그</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].answerResponseDtos</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">답변</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pageInfo</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">페이지 정보</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pageInfo.page</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">조회 페이지 정보</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pageInfo.size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">사이즈 정보</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pageInfo.totalElements</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전체 조회 건 수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pageInfo.totalPages</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전체 페이지 수</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_질문_추천">2.6. 질문 추천</h3>
+<div class="listingblock">
+<div class="title">curl-request</div>
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="bash">$ curl 'http://localhost:8080/questions/1/vote?updown=up' -i -X PATCH \
+    -H 'Content-Type: application/json;charset=UTF-8' \
+    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJVU0VSIl0sIm1lbWJlcklkIjoxLCJzdWIiOiJ0ZXN0IGFjY2VzcyB0b2tlbiIsImlhdCI6MTY3NzcyMjQzNiwiZXhwIjoxNjc3NzIyNDk2fQ.ND5JF4VWknOxlPq9nrJDGxY7RzdzP1tBVKKfNCi99RUiwaeXI471ksC-d1RbZIUHJPEt8cyVHElYtt7xQwtWkg' \
+    -H 'Accept: application/json' \
+    -d '{
+  "voteId" : 1,
+  "questionId" : 1
+}'</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">http-request</div>
+<div class="content">
+<pre class="prettyprint highlight nowrap"><code data-lang="http">PATCH /questions/1/vote?updown=up HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJVU0VSIl0sIm1lbWJlcklkIjoxLCJzdWIiOiJ0ZXN0IGFjY2VzcyB0b2tlbiIsImlhdCI6MTY3NzcyMjQzNiwiZXhwIjoxNjc3NzIyNDk2fQ.ND5JF4VWknOxlPq9nrJDGxY7RzdzP1tBVKKfNCi99RUiwaeXI471ksC-d1RbZIUHJPEt8cyVHElYtt7xQwtWkg
+Accept: application/json
+Content-Length: 41
+Host: localhost:8080
+
+{
+  "voteId" : 1,
+  "questionId" : 1
+}</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 27. request-parameters</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>updown</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">추천 업 (up) or 추천 다운 (down)</p></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
+<div class="title">http-response</div>
+<div class="content">
+<pre class="prettyprint highlight nowrap"><code data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: SAMEORIGIN
+Content-Length: 340
+
+{
+  "data" : {
+    "questionId" : 1,
+    "title" : "타이틀입니다.",
+    "content" : "이부분은 질문 내용입니다.",
+    "memberId" : 1,
+    "name" : "taekie",
+    "voteCount" : 20,
+    "views" : 10,
+    "createdAt" : "2023-03-02T11:00:36.6193181",
+    "tagResponseDtos" : [ ],
+    "answerResponseDtos" : [ ]
+  }
+}</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 28. response-fields</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">결과 데이터</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.questionId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">질문 식별자</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.title</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">질문 제목</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">질문 내용</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.memberId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 식별자</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.voteCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">추천수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.views</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">조회수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.createdAt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">생성 시간</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.tagResponseDtos</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">태그</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.answerResponseDtos</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">답변</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_내_질문_조회">2.7. 내 질문 조회</h3>
+<div class="listingblock">
+<div class="title">curl-request</div>
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="bash">$ curl 'http://localhost:8080/questions/my?page=1&amp;size=10' -i -X GET \
+    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJBRE1JTiJdLCJtZW1iZXJJZCI6MSwic3ViIjoidGVzdCBhY2Nlc3MgdG9rZW4iLCJpYXQiOjE2Nzc3MjI0MzYsImV4cCI6MTY3NzcyMjQ5Nn0.jtPKBHmnUUs6-i1r8-QaLxfEps2iBrXPPpHdpjRpofOG3VrOXpS3stSh9oZar5hfNSkmx83c5BwxRxK-Vr4khA' \
+    -H 'Accept: application/json'</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">http-request</div>
+<div class="content">
+<pre class="prettyprint highlight nowrap"><code data-lang="http">GET /questions/my?page=1&amp;size=10 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJBRE1JTiJdLCJtZW1iZXJJZCI6MSwic3ViIjoidGVzdCBhY2Nlc3MgdG9rZW4iLCJpYXQiOjE2Nzc3MjI0MzYsImV4cCI6MTY3NzcyMjQ5Nn0.jtPKBHmnUUs6-i1r8-QaLxfEps2iBrXPPpHdpjRpofOG3VrOXpS3stSh9oZar5hfNSkmx83c5BwxRxK-Vr4khA
+Accept: application/json
+Host: localhost:8080</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 29. request-parameters</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>page</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">페이지 번호</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">페이지당 조회 수</p></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
+<div class="title">http-response</div>
+<div class="content">
+<pre class="prettyprint highlight nowrap"><code data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: SAMEORIGIN
+Content-Length: 767
+
+{
+  "data" : [ {
+    "questionId" : 1,
+    "title" : "타이틀입니다.",
+    "content" : "질문 내용입니다.",
+    "memberId" : 1,
+    "name" : "taekie",
+    "voteCount" : 52,
+    "views" : 98,
+    "createdAt" : "2023-03-02T11:00:36.6713182",
+    "tagResponseDtos" : [ ],
+    "answerResponseDtos" : [ ]
+  }, {
+    "questionId" : 2,
+    "title" : "2번째 타이틀입니다.",
+    "content" : "2번째 질문 내용입니다.",
+    "memberId" : 1,
+    "name" : "taekie",
+    "voteCount" : 23,
+    "views" : 54,
+    "createdAt" : "2023-03-02T11:00:36.6713182",
+    "tagResponseDtos" : [ ],
+    "answerResponseDtos" : [ ]
+  } ],
+  "pageInfo" : {
+    "page" : 2,
+    "size" : 10,
+    "totalElements" : 12,
+    "totalPages" : 2
+  }
+}</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 30. response-fields</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">결과 데이터</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].questionId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">질문 식별자</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].title</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">질문 제목</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">질문 내용</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].memberId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 식별자</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].voteCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">추천수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].views</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">조회수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].createdAt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">생성 시간</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].tagResponseDtos</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">태그</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].answerResponseDtos</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">답변</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pageInfo</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">페이지 정보</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pageInfo.page</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">조회 페이지 정보</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pageInfo.size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">사이즈 정보</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pageInfo.totalElements</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전체 조회 건 수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pageInfo.totalPages</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전체 페이지 수</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_태그로_질문_조회">2.8. 태그로 질문 조회</h3>
+<div class="listingblock">
+<div class="title">curl-request</div>
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="bash">$ curl 'http://localhost:8080/questions/tags?page=1&amp;size=10&amp;tagName=Java' -i -X GET \
+    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJVU0VSIl0sIm1lbWJlcklkIjoxLCJzdWIiOiJ0ZXN0IGFjY2VzcyB0b2tlbiIsImlhdCI6MTY3NzcyMjQzNiwiZXhwIjoxNjc3NzIyNDk2fQ.ND5JF4VWknOxlPq9nrJDGxY7RzdzP1tBVKKfNCi99RUiwaeXI471ksC-d1RbZIUHJPEt8cyVHElYtt7xQwtWkg' \
+    -H 'Accept: application/json'</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">http-request</div>
+<div class="content">
+<pre class="prettyprint highlight nowrap"><code data-lang="http">GET /questions/tags?page=1&amp;size=10&amp;tagName=Java HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJVU0VSIl0sIm1lbWJlcklkIjoxLCJzdWIiOiJ0ZXN0IGFjY2VzcyB0b2tlbiIsImlhdCI6MTY3NzcyMjQzNiwiZXhwIjoxNjc3NzIyNDk2fQ.ND5JF4VWknOxlPq9nrJDGxY7RzdzP1tBVKKfNCi99RUiwaeXI471ksC-d1RbZIUHJPEt8cyVHElYtt7xQwtWkg
+Accept: application/json
+Host: localhost:8080</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 31. request-parameters</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>page</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">페이지 번호</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">페이지당 조회 수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>tagName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">태그명</p></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
+<div class="title">http-response</div>
+<div class="content">
+<pre class="prettyprint highlight nowrap"><code data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: SAMEORIGIN
+Content-Length: 768
+
+{
+  "data" : [ {
+    "questionId" : 1,
+    "title" : "타이틀입니다.",
+    "content" : "질문 내용입니다.",
+    "memberId" : 1,
+    "name" : "taekie",
+    "voteCount" : 52,
+    "views" : 98,
+    "createdAt" : "2023-03-02T11:00:36.7983179",
+    "tagResponseDtos" : [ ],
+    "answerResponseDtos" : [ ]
+  }, {
+    "questionId" : 2,
+    "title" : "2번째 타이틀입니다.",
+    "content" : "2번째 질문 내용입니다.",
+    "memberId" : 2,
+    "name" : "gildong",
+    "voteCount" : 23,
+    "views" : 54,
+    "createdAt" : "2023-03-02T11:00:36.7983179",
+    "tagResponseDtos" : [ ],
+    "answerResponseDtos" : [ ]
+  } ],
+  "pageInfo" : {
+    "page" : 2,
+    "size" : 10,
+    "totalElements" : 12,
+    "totalPages" : 2
+  }
+}</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 32. response-fields</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">결과 데이터</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].questionId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">질문 식별자</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].title</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">질문 제목</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">질문 내용</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].memberId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 식별자</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].voteCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">추천수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].views</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">조회수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].createdAt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">생성 시간</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].tagResponseDtos</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">태그</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].answerResponseDtos</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">답변</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pageInfo</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">페이지 정보</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pageInfo.page</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">조회 페이지 정보</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pageInfo.size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">사이즈 정보</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pageInfo.totalElements</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전체 조회 건 수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pageInfo.totalPages</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전체 페이지 수</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_질문_삭제">2.9. 질문 삭제</h3>
 <div class="listingblock">
 <div class="title">curl-request</div>
 <div class="content">
 <pre class="prettyprint highlight"><code data-lang="bash">$ curl 'http://localhost:8080/questions/1' -i -X DELETE \
-    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJVU0VSIl0sIm1lbWJlcklkIjoxLCJzdWIiOiJ0ZXN0IGFjY2VzcyB0b2tlbiIsImlhdCI6MTY3NzEyMDI2MSwiZXhwIjoxNjc3MTIwMzIxfQ.XwKh9SnnYMeW0gcpQGToLAK04M8pmlPfeenDGdPSP8-nm_hYD038yJ2Ye6m1-z9wxYpppUkGLba9GLw4ZXgD3A'</code></pre>
+    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJVU0VSIl0sIm1lbWJlcklkIjoxLCJzdWIiOiJ0ZXN0IGFjY2VzcyB0b2tlbiIsImlhdCI6MTY3NzcyMjQzNiwiZXhwIjoxNjc3NzIyNDk2fQ.ND5JF4VWknOxlPq9nrJDGxY7RzdzP1tBVKKfNCi99RUiwaeXI471ksC-d1RbZIUHJPEt8cyVHElYtt7xQwtWkg'</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="title">http-request</div>
 <div class="content">
 <pre class="prettyprint highlight nowrap"><code data-lang="http">DELETE /questions/1 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJVU0VSIl0sIm1lbWJlcklkIjoxLCJzdWIiOiJ0ZXN0IGFjY2VzcyB0b2tlbiIsImlhdCI6MTY3NzEyMDI2MSwiZXhwIjoxNjc3MTIwMzIxfQ.XwKh9SnnYMeW0gcpQGToLAK04M8pmlPfeenDGdPSP8-nm_hYD038yJ2Ye6m1-z9wxYpppUkGLba9GLw4ZXgD3A
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJVU0VSIl0sIm1lbWJlcklkIjoxLCJzdWIiOiJ0ZXN0IGFjY2VzcyB0b2tlbiIsImlhdCI6MTY3NzcyMjQzNiwiZXhwIjoxNjc3NzIyNDk2fQ.ND5JF4VWknOxlPq9nrJDGxY7RzdzP1tBVKKfNCi99RUiwaeXI471ksC-d1RbZIUHJPEt8cyVHElYtt7xQwtWkg
 Host: localhost:8080</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 23. /questions/{question-id}</caption>
+<caption class="title">Table 33. /questions/{question-id}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -1885,79 +2773,712 @@ X-Frame-Options: SAMEORIGIN</code></pre>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_답변_등록">3.1. 답변 등록</h3>
-<div class="paragraph">
+<div class="listingblock">
 <div class="title">curl-request</div>
-<p>Unresolved directive in index.adoc - include::C:\Users\gnswp\Projects\CodestatesPreProject\seb42_pre_005\server\build\generated-snippets/post-answer/curl-request.adoc[]</p>
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="bash">$ curl 'http://localhost:8080/1/questions/1/answers' -i -X POST \
+    -H 'Content-Type: application/json;charset=UTF-8' \
+    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJVU0VSIl0sIm1lbWJlcklkIjoxLCJzdWIiOiJ0ZXN0IGFjY2VzcyB0b2tlbiIsImlhdCI6MTY3NzcyMjQyMywiZXhwIjoxNjc3NzIyNDgzfQ.Ws8DwUSGDpBv0s6M9uqJkBIdaKRZCztzKBuHK6hY07mT8aYA2A65qgZ89Q_S37rYzD2fRnqcpUPTZS4XF-gGqA' \
+    -H 'Accept: application/json' \
+    -d '{
+  "questionId" : 1,
+  "memberId" : 1,
+  "content" : "이곳은 답변을 적는 곳입니다."
+}'</code></pre>
 </div>
-<div class="paragraph">
+</div>
+<div class="listingblock">
 <div class="title">http-request</div>
-<p>Unresolved directive in index.adoc - include::C:\Users\gnswp\Projects\CodestatesPreProject\seb42_pre_005\server\build\generated-snippets/post-answer/http-request.adoc[]</p>
+<div class="content">
+<pre class="prettyprint highlight nowrap"><code data-lang="http">POST /1/questions/1/answers HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJVU0VSIl0sIm1lbWJlcklkIjoxLCJzdWIiOiJ0ZXN0IGFjY2VzcyB0b2tlbiIsImlhdCI6MTY3NzcyMjQyMywiZXhwIjoxNjc3NzIyNDgzfQ.Ws8DwUSGDpBv0s6M9uqJkBIdaKRZCztzKBuHK6hY07mT8aYA2A65qgZ89Q_S37rYzD2fRnqcpUPTZS4XF-gGqA
+Accept: application/json
+Content-Length: 102
+Host: localhost:8080
+
+{
+  "questionId" : 1,
+  "memberId" : 1,
+  "content" : "이곳은 답변을 적는 곳입니다."
+}</code></pre>
 </div>
-<div class="paragraph">
-<div class="title">request-fields</div>
-<p>Unresolved directive in index.adoc - include::C:\Users\gnswp\Projects\CodestatesPreProject\seb42_pre_005\server\build\generated-snippets/post-answer/request-fields.adoc[]</p>
 </div>
-<div class="paragraph">
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 34. request-fields</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Optional</th>
+<th class="tableblock halign-left valign-top">Custom attribute</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 식별자</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>false</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Not Null</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">답변 내용</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>false</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Not Null</p></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
 <div class="title">http-response</div>
-<p>Unresolved directive in index.adoc - include::C:\Users\gnswp\Projects\CodestatesPreProject\seb42_pre_005\server\build\generated-snippets/post-answer/http-response.adoc[]</p>
+<div class="content">
+<pre class="prettyprint highlight nowrap"><code data-lang="http">HTTP/1.1 201 Created
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: SAMEORIGIN
+Content-Length: 197
+
+{
+  "data" : {
+    "answerId" : 1,
+    "memberId" : 1,
+    "questionId" : 1,
+    "name" : "홍길동",
+    "content" : "이곳은 답변을 적는 곳입니다.",
+    "voteCount" : 0
+  }
+}</code></pre>
 </div>
-<div class="paragraph">
-<div class="title">response-headers</div>
-<p>Unresolved directive in index.adoc - include::C:\Users\gnswp\Projects\CodestatesPreProject\seb42_pre_005\server\build\generated-snippets/post-answer/response-headers.adoc[]</p>
 </div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 35. response-headers</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bearer (accessToken)</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect2">
 <h3 id="_답변_수정">3.2. 답변 수정</h3>
-<div class="paragraph">
+<div class="listingblock">
 <div class="title">curl-request</div>
-<p>Unresolved directive in index.adoc - include::C:\Users\gnswp\Projects\CodestatesPreProject\seb42_pre_005\server\build\generated-snippets/patch-answer/curl-request.adoc[]</p>
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="bash">$ curl 'http://localhost:8080/1/answers/1' -i -X PATCH \
+    -H 'Content-Type: application/json;charset=UTF-8' \
+    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJVU0VSIl0sIm1lbWJlcklkIjoxLCJzdWIiOiJ0ZXN0IGFjY2VzcyB0b2tlbiIsImlhdCI6MTY3NzcyMjQyMywiZXhwIjoxNjc3NzIyNDgzfQ.Ws8DwUSGDpBv0s6M9uqJkBIdaKRZCztzKBuHK6hY07mT8aYA2A65qgZ89Q_S37rYzD2fRnqcpUPTZS4XF-gGqA' \
+    -H 'Accept: application/json' \
+    -d '{
+  "memberId" : 1,
+  "answerId" : 1,
+  "questionId" : 1,
+  "content" : "이곳은 답변을 적는 곳입니다."
+}'</code></pre>
 </div>
-<div class="paragraph">
+</div>
+<div class="listingblock">
 <div class="title">http-request</div>
-<p>Unresolved directive in index.adoc - include::C:\Users\gnswp\Projects\CodestatesPreProject\seb42_pre_005\server\build\generated-snippets/patch-answer/http-request.adoc[]</p>
+<div class="content">
+<pre class="prettyprint highlight nowrap"><code data-lang="http">PATCH /1/answers/1 HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJVU0VSIl0sIm1lbWJlcklkIjoxLCJzdWIiOiJ0ZXN0IGFjY2VzcyB0b2tlbiIsImlhdCI6MTY3NzcyMjQyMywiZXhwIjoxNjc3NzIyNDgzfQ.Ws8DwUSGDpBv0s6M9uqJkBIdaKRZCztzKBuHK6hY07mT8aYA2A65qgZ89Q_S37rYzD2fRnqcpUPTZS4XF-gGqA
+Accept: application/json
+Content-Length: 121
+Host: localhost:8080
+
+{
+  "memberId" : 1,
+  "answerId" : 1,
+  "questionId" : 1,
+  "content" : "이곳은 답변을 적는 곳입니다."
+}</code></pre>
 </div>
-<div class="paragraph">
-<div class="title">path-parameters</div>
-<p>Unresolved directive in index.adoc - include::C:\Users\gnswp\Projects\CodestatesPreProject\seb42_pre_005\server\build\generated-snippets/patch-answer/path-parameters.adoc[]</p>
 </div>
-<div class="paragraph">
-<div class="title">request-fields</div>
-<p>Unresolved directive in index.adoc - include::C:\Users\gnswp\Projects\CodestatesPreProject\seb42_pre_005\server\build\generated-snippets/patch-answer/request-fields.adoc[]</p>
-</div>
-<div class="paragraph">
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 36. /{member-id}/answers/{answer-id}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>member-id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 식별자</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>answer-id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">답변 식별자</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 37. request-fields</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Optional</th>
+<th class="tableblock halign-left valign-top">Custom attribute</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 식별자</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>false</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Not Null</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>answerId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">답변 식별자</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>false</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Not Null</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">답변 내용</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>false</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Not Null</p></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
 <div class="title">http-response</div>
-<p>Unresolved directive in index.adoc - include::C:\Users\gnswp\Projects\CodestatesPreProject\seb42_pre_005\server\build\generated-snippets/patch-answer/http-response.adoc[]</p>
+<div class="content">
+<pre class="prettyprint highlight nowrap"><code data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: SAMEORIGIN
+Content-Length: 197
+
+{
+  "data" : {
+    "answerId" : 1,
+    "memberId" : 1,
+    "questionId" : 1,
+    "name" : "홍길동",
+    "content" : "이곳은 답변을 적는 곳입니다.",
+    "voteCount" : 0
+  }
+}</code></pre>
 </div>
-<div class="paragraph">
-<div class="title">response-fields</div>
-<p>Unresolved directive in index.adoc - include::C:\Users\gnswp\Projects\CodestatesPreProject\seb42_pre_005\server\build\generated-snippets/patch-answer/response-fields.adoc[]</p>
 </div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 38. response-fields</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">결과 데이터</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.answerId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">답변 식별자</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.memberId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 식별자</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.questionId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">질문 식별자</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">답변자 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">답변 내용</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.voteCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">추천수</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect2">
-<h3 id="_답변_삭제">3.3. 답변 삭제</h3>
-<div class="paragraph">
+<h3 id="_내가_쓴_답변_조회">3.3. 내가 쓴 답변 조회</h3>
+<div class="listingblock">
 <div class="title">curl-request</div>
-<p>Unresolved directive in index.adoc - include::C:\Users\gnswp\Projects\CodestatesPreProject\seb42_pre_005\server\build\generated-snippets/delete-answer/curl-request.adoc[]</p>
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="bash">$ curl 'http://localhost:8080/answers/my?page=1&amp;size=10' -i -X GET \
+    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJVU0VSIl0sIm1lbWJlcklkIjoxLCJzdWIiOiJ0ZXN0IGFjY2VzcyB0b2tlbiIsImlhdCI6MTY3NzcyMjQyMywiZXhwIjoxNjc3NzIyNDgzfQ.Ws8DwUSGDpBv0s6M9uqJkBIdaKRZCztzKBuHK6hY07mT8aYA2A65qgZ89Q_S37rYzD2fRnqcpUPTZS4XF-gGqA' \
+    -H 'Accept: application/json'</code></pre>
 </div>
-<div class="paragraph">
+</div>
+<div class="listingblock">
 <div class="title">http-request</div>
-<p>Unresolved directive in index.adoc - include::C:\Users\gnswp\Projects\CodestatesPreProject\seb42_pre_005\server\build\generated-snippets/delete-answer/http-request.adoc[]</p>
+<div class="content">
+<pre class="prettyprint highlight nowrap"><code data-lang="http">GET /answers/my?page=1&amp;size=10 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJVU0VSIl0sIm1lbWJlcklkIjoxLCJzdWIiOiJ0ZXN0IGFjY2VzcyB0b2tlbiIsImlhdCI6MTY3NzcyMjQyMywiZXhwIjoxNjc3NzIyNDgzfQ.Ws8DwUSGDpBv0s6M9uqJkBIdaKRZCztzKBuHK6hY07mT8aYA2A65qgZ89Q_S37rYzD2fRnqcpUPTZS4XF-gGqA
+Accept: application/json
+Host: localhost:8080</code></pre>
 </div>
-<div class="paragraph">
-<div class="title">path-parameters</div>
-<p>Unresolved directive in index.adoc - include::C:\Users\gnswp\Projects\CodestatesPreProject\seb42_pre_005\server\build\generated-snippets/delete-answer/path-parameters.adoc[]</p>
 </div>
-<div class="paragraph">
-<div class="title">request-fields</div>
-<p>Unresolved directive in index.adoc - include::C:\Users\gnswp\Projects\CodestatesPreProject\seb42_pre_005\server\build\generated-snippets/delete-answer/path-parameters.adoc[]</p>
-</div>
-<div class="paragraph">
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 39. request-parameters</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>page</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">조회 페이지</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">페이지당 조회 수</p></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
 <div class="title">http-response</div>
-<p>Unresolved directive in index.adoc - include::C:\Users\gnswp\Projects\CodestatesPreProject\seb42_pre_005\server\build\generated-snippets/delete-answer/http-response.adoc[]</p>
+<div class="content">
+<pre class="prettyprint highlight nowrap"><code data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: SAMEORIGIN
+Content-Length: 468
+
+{
+  "data" : [ {
+    "answerId" : 1,
+    "memberId" : 1,
+    "questionId" : 1,
+    "name" : "홍길동",
+    "content" : "답변 내용입니다.",
+    "voteCount" : 20
+  }, {
+    "answerId" : 2,
+    "memberId" : 2,
+    "questionId" : 2,
+    "name" : "홍길동2",
+    "content" : "2번째 답변 내용입니다.",
+    "voteCount" : 40
+  } ],
+  "pageInfo" : {
+    "page" : 2,
+    "size" : 10,
+    "totalElements" : 12,
+    "totalPages" : 2
+  }
+}</code></pre>
 </div>
-<div class="paragraph">
-<div class="title">response-fields</div>
-<p>Unresolved directive in index.adoc - include::C:\Users\gnswp\Projects\CodestatesPreProject\seb42_pre_005\server\build\generated-snippets/delete-answer/response-fields.adoc[]</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 40. response-fields</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">결과 데이터</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].answerId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">답변 식별자</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].memberId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 식별자</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].questionId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">질문 식별자</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">답변 내용</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].voteCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">추천수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pageInfo</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">페이지 정보</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pageInfo.page</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">조회 페이지 정보</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pageInfo.size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">사이즈 정보</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pageInfo.totalElements</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전체 조회 건 수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pageInfo.totalPages</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전체 페이지 수</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_답변_추천">3.4. 답변 추천</h3>
+<div class="listingblock">
+<div class="title">curl-request</div>
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="bash">$ curl 'http://localhost:8080/1/answers/1' -i -X PATCH \
+    -H 'Content-Type: application/json;charset=UTF-8' \
+    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJVU0VSIl0sIm1lbWJlcklkIjoxLCJzdWIiOiJ0ZXN0IGFjY2VzcyB0b2tlbiIsImlhdCI6MTY3NzcyMjQyMywiZXhwIjoxNjc3NzIyNDgzfQ.Ws8DwUSGDpBv0s6M9uqJkBIdaKRZCztzKBuHK6hY07mT8aYA2A65qgZ89Q_S37rYzD2fRnqcpUPTZS4XF-gGqA' \
+    -H 'Accept: application/json' \
+    -d '{
+  "memberId" : 1,
+  "answerId" : 1,
+  "questionId" : 1,
+  "content" : "이곳은 답변을 적는 곳입니다."
+}'</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">http-request</div>
+<div class="content">
+<pre class="prettyprint highlight nowrap"><code data-lang="http">PATCH /1/answers/1 HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJVU0VSIl0sIm1lbWJlcklkIjoxLCJzdWIiOiJ0ZXN0IGFjY2VzcyB0b2tlbiIsImlhdCI6MTY3NzcyMjQyMywiZXhwIjoxNjc3NzIyNDgzfQ.Ws8DwUSGDpBv0s6M9uqJkBIdaKRZCztzKBuHK6hY07mT8aYA2A65qgZ89Q_S37rYzD2fRnqcpUPTZS4XF-gGqA
+Accept: application/json
+Content-Length: 121
+Host: localhost:8080
+
+{
+  "memberId" : 1,
+  "answerId" : 1,
+  "questionId" : 1,
+  "content" : "이곳은 답변을 적는 곳입니다."
+}</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 41. /{member-id}/answers/{answer-id}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>member-id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 식별자</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>answer-id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">답변 식별자</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 42. request-fields</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Optional</th>
+<th class="tableblock halign-left valign-top">Custom attribute</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 식별자</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>false</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Not Null</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>answerId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">답변 식별자</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>false</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Not Null</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">답변 내용</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>false</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Not Null</p></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
+<div class="title">http-response</div>
+<div class="content">
+<pre class="prettyprint highlight nowrap"><code data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: SAMEORIGIN
+Content-Length: 197
+
+{
+  "data" : {
+    "answerId" : 1,
+    "memberId" : 1,
+    "questionId" : 1,
+    "name" : "홍길동",
+    "content" : "이곳은 답변을 적는 곳입니다.",
+    "voteCount" : 0
+  }
+}</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 43. response-fields</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">결과 데이터</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.answerId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">답변 식별자</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.memberId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 식별자</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.questionId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">질문 식별자</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">답변자 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">답변 내용</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.voteCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">추천수</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_답변_삭제">3.5. 답변 삭제</h3>
+<div class="listingblock">
+<div class="title">curl-request</div>
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="bash">$ curl 'http://localhost:8080/answers/1' -i -X DELETE \
+    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJVU0VSIl0sIm1lbWJlcklkIjoxLCJzdWIiOiJ0ZXN0IGFjY2VzcyB0b2tlbiIsImlhdCI6MTY3NzcyMjQyMywiZXhwIjoxNjc3NzIyNDgzfQ.Ws8DwUSGDpBv0s6M9uqJkBIdaKRZCztzKBuHK6hY07mT8aYA2A65qgZ89Q_S37rYzD2fRnqcpUPTZS4XF-gGqA'</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">http-request</div>
+<div class="content">
+<pre class="prettyprint highlight nowrap"><code data-lang="http">DELETE /answers/1 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJVU0VSIl0sIm1lbWJlcklkIjoxLCJzdWIiOiJ0ZXN0IGFjY2VzcyB0b2tlbiIsImlhdCI6MTY3NzcyMjQyMywiZXhwIjoxNjc3NzIyNDgzfQ.Ws8DwUSGDpBv0s6M9uqJkBIdaKRZCztzKBuHK6hY07mT8aYA2A65qgZ89Q_S37rYzD2fRnqcpUPTZS4XF-gGqA
+Host: localhost:8080</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 44. /answers/{answer-id}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>answer-id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">답변 식별자</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 45. /answers/{answer-id}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>answer-id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">답변 식별자</p></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
+<div class="title">http-response</div>
+<div class="content">
+<pre class="prettyprint highlight nowrap"><code data-lang="http">HTTP/1.1 204 No Content
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: SAMEORIGIN</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -1967,26 +3488,181 @@ X-Frame-Options: SAMEORIGIN</code></pre>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_태그_목록_찾기">4.1. 태그 목록 찾기</h3>
-<div class="paragraph">
+<div class="listingblock">
 <div class="title">curl-request</div>
-<p>Unresolved directive in index.adoc - include::C:\Users\gnswp\Projects\CodestatesPreProject\seb42_pre_005\server\build\generated-snippets/get-tags/curl-request.adoc[]</p>
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="bash">$ curl 'http://localhost:8080/tags?page=1&amp;size=10&amp;keyword=&amp;tab=new' -i -X GET \
+    -H 'Accept: application/json'</code></pre>
 </div>
-<div class="paragraph">
+</div>
+<div class="listingblock">
 <div class="title">http-request</div>
-<p>Unresolved directive in index.adoc - include::C:\Users\gnswp\Projects\CodestatesPreProject\seb42_pre_005\server\build\generated-snippets/get-tags/http-request.adoc[]</p>
+<div class="content">
+<pre class="prettyprint highlight nowrap"><code data-lang="http">GET /tags?page=1&amp;size=10&amp;keyword=&amp;tab=new HTTP/1.1
+Accept: application/json
+Host: localhost:8080</code></pre>
 </div>
-<div class="paragraph">
-<div class="title">request-parameters</div>
-<p>Unresolved directive in index.adoc - include::C:\Users\gnswp\Projects\CodestatesPreProject\seb42_pre_005\server\build\generated-snippets/get-tags/request-parameters.adoc[]</p>
 </div>
-<div class="paragraph">
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 46. request-parameters</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>page</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">출력할 페이지 (defaultValue = 1)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">페이지당 게시물 수 (defaultValue = 36)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>keyword</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">검색어</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>tab</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">정렬 기준 (defaultValue = popular (인기순), 이름순 = name, 최근에 만들어진 순 = new)</p></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
 <div class="title">http-response</div>
-<p>Unresolved directive in index.adoc - include::C:\Users\gnswp\Projects\CodestatesPreProject\seb42_pre_005\server\build\generated-snippets/get-tags/http-response.adoc[]</p>
+<div class="content">
+<pre class="prettyprint highlight nowrap"><code data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: SAMEORIGIN
+Content-Length: 919
+
+{
+  "data" : [ {
+    "tagId" : 10,
+    "tagName" : "태그10",
+    "questionCount" : 1
+  }, {
+    "tagId" : 9,
+    "tagName" : "태그9",
+    "questionCount" : 1
+  }, {
+    "tagId" : 8,
+    "tagName" : "태그8",
+    "questionCount" : 1
+  }, {
+    "tagId" : 7,
+    "tagName" : "태그7",
+    "questionCount" : 1
+  }, {
+    "tagId" : 6,
+    "tagName" : "태그6",
+    "questionCount" : 1
+  }, {
+    "tagId" : 5,
+    "tagName" : "태그5",
+    "questionCount" : 1
+  }, {
+    "tagId" : 4,
+    "tagName" : "태그4",
+    "questionCount" : 1
+  }, {
+    "tagId" : 3,
+    "tagName" : "태그3",
+    "questionCount" : 1
+  }, {
+    "tagId" : 2,
+    "tagName" : "태그2",
+    "questionCount" : 1
+  }, {
+    "tagId" : 1,
+    "tagName" : "태그1",
+    "questionCount" : 1
+  } ],
+  "pageInfo" : {
+    "page" : 1,
+    "size" : 10,
+    "totalElements" : 10,
+    "totalPages" : 1
+  }
+}</code></pre>
 </div>
-<div class="paragraph">
-<div class="title">response-fields</div>
-<p>Unresolved directive in index.adoc - include::C:\Users\gnswp\Projects\CodestatesPreProject\seb42_pre_005\server\build\generated-snippets/get-tags/response-fields.adoc[]</p>
 </div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 47. response-fields</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">결과 데이터</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[*].tagId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">태그 식별자</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[*].tagName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">태그 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[*].questionCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">태그를 사용한 질문 수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pageInfo</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">페이지 정보</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pageInfo.page</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">현재 페이지</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pageInfo.size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">한 페이지에 노출할 데이터 갯수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pageInfo.totalElements</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">총 데이터 갯수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pageInfo.totalPages</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">총 페이지 갯수</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
@@ -1994,7 +3670,7 @@ X-Frame-Options: SAMEORIGIN</code></pre>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-02-23 10:51:54 +0900
+Last updated 2023-03-02 11:00:14 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">

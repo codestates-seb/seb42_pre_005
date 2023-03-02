@@ -31,6 +31,22 @@ include::{snippets}/post-member/http-response.adoc[]
 .response-headers
 include::{snippets}/post-member/response-headers.adoc[]
 
+=== 로그인
+.curl-request
+include::{snippets}/login/curl-request.adoc[]
+
+.http-request
+include::{snippets}/login/http-request.adoc[]
+
+.request-fields
+include::{snippets}/login/request-fields.adoc[]
+
+.http-response
+include::{snippets}/login/http-response.adoc[]
+
+.response-headers
+include::{snippets}/login/response-headers.adoc[]
+
 === 회원 정보 수정
 .curl-request
 include::{snippets}/patch-member/curl-request.adoc[]
@@ -215,6 +231,41 @@ include::{snippets}/patch-question-vote/http-response.adoc[]
 .response-fields
 include::{snippets}/patch-question-vote/response-fields.adoc[]
 
+=== 내 질문 조회
+.curl-request
+include::{snippets}/my-question/curl-request.adoc[]
+
+.http-request
+include::{snippets}/my-question/http-request.adoc[]
+
+
+.request-parameters
+include::{snippets}/my-question/request-parameters.adoc[]
+
+
+.http-response
+include::{snippets}/my-question/http-response.adoc[]
+
+.response-fields
+include::{snippets}/my-question/response-fields.adoc[]
+
+=== 태그로 질문 조회
+.curl-request
+include::{snippets}/tag-question/curl-request.adoc[]
+
+.http-request
+include::{snippets}/tag-question/http-request.adoc[]
+
+
+.request-parameters
+include::{snippets}/tag-question/request-parameters.adoc[]
+
+
+.http-response
+include::{snippets}/tag-question/http-response.adoc[]
+
+.response-fields
+include::{snippets}/tag-question/response-fields.adoc[]
 
 
 === 질문 삭제
@@ -246,9 +297,46 @@ include::{snippets}/post-answer/request-fields.adoc[]
 include::{snippets}/post-answer/http-response.adoc[]
 
 .response-headers
-include::{snippets}/post-answer/response-headers.adoc[]
+include::{snippets}/post-answer/request-headers.adoc[]
 
 === 답변 수정
+.curl-request
+include::{snippets}/patch-answer/curl-request.adoc[]
+
+.http-request
+include::{snippets}/patch-answer/http-request.adoc[]
+
+.path-parameters
+include::{snippets}/patch-answer/path-parameters.adoc[]
+
+.request-fields
+include::{snippets}/patch-answer/request-fields.adoc[]
+
+.http-response
+include::{snippets}/patch-answer/http-response.adoc[]
+
+.response-fields
+include::{snippets}/patch-answer/response-fields.adoc[]
+
+=== 내가 쓴 답변 조회
+.curl-request
+include::{snippets}/get-my-answers/curl-request.adoc[]
+
+.http-request
+include::{snippets}/get-my-answers/http-request.adoc[]
+
+
+.request-parameters
+include::{snippets}/get-my-answers/request-parameters.adoc[]
+
+
+.http-response
+include::{snippets}/get-my-answers/http-response.adoc[]
+
+.response-fields
+include::{snippets}/get-my-answers/response-fields.adoc[]
+
+=== 답변 추천
 .curl-request
 include::{snippets}/patch-answer/curl-request.adoc[]
 
@@ -283,8 +371,8 @@ include::{snippets}/delete-answer/path-parameters.adoc[]
 .http-response
 include::{snippets}/delete-answer/http-response.adoc[]
 
-.response-fields
-include::{snippets}/delete-answer/response-fields.adoc[]
+// .response-fields
+// include::{snippets}/delete-answer/response-fields.adoc[]
 
 == TagController
 === 태그 목록 찾기
