@@ -68,7 +68,7 @@ public class MemberController {
                                 HttpServletRequest request) throws IllegalAccessException {
 
         requestBody.setMemberId(memberId);
-        if(!memberService.verifyMyMemberId(request, memberId) && !Checker.checkAdmin()){
+        if(!(memberService.verifyMyMemberId(request, memberId)  || Checker.checkAdmin())){
             throw new BusinessLogicException(ExceptionCode.ACCESS_DENIED);
         }
 
@@ -116,7 +116,7 @@ public class MemberController {
     @DeleteMapping("/{member-id}")
     public ResponseEntity deleteMember(@PathVariable("member-id") @Positive long memberId,
                                        HttpServletRequest request){
-        if(!memberService.verifyMyMemberId(request, memberId) && !Checker.checkAdmin()){
+        if(!(memberService.verifyMyMemberId(request, memberId)  || Checker.checkAdmin())){
             throw new BusinessLogicException(ExceptionCode.ACCESS_DENIED);
         }
         memberService.deleteMember(memberId);
