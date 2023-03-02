@@ -59,9 +59,14 @@ public class MemberService {
     public Member updateMember(Member member) throws IllegalAccessException {
         Member findMember = findVerifiedMember(member.getMemberId());
         // 널이 아닌 값을 복사한다.
-        Optional<String> optionalName = Optional.of(member.getName());
+        Optional<String> optionalName = Optional.ofNullable(member.getName());
         optionalName.ifPresent(
                 name -> findMember.setName(name)
+        );
+
+        Optional<Integer> optionalAge = Optional.ofNullable(member.getAge());
+        optionalAge.ifPresent(
+                age -> findMember.setAge(age)
         );
 
         return memberRepository.save(findMember);
