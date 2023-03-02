@@ -42,6 +42,7 @@ public class AnswerService {
         answer.setQuestion(question);
         Member member = memberService.findVerifiedMember(answer.getMember().getMemberId());
         answer.setMember(member);
+        answer.setCreatedAt(LocalDateTime.now());
 
         return answerRepository.save(answer);
     }
