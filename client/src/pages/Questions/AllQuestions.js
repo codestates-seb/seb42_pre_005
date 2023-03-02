@@ -37,7 +37,7 @@ function AllQuestions() {
 
     useEffect(() => {
         // axios.defaults.withCredentials = true;
-        axios.get(`${process.env.REACT_APP_API_URL}/questions?page=${page}&size=${size}`)
+        axios.get(`${process.env.REACT_APP_API_URL}/questions?page=${page}&size=${size}&tab=newest`)
         .then((res) => {
             // console.log(res.data)
             setQuestionList(res.data.data);

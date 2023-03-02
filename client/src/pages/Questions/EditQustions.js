@@ -99,6 +99,7 @@ function EditQuestion( {QuestionData} ) {
     axios.patch(`${process.env.REACT_APP_API_URL}/questions`, {
       title : title,
       content : value,
+      tagNames : tags,
     })
     .then(res => {
         console.log(res)
