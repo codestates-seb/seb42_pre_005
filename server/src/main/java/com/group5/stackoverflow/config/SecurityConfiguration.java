@@ -1,6 +1,6 @@
 package com.group5.stackoverflow.config;
 
-import com.group5.stackoverflow.auth.filter.MemberUrIVerificationFilter;
+//import com.group5.stackoverflow.auth.filter.MemberUrIVerificationFilter;
 import com.group5.stackoverflow.auth.filter.JwtAuthenticationFilter;
 import com.group5.stackoverflow.auth.filter.JwtVerificationFilter;
 import com.group5.stackoverflow.auth.filter.LogFilter;
@@ -112,13 +112,13 @@ public class SecurityConfiguration {
 
             JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtTokenizer, authorityUtils);
 
-            MemberUrIVerificationFilter memberUrIVerificationFilter = new MemberUrIVerificationFilter();
+//            MemberUrIVerificationFilter memberUrIVerificationFilter = new MemberUrIVerificationFilter();
 
             builder
                 .addFilterBefore(new LogFilter(), ChannelProcessingFilter.class)
                 .addFilter(jwtAuthenticationFilter)
-                .addFilterAfter(jwtVerificationFilter, JwtAuthenticationFilter.class)
-                .addFilterAfter(memberUrIVerificationFilter, JwtVerificationFilter.class);;
+                .addFilterAfter(jwtVerificationFilter, JwtAuthenticationFilter.class);
+//                .addFilterAfter(memberUrIVerificationFilter, JwtVerificationFilter.class);
         }
     }
 }

@@ -67,11 +67,11 @@ public class MemberController {
             @Valid @RequestBody MemberDto.Patch requestBody,
                                 HttpServletRequest request) throws IllegalAccessException {
 
-        if(!Checker.checkVerificationResult(request)){
-            throw new BusinessLogicException(ExceptionCode.ACCESS_DENIED);
-        };
-
         requestBody.setMemberId(memberId);
+        if(!memberService.verifyMyMemberId(request, memberId) && !Checker.checkAdmin()){
+            throw new BusinessLogicException(ExceptionCode.ACCESS_DENIED);
+        }
+
         Member member = memberService.updateMember(mapper.memberPatchToMember(requestBody));
 
         return new ResponseEntity<>(
@@ -87,7 +87,7 @@ public class MemberController {
         Member findmember =
                 memberService.findMember(memberId);
 
-        MemberDto.Response  response = Checker.checkVerificationResult(request) ?
+        MemberDto.Response  response = (memberService.verifyMyMemberId(request, memberId) || Checker.checkAdmin()) ?
                                         mapper.memberToMemberResponse(findmember):
                                         mapper.memberToMemberResponseForPublic(findmember);
 
@@ -116,26 +116,26 @@ public class MemberController {
     @DeleteMapping("/{member-id}")
     public ResponseEntity deleteMember(@PathVariable("member-id") @Positive long memberId,
                                        HttpServletRequest request){
-        if(!Checker.checkVerificationResult(request)){
+        if(!memberService.verifyMyMemberId(request, memberId) && !Checker.checkAdmin()){
             throw new BusinessLogicException(ExceptionCode.ACCESS_DENIED);
-        };
+        }
         memberService.deleteMember(memberId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/{member-id}/questions")
-    public ResponseEntity getQuestions(@RequestParam @Positive int page,
-                                     @RequestParam @Positive int size,
-                                     @RequestParam(required = false, defaultValue = "base") String mode,
-                                     HttpServletRequest request){
-        Page<Member> pageMembers = memberService.findMembers(page-1, size, mode);
-        List<Member> members = pageMembers.getContent();
-        List<MemberDto.Response>  response = Checker.checkVerificationResult(request) ?
-                mapper.membersToMemberResponses(members):
-                mapper.membersToMemberResponsesForPublic(members);
-        return new ResponseEntity<>(new MultiResponseDto<>(response, pageMembers),
-                HttpStatus.OK);
-
-    }
+//    @GetMapping("/{member-id}/questions")
+//    public ResponseEntity getQuestions(@RequestParam @Positive int page,
+//                                     @RequestParam @Positive int size,
+//                                     @RequestParam(required = false, defaultValue = "base") String mode,
+//                                     HttpServletRequest request){
+//        Page<Member> pageMembers = memberService.findMembers(page-1, size, mode);
+//        List<Member> members = pageMembers.getContent();
+//        List<MemberDto.Response>  response =(memberService.verifyMyMemberId(request, memberId) || Checker.checkAdmin()) ?
+//                mapper.membersToMemberResponses(members):
+//                mapper.membersToMemberResponsesForPublic(members);
+//        return new ResponseEntity<>(new MultiResponseDto<>(response, pageMembers),
+//                HttpStatus.OK);
+//
+//    }
 
 }
