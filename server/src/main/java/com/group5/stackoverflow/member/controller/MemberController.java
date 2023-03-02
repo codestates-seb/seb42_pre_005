@@ -138,14 +138,4 @@ public class MemberController {
 
     }
 
-//    @PostMapping("/questions")
-//    public ResponseEntity postQuestionOfMember(@Valid @RequestBody QuestionDto.Post requestBody,
-//                                               HttpServletRequest request) {
-//        Long memberId = Checker.getMemberId();
-//        requestBody.addMemberId(memberId);
-//        Question createdQuestion = questionService.createQuestion(questionMapper.questionPostToQuestion(requestBody), requestBody.getTagNames());
-//        URI location = UriCreator.createUri(QUESTION_DEFAULT_URL, createdQuestion.getQuestionId());
-//
-//        return ResponseEntity.created(location).build();
-//    }
 }

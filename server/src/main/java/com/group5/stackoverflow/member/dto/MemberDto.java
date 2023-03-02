@@ -33,6 +33,7 @@ public class MemberDto {
     @Getter
     @Setter
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class Patch{
         Long memberId;
 
