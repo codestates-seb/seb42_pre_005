@@ -59,14 +59,10 @@ public class MemberService {
     public Member updateMember(Member member) throws IllegalAccessException {
         Member findMember = findVerifiedMember(member.getMemberId());
         // 널이 아닌 값을 복사한다.
-        Field[] fields = member.getClass().getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            Object value = field.get(member);
-            if (value != null) {
-                field.set(findMember, value);
-            }
-        }
+        Optional<String> optionalName = Optional.of(member.getName());
+        optionalName.ifPresent(
+                name -> findMember.setName(name)
+        );
 
         return memberRepository.save(findMember);
     }

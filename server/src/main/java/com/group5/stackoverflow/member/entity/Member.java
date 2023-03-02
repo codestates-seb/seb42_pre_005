@@ -51,8 +51,6 @@ public class Member extends Auditable {
     @Column(name = "MEMBER_MENTION")
     List<MemberMention> memberMentions = new ArrayList<>();
 
-    // TODO Answer 연관관계 매핑
-    // TODO comment 연관관계 매핑
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     List<Answer> answers = new ArrayList<>();

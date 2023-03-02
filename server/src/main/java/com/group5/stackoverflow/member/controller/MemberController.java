@@ -116,7 +116,9 @@ public class MemberController {
     @DeleteMapping("/{member-id}")
     public ResponseEntity deleteMember(@PathVariable("member-id") @Positive long memberId,
                                        HttpServletRequest request){
-        Checker.checkVerificationResult(request);
+        if(!Checker.checkVerificationResult(request)){
+            throw new BusinessLogicException(ExceptionCode.ACCESS_DENIED);
+        };
         memberService.deleteMember(memberId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

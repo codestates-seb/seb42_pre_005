@@ -22,7 +22,7 @@ public class Checker {
     }
 
     public static boolean checkVerificationResult(HttpServletRequest request){
-       return request.getAttribute("verified").equals(false);
+       return request.getAttribute("verified").equals(true);
     }
 
     public static Long getMemberId(){
