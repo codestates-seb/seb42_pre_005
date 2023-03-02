@@ -1,14 +1,13 @@
-{
-  "data" : {
-    "questionId" : 1,
-    "title" : "타이틀 입니다.",
-    "content" : "질문 내용입니다.",
-    "memberId" : 1,
-    "name" : "taekie",
-    "voteCount" : 30,
-    "views" : 40,
-    "createdAt" : "2023-02-28T22:08:00.980765",
-    "tagResponseDtos" : [ ],
-    "answerResponseDtos" : [ ]
-  }
+{ "data" : [ {
+  "questionId" : 1,
+  "title" : "타이틀입니다.",
+  "content" : "질문 내용입니다.",
+  "memberId" : 1,
+  "name" : "taekie",
+  "voteCount" : 52,
+  "views" : 98,
+  "createdAt" : "2023-03-02T11:00:36.7353184",
+  "tagResponseDtos" : [ ],
+  "answerResponseDtos" : [ ]
+} ]
 }

@@ -57,6 +57,10 @@ function AnswerCreate() {
         console.log(res)
         window.location.reload() // 화면 새로고침
       })
+      .catch((err) => {
+        console.log(err);
+        alert("Failed to write. Try again.");
+      });
   }
 
   return (
@@ -67,7 +71,7 @@ function AnswerCreate() {
           value={value} 
           onChange={setValue}
           />
-      <CreateButton onClick={Answerpost}>Post Your Answer</CreateButton>
+      <CreateButton onClick={Answerpost()}>Post Your Answer</CreateButton>
     </CreateBox>
   )
 }
