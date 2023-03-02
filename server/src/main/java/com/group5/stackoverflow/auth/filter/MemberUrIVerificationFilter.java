@@ -24,8 +24,7 @@ public class MemberUrIVerificationFilter extends OncePerRequestFilter {  // (1)
 
         request.setAttribute("verified", false);
         // 특정 멤버를 타겟으로 하는 경우
-        if (antPathMatcher.match("/members/\\d+", uri.getPath())
-                || antPathMatcher.match("/members/\\d+/**", uri.getPath())) {
+        if (antPathMatcher.match("/members/*", uri.getPath())){
             Long memberId = Long.parseLong(uri.getPath().split("/")[2]);
             if (Checker.checkVerified(memberId)) {
                 request.setAttribute("verified", true);
