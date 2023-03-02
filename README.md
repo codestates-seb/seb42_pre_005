@@ -17,8 +17,10 @@ CodeStates 42기 Pre-Project 005
 ## 📝 주요 문서 
 - [SEB 42 Pre-Project](https://docs.google.com/spreadsheets/d/1eTkYkR4RLvfX5-c2vrL4z2g6rqssCqnolPLYB3wVSNQ/edit#gid=951514399)
 
+<br>
+
 ## 📌 기술 스택
-### 공용 기술 스택
+### 공용 기술 
 <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white"> <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white"> <img src="https://img.shields.io/badge/discord-5865F2?style=for-the-badge&logo=discord&logoColor=white">
 
 ### 프론트엔드
