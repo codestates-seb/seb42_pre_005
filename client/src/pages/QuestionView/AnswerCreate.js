@@ -3,7 +3,7 @@
 // ----- 필요 라이브러리
 import styled from "styled-components";
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from "axios";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -41,6 +41,7 @@ const CreateButton = styled.button` // 답변 등록 버튼
 
 // ----- 컴포넌트 영역
 function AnswerCreate() {
+   const navigate = useNavigate()
   const [value, setValue] = useState(""); // 질문 내용 입력칸의 상태 관리창
   const { id } = useParams();
 
@@ -50,12 +51,12 @@ function AnswerCreate() {
       content : value,
     },{
       headers: {
-        Authorization: `Bearer ${getAccessToken()}`
+        Authorization: getAccessToken()
       }
     })
     .then(res => {
         console.log(res)
-        window.location.reload() // 화면 새로고침
+        navigate(`/questions/${id}`);
       })
       .catch((err) => {
         console.log(err);
