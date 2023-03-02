@@ -8,6 +8,7 @@ import axios from "axios";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { getAccessToken } from "../../storage/cookie";
+import { useSelector } from "react-redux";
 
 // ----- 컴포넌트 및 이미지 파일
 
@@ -41,13 +42,14 @@ const CreateButton = styled.button` // 답변 등록 버튼
 
 // ----- 컴포넌트 영역
 function AnswerCreate() {
-   const navigate = useNavigate()
+  const navigate = useNavigate()
+  const loginUser = useSelector(state => state.loginUser)
   const [value, setValue] = useState(""); // 질문 내용 입력칸의 상태 관리창
   const { id } = useParams();
 
   const Answerpost = () => {
     // 댓글 포스트 요청 함수
-    axios.post(`${process.env.REACT_APP_API_URL}/questions/${id}/answers`, {
+    axios.post(`${process.env.REACT_APP_API_URL}/${loginUser.id}/questions/${id}/answers`, {
       content : value,
     },{
       headers: {
