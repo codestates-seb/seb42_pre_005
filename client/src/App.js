@@ -1,9 +1,47 @@
 import './App.css';
 
+import { Routes, Route } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+
+import Main from './pages/Main/Main';
+import Header from './components/Header/Header';
+
+import Login from './pages/Users/Login';
+import Register from './pages/Users/Register';
+
+import Users from './pages/Users/Users';
+import UserDetail from './pages/Users/UserDetail';
+
+import Tags from './pages/Tags/Tags';
+
+import AllQuestions from './pages/Questions/AllQuestions';
+import TopQuestions from './pages/Questions/TopQuestions';
+import AskQuestion from './pages/Questions/AskQuestion';
+import QuestionView from './pages/QuestionView/QuestionView';
+
+
+
+
 function App() {
+  const dispatch = useDispatch();
+  const isLogin = useSelector(state => state.isLogin);
+
   return (
     <div className="App">
-      초기설정
+      <Header />
+      <Routes>
+        <Route path="/" element={<Main />}>
+          <Route path="/" element={<TopQuestions/>}/>
+          <Route path="/questions" element={<AllQuestions/>}/>
+          <Route path="/tags" element={<Tags />} />
+          <Route path="/view" element={<QuestionView />} />
+          <Route path='/users/:id/:name' element={<UserDetail/>}/>
+          <Route path="/users" element={<Users />}/>
+        </Route>
+        <Route path="/ask" element={<AskQuestion />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+      </Routes>
     </div>
   );
 }

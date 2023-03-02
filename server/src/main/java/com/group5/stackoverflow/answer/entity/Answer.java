@@ -1,28 +1,35 @@
 package com.group5.stackoverflow.answer.entity;
 
-import lombok.AllArgsConstructor;
+import com.group5.stackoverflow.audit.Auditable;
+import com.group5.stackoverflow.member.entity.Member;
+import com.group5.stackoverflow.question.entity.Question;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import java.time.LocalDateTime;
+import javax.persistence.*;
 
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
-public class Answer {
+@NoArgsConstructor
+public class Answer extends Auditable{
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long answerId;
-    private String content;
-    private int voteCount;
-    private LocalDateTime createdAt;
-    private LocalDateTime modifiedAt;
 
-    public Answer(String content) {
-        this.content = content;
-    }
+    @Column(nullable = false)
+    private String content;
+
+    @Column(nullable = false)
+    private int voteCount;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "QUESTION_ID")
+    private Question question;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MEMBER_ID")
+    private Member member;
 }
