@@ -8,6 +8,7 @@ import lombok.Getter;
 
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class QuestionDto {
 
         private Long memberId;
 
-
+        @NotNull
         private List<String> tagNames;
 
         public void addMemberId(Long memberId) {
@@ -39,13 +40,13 @@ public class QuestionDto {
     public static class Patch {
         private Long questionId;
 
-
         @NotBlank(message = "제목은 공백이 아니어야 합니다.")
         private String title;
 
         @NotBlank
         private String content;
 
+        @NotNull
         private List<String> tagNames;
 
         public void addQuestionId(Long questionId) {
