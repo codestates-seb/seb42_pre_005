@@ -91,20 +91,20 @@ function QuestionItem( {questionItem} ) {
     <ItemBox>
       <InfoBox>
         <Info>{questionItem.voteCount} votes</Info>
-        <Info>0 answers</Info>
+        <Info>{(questionItem.answerResponseDtos).length} answers</Info>
         <Info>{questionItem.views} views</Info>
       </InfoBox>
       <ContentsBox>
         <ContentsHeader>
-          <QuestionTitle onClick={() => navigate("/view")}>{questionItem.title} </QuestionTitle>
+          <QuestionTitle onClick={() => navigate(`/questions/${questionItem.questionId}`)}>{questionItem.title} </QuestionTitle>
           <QuestionDetail>{questionItem.content}</QuestionDetail>
         </ContentsHeader>
         <ContentsFooter>
           <TagBox>{questionItem.tagName}</TagBox>
           <UserBox>
             <UserImg>😀</UserImg>
-            <UserName>{questionItem.name}</UserName>
-            <UserLog>asked 1min ago</UserLog>
+            <UserName onClick={() => navigate(`/users/${questionItem.memberId}/${questionItem.name}`)}>{questionItem.name}</UserName>
+            <UserLog>asked {new Date(questionItem.createdAt).toLocaleDateString('ko-kr')}</UserLog>
           </UserBox >
         </ContentsFooter>
       </ContentsBox>

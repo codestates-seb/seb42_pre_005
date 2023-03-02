@@ -5,7 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
 import Logo from "../../icons/Logo.svg";
-import { setIsLogin, setUserData } from "../../store/store";
+import { setIsLogin, setLoginUser } from "../../store/store";
+import { setAccessToken } from "../../storage/cookie";
 
 const StackoverflowLogo = styled.div` // 스택오버플로우 로고 영역
   display: flex;
@@ -104,18 +105,34 @@ function Login() {
             email,
             password
         }
-        console.log(loginData);
-        axios.post(`/api/auth/login`, loginData)
+        // console.log(loginData);
+        axios.post(process.env.REACT_APP_API_URL+"/auth/login", loginData)
         .then(res => {
-            console.log(res);
+            dispatch(setIsLogin(true));
+            dispatch(setLoginUser({
+                id: res.data.data.memberId,
+                name: res.data.data.name,
+                email: res.data.data.email
+            }))
+            // console.log("res token")
+            // console.log(res.headers.authorization);
+            setAccessToken(res.headers.authorization)
             navigate("/")
         })
+        .catch(err => {
+            console.log(err);
+        })
+        // axios.post(`/api/auth/login`, loginData)
+        // .then(res => {
+        //     console.log(res);
+        //     navigate("/")
+        // })
     }
 
     const fakeLoginHandler = () => {
         dispatch(setIsLogin(true));
-        dispatch(setUserData({
-            id: 1,
+        dispatch(setLoginUser({
+            memberId: 1,
             name: "dev-jq1",
             age: 20,
             email: "test@test.com",

@@ -1,5 +1,9 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { MdSearch } from "react-icons/md";
 import styled from "styled-components";
+import Paging from "../../components/Pagination";
+import UserCard from "../../components/Users/UserCard";
 
 export const UsersPage = styled.div`
     display: flex;
@@ -10,6 +14,12 @@ export const UsersPage = styled.div`
 export const UsersHeader = styled.div``;
 
 export const UsersContent = styled.div``;
+
+const UserList = styled.div`
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    display: grid;
+    gap: 12px;
+`
 
 const SubBox = styled.div`
     // 검색창 및 분류 sort
@@ -80,6 +90,23 @@ const FilterItem = styled.span`
 `
 
 function Users() {
+    const [userDatas, setUserDatas] = useState(null);
+    const [isPending, setIsPending] = useState(true);
+    
+    const [page, setPage] = useState(1); // 페이지 정보 가져오기
+    const [size, setSize] = useState(36); //  한 페이지에 보여줄 아이템 수
+    const [total, setTotal] = useState(); // 전체 아이템 수
+
+    useEffect(() => {
+        axios.get(`${process.env.REACT_APP_API_URL}/members?page=${page}&size=${size}&by=base`)
+        .then(res => {
+            // console.log(res.data.data)
+            // console.log(res.data.pageInfo)
+            setUserDatas(res.data.data)
+            setTotal(res.data.pageInfo.totalElements)
+        })
+        .then(()=> setIsPending(false));
+    },[page])
     return (
         <UsersPage>
             <ContentsContainer>
@@ -106,7 +133,12 @@ function Users() {
                     <FilterItem>year</FilterItem>
                     <FilterItem>all</FilterItem>
                 </FilterBox>
-                <UsersContent></UsersContent>
+                <UsersContent>
+                    <UserList>
+                        {!isPending && userDatas.map(user => <UserCard user={user}/>)}
+                    </UserList>
+                    <Paging total={total} size={size} page={page} setPage={setPage}/>
+                </UsersContent>
             </ContentsContainer>
         </UsersPage>
     );

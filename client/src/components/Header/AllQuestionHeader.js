@@ -45,12 +45,20 @@ const AllQustions = styled.div` // 전체 글 개수 보기
 const SortBox = styled.div` // sort 묶음
   display: flex;
   align-items: center;
+  border: 1px solid gray;
+  border-radius: 5px;
 `
 const SortButton = styled.button` // sort 버튼
   padding: 8px 15px;
   border: none;
   border-left: 1px solid gray;
   border-radius: 0px;
+  font-size: 13px;
+  color: gray;
+  background-color: white;
+  :hover {
+    color: black;
+  }
 `
 const FilterButton = styled.button` // filter 버튼
   padding: 8px 15px;
@@ -59,17 +67,16 @@ const FilterButton = styled.button` // filter 버튼
   box-shadow: inset 0px 1px 0px 0px rgb(255 255 255 / 30%);
   border: 1px solid rgb(57,115,157);
   text-align: center;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 400;
   cursor: pointer;
   background: rgb(225,236,244);
   color: rgb(57,115,157);
-
   &:hover {
     background-color: rgb(185, 210, 232);
   }
 `
-function QuestionHeader( {qustionList} ) {
+function QuestionHeader( {total} ) {
   return (
     <>
       <TitleBox>
@@ -77,9 +84,9 @@ function QuestionHeader( {qustionList} ) {
         <Link to="/ask"><AskButton>Ask Question</AskButton></Link>
       </TitleBox>
       <SubBox>
-        <AllQustions>{qustionList.length} questions</AllQustions>
+        <AllQustions>{total} questions</AllQustions>
         <SortBox>
-          <SortButton>Newest</SortButton>
+          <SortButton className="left">Newest</SortButton>
           <SortButton>Active</SortButton>
           <SortButton>Bountied</SortButton>
           <SortButton>Unanswered</SortButton>

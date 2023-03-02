@@ -4,9 +4,12 @@
 import styled from "styled-components";
 import Article from "./Article";
 import Answer from "./Answer";
-import AnswerCreate from "./AnswerCreate";
 import RightSideBar from "../../components/Main/RightSideBar";
 import ArticleHeader from "./ArticleHeader";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useParams } from "react-router-dom";
+import { getAccessToken } from "../../storage/cookie";
 
 // ----- 컴포넌트 및 이미지 파일
 
@@ -16,26 +19,51 @@ const ViewBox = styled.div` // 묻는 공간 전체 창
 `
 const ContentsBox = styled.div`
   display: flex;
-  max-width: 1000px;
+  max-width: 1200px;
 `
 const Contents = styled.div`
-  
 `
 
 // ----- 컴포넌트 영역
 function QuestionView() {
+  const [QuestionData, setQuestionData] = useState("");
+  const { id } = useParams();
+  const [isPending, setIsPending] = useState(true);
+  const [isUpdated, setIsUpdated] = useState(false);
+
+  useEffect(() => {
+      axios.get(`${process.env.REACT_APP_API_URL}/questions/${id}`,{
+        headers: {
+          Authorization: getAccessToken(),
+        }
+      })
+      .then((res) => {
+        const { data } = res;
+        setIsPending(false);
+        setQuestionData(data);
+        // console.log(QuestionData)
+      });
+  }, [isUpdated]);
+  // console.log(QuestionData)
+
   return (
-    <ViewBox>
-      <ArticleHeader />
-      <ContentsBox>
-        <Contents>
-          <Article />
-          <Answer />
-        </Contents>
-        <RightSideBar />
-      </ContentsBox>
-    </ViewBox>
-  )
+      <ViewBox>
+          {!isPending && (
+              <>
+                  <ArticleHeader QuestionData={QuestionData} />
+                  <ContentsBox>
+                      <Contents>
+                          <Article QuestionData={QuestionData} setIsUpdated={setIsUpdated}/>
+                          <Answer
+                              AnswerData={QuestionData.data.answerResponseDtos}
+                          />
+                      </Contents>
+                      <RightSideBar />
+                  </ContentsBox>
+              </>
+          )}
+      </ViewBox>
+  );
 }
 
 export default QuestionView

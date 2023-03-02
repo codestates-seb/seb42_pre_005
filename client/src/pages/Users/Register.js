@@ -35,7 +35,7 @@ export const SubTitle = styled.span`
 `
 export const RegisterContainer = styled.div`
     background-color: #eee;
-    width: 280px;
+    width: auto;
     /* height: 100%; */
     margin: 24px 0;
 `
@@ -117,12 +117,19 @@ function Register() {
         }
        
         console.log(registerData);
-        axios.post(`/api/members`, registerData)
+        // axios.post(`${process.env.REACT_APP_API_URL}/members`, registerData)
+        axios.post(process.env.REACT_APP_API_URL+"/members", registerData)
         .then(res => {
             // setLoginUser(res.data);
-            console.log(res.data);
+            // console.log(res.data);
             navigate("/login")
         })
+        // axios.post(`/api/members`, registerData)
+        // .then(res => {
+        //     // setLoginUser(res.data);
+        //     console.log(res.data);
+        //     navigate("/login")
+        // })
         
     }
 

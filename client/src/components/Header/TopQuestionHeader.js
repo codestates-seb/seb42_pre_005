@@ -34,42 +34,31 @@ const AskButton = styled.button` // 질문 버튼
 const SubBox = styled.div` // 전체 글 목록 및 sort
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   padding-left: 20px;
   padding-bottom: 15px;
   border-bottom: 1px solid #c5c5c5;
 `
-const AllQustions = styled.div` // 전체 글 개수 보기
-  flex: 1;
-`
 const SortBox = styled.div` // sort 묶음
   display: flex;
   align-items: center;
+  border: 1px solid gray;
+  border-radius: 5px;
 `
 const SortButton = styled.button` // sort 버튼
   padding: 8px 15px;
   border: none;
   border-left: 1px solid gray;
   border-radius: 0px;
-`
-const FilterButton = styled.button` // filter 버튼
-  padding: 8px 15px;
-  margin-left: 20px;
-  border-radius: 5px;
-  box-shadow: inset 0px 1px 0px 0px rgb(255 255 255 / 30%);
-  border: 1px solid rgb(57,115,157);
-  text-align: center;
-  font-size: 14px;
-  font-weight: 400;
-  cursor: pointer;
-  background: rgb(225,236,244);
-  color: rgb(57,115,157);
-
-  &:hover {
-    background-color: rgb(185, 210, 232);
+  font-size: 13px;
+  color: gray;
+  background-color: white;
+  :hover {
+    color: black;
   }
 `
-function TopQuestionHeader() {
+
+function TopQuestionHeader( {qustionList} ) {
   return (
     <>
       <TitleBox>
@@ -77,15 +66,13 @@ function TopQuestionHeader() {
         <Link to="/ask"><AskButton>Ask Question</AskButton></Link>
       </TitleBox>
       <SubBox>
-        <AllQustions>23,513,018 questions</AllQustions>
         <SortBox>
-          <SortButton>Newest</SortButton>
-          <SortButton>Active</SortButton>
+          <SortButton className="left">Interesting</SortButton>
           <SortButton>Bountied</SortButton>
-          <SortButton>Unanswered</SortButton>
-          <SortButton>More</SortButton>
+          <SortButton>Hot</SortButton>
+          <SortButton>Week</SortButton>
+          <SortButton>Month</SortButton>
         </SortBox>
-        <FilterButton>Filter</FilterButton>
       </SubBox>
     </>
   )

@@ -2,11 +2,12 @@
 
 // ----- 필요 라이브러리
 import styled from "styled-components";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import axios from "axios";
+import { getAccessToken } from "../../storage/cookie";
 
 // ----- 컴포넌트 및 이미지 파일
 
@@ -73,6 +74,18 @@ const EditInput = styled.input` // 각 입력칸 인풋 형식
   border: 1px solid #bbbfc3;
   border-radius: 3px;
 `
+const TagBox = styled.div`
+  margin-top: 20px;
+`
+const Tag = styled.span`
+  padding: 5px 6px;
+  margin: 5px;
+  margin-top: 20px;
+  font-size: 13px;
+  border-radius: 5px;
+  background-color: #EDF4FA;
+
+`
 const ReviewButton = styled.button` // 질문 등록 버튼
   margin-top: 20px;
   padding: 10px 13px;
@@ -111,29 +124,46 @@ function AskQuestion() {
   const navigate = useNavigate();
 
   const [title, setTitle] = useState(""); // 질문 제목 입력칸의 상태 관리창
-  const [problemText, setProblemText] = useState(""); // 질문 내용 입력칸의 상태 관리창
-  const [expectText, setExpextText] = useState("") // expect 내용 입력칸의 상태 관리창
+  const [value, setValue] = useState(""); // 질문 내용 입력칸의 상태 관리창
+  const [tags, setTags] = useState("") // 태그 내용 입력칸의 상태 관리창, 만들긴 했지만 요청 가지는 않음
+  const [tagsArr, setTagsArr] = useState([]);
 
   const askTitle = (e) => { // 질문 제목 입력칸 상태 함수
     setTitle(e.target.value)
+  };
+  const editTag = (e) => { // 태그 내용 입력칸 상태 함수
+    setTags(e.target.value)
+  };
+
+  const tagsOnKeyUp = (e) => { // 엔터키 누를 때마다 태그 업데이트
+    if((e.keyCode === 13) && tags.length > 0) {
+      setTagsArr([...tagsArr, tags.slice()]);
+      setTags('')
+    }
   }
+  
 
   const ReviewButtonSubmit = (e) => { // 다 쓴 질문 제출 버튼 함수
     e.preventDefault();
-    axios.post('/questions', {
+    axios.post(`${process.env.REACT_APP_API_URL}/questions`, {
       title : title,
-      content : problemText
+      content : value,
+      tagNames : tagsArr,
+    },{
+      headers: {
+        Authorization: getAccessToken()
+      }
     })
-      .then(function (res) {
+    .then(res => {
         console.log(res)
-        navigate(`/question/${res.data.questionId}`);
+        navigate("/questions");
         // 게시하고 나면 해당 게시물 페이지로 넘어가기
       })
       .catch((err) => {
         console.log(err);
         alert("Failed to write. Try again.");
       });
-  }
+  };
 
   return (
     <AskBox>
@@ -153,7 +183,7 @@ function AskQuestion() {
       <EditBox className="Titlebox">
         <EditTitle>Title</EditTitle>
         <EditText>Be specific and imagine you’re asking a question to another person.</EditText>
-        <EditInput onChange={askTitle} placeholder="e.g. Is there an R function for finding the index of an element in a vector?" />
+        <EditInput value={title} onChange={askTitle} placeholder="e.g. Is there an R function for finding the index of an element in a vector?" />
       </EditBox>
 
       <EditBox>
@@ -161,36 +191,33 @@ function AskQuestion() {
         <EditText>Introduce the problem and expand on what you put in the title. Minimum 20 characters.</EditText>
         <ReactQuill 
           theme="snow"
-          value={problemText}
-          onChange={(e) => setProblemText(e)} 
+          value={value} 
+          onChange={setValue}
           />
       </EditBox>
-
-      {/* <EditBox>
-        <EditTitle>What did you try and what were you expecting?</EditTitle>
-        <EditText>Describe what you tried, what you expected to happen, and what actually resulted. Minimum 20 characters.</EditText>
-        <ReactQuill 
-          theme="snow"
-          value={expectText}
-          onChange={(e) => setExpextText(e)} 
-          />
-      </EditBox> */}
-
       <EditBox>
         <EditTitle>Tags</EditTitle>
         <EditText>Add up to 5 tags to describe what your question is about. Start typing to see suggestions.</EditText>
-        <EditInput placeholder="e.g. (angular sql-server string)" />
+        <EditInput 
+          value={tags}
+          onChange={editTag}
+          onKeyUp={tagsOnKeyUp}
+          placeholder="Enter 키를 누르면 태그가 등록됩니다."
+          />
+        <TagBox>
+          {tagsArr.map((tag, index) => {
+                return (             
+                <Tag key={index}>
+                  {tag}
+                </Tag>
+                )
+              })}
+        </TagBox>
       </EditBox>
-
-      <EditBox>
-        <EditTitle>Review questions already on Stack Overflow to see if your question is a duplicate.</EditTitle>
-        <EditText>Clicking on these questions will open them in a new tab for you to review. Your progress here will be saved so you can come back and continue.</EditText>
-        <EditInput></EditInput>
-        <ReviewButton onClick={ReviewButtonSubmit}>Review your question</ReviewButton>
-      </EditBox>
-      <DiscardButton>Discard draft</DiscardButton>
+      <ReviewButton onClick={ReviewButtonSubmit}>Review your question</ReviewButton>
+      <DiscardButton onClick={() => navigate("/questions")}>Discard draft</DiscardButton>
     </AskBox>
-  )
+  );
 }
 
 export default AskQuestion;

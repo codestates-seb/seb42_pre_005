@@ -11,12 +11,14 @@ const VoteBox = styled.div` // 투표 기능
   display: flex;
   align-items: center;
   flex-direction: column;
-  margin-right: 10px;
+  margin-right: 15px;
+  width: 50px;
+  color: #BBBFC3;
   .counticon {
-    font-size: 40px;
+    font-size: 45px;
   }
   .markicon {
-    font-size: 20px;
+    font-size: 15px;
     margin-bottom: 5px;
   }
 `
