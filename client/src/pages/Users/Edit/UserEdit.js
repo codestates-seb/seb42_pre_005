@@ -1,17 +1,10 @@
 import axios from "axios";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { getAccessToken } from "../../../storage/cookie";
 import { setLoginUser } from "../../../store/store";
-
-const EditContainer = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    width: 100%;
-`
 
 const EditBackdrop = styled.div`
     background-color: rgba(0, 0, 0, 0.3);
@@ -51,7 +44,7 @@ function UserEdit({isOpen, modalHandler, loginUser}) {
     // const [isOpen, setIsOpen] = useState(false);
     const [userName, setUserName] = useState(loginUser.name);
     const dispatch = useDispatch();
-    
+    const navigate = useNavigate();
 
     const nameHandler = (e) => {
         setUserName(e.target.value);
@@ -61,13 +54,17 @@ function UserEdit({isOpen, modalHandler, loginUser}) {
         axios.patch(`${process.env.REACT_APP_API_URL}/members/${loginUser.id}`,{
             name: userName
         }, {
-            headers: getAccessToken()
+            headers: {
+                Authorization: getAccessToken()
+            }
         })
         .then(res => {
             dispatch(setLoginUser({
                 ...loginUser,
                 name: userName
             }))
+            modalHandler();
+            navigate(`/users/${loginUser.id}/${loginUser.name}`)
         })
     }
 

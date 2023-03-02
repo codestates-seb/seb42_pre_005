@@ -8,6 +8,7 @@ import queryString from 'query-string';
 import axios from "axios";
 import { getAccessToken } from "../../storage/cookie";
 import UserEdit from "./Edit/UserEdit";
+import UserDelete from "./Delete/UserDelete";
 
 
 export const UsersPage = styled.div`
@@ -42,6 +43,9 @@ const UserInfo = styled.div`
     }
 `
 const EditButton = styled.button`
+`
+
+const DeleteButton = styled.button`
 `
 
 export const UsersMain = styled.div`
@@ -91,7 +95,8 @@ function UserDetail() {
     const [userData, setUserData] = useState();
     const [isPending, setIsPending] = useState(true);
 
-    const [isOpen, setIsOpen] = useState(false);
+    const [isEditOpen, setIsEditOpen] = useState(false);
+    const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
     const navigate = useNavigate();
     const [currentTab, setCurrentTab] = useState('activity');
@@ -114,8 +119,12 @@ function UserDetail() {
         if(!(tab === "" || tab === undefined)) setCurrentTab(tab);
     },[location.search, params])
 
-    const modalHandler = () => {
-        setIsOpen(!isOpen);
+    const editModalHandler = () => {
+        setIsEditOpen(!isEditOpen);
+    }
+
+    const deleteModalHandler = () => {
+        setIsDeleteOpen(!isDeleteOpen);
     }
 
     return (
@@ -128,7 +137,11 @@ function UserDetail() {
                     { !isPending &&
                     <UserInfo>
                         {loginUser.id === userData.memberId 
-                        ? <EditButton onClick={modalHandler}>Edit Profile</EditButton>
+                        ?
+                        <>
+                            <EditButton onClick={editModalHandler}>Edit Profile</EditButton>
+                            <DeleteButton onClick={deleteModalHandler}>Delete Profile</DeleteButton>
+                        </>
                         : null }
                         <h1>{userData.name}</h1>
                     </UserInfo>
@@ -144,7 +157,8 @@ function UserDetail() {
                     {currentTab === "profile" && <UserProfile userData={userData}/>}
                 </UsersMain>
             </ContentsContainer>
-            <UserEdit isOpen={isOpen} modalHandler={modalHandler} loginUser={loginUser}/>
+            <UserEdit isOpen={isEditOpen} modalHandler={editModalHandler} loginUser={loginUser}/>
+            <UserDelete isOpen={isDeleteOpen} modalHandler={deleteModalHandler} loginUser={loginUser}/>
         </UsersPage>
     );
 }

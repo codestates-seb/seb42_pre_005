@@ -113,11 +113,13 @@ function UserSummary() {
                         {!isPending && (myQuestions.length ? myQuestions.map(question => {
                             return (
                                 <>
-                                    <span>{question.title}</span>
-                                    <Paging total={total} size={size} page={page} setPage={setPage}/>
+                                    <h1>{question.title}</h1>
                                 </>
                             )
                         }): <span>질문한 내역이 없습니다.</span>)}
+                        {!isPending && (myQuestions.length ?
+                        <Paging total={total} size={size} page={page} setPage={setPage}/>
+                        : null)}
                     </QuestionContent>
                 </QuestionCard>
             </SecondSection>

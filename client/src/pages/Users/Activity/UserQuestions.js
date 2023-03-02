@@ -17,7 +17,7 @@ export const CardContent = styled.div`
 
 export const QuestionContent = styled(CardContent)`
     width: 800px;
-    height: 250px;
+    height: 400px;
 `
 
 function UserQuestions() {
@@ -51,10 +51,13 @@ function UserQuestions() {
                                 <>
                                     <h1>{question.title}</h1>
                                     <h4>{question.content}</h4>
-                                    <Paging total={total} size={size} page={page} setPage={setPage}/>
+                                    <hr/>
                                 </>
                             )
                         }): <span>질문한 내역이 없습니다.</span>)}
+                        {!isPending && (myQuestions.length ?
+                        <Paging total={total} size={size} page={page} setPage={setPage}/>
+                        : null)}
             </QuestionContent>
         </QuestionContainer>
     )
