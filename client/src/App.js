@@ -30,7 +30,7 @@ import EditAnswer from './pages/QuestionView/EditAnswer';
 function App() {
   const dispatch = useDispatch();
   const isLogin = useSelector(state => state.isLogin);
-  const userData = useSelector(state => state.userData);
+  const loginUser = useSelector(state => state.loginUser);
 
   const navigate = useNavigate();
   
@@ -44,7 +44,7 @@ function App() {
   }
 
   useEffect(() => {
-    if(userData === null) {
+    if(loginUser === null) {
       navigate("/login")
     }
   },[])

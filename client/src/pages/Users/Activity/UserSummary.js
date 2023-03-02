@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import styled from "styled-components";
 
 export const SummaryContainer = styled.div`
@@ -67,6 +68,11 @@ export const ReputationContent = styled(CardContent)`
 `
 
 function UserSummary() {
+
+    useEffect(() => {
+
+    })
+    
     return (
         <SummaryContainer>
             <FirstSection>

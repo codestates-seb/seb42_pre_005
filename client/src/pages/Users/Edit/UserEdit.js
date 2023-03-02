@@ -1,5 +1,9 @@
+import axios from "axios";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
+import { getAccessToken } from "../../../storage/cookie";
+import { setLoginUser } from "../../../store/store";
 
 const EditContainer = styled.div`
     display: flex;
@@ -23,38 +27,67 @@ const EditBackdrop = styled.div`
 `
 
 const EditView = styled.div`
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    width: 300px;
+    height: auto;
+    border-radius: 20px;
+    justify-content: center;
+    padding: 20px;
+    section {
+        width: 260px;
+        border: 1px solid black;
+        border-radius: 20px;
+        padding: 10px;
+    }
 `
 const Title = styled.span`
+    font-size: 20pt;
 `
 const SubTitle = styled.span`
 `
-function UserEdit({isOpen, setIsOpen, loginUser}) {
+function UserEdit({isOpen, modalHandler, loginUser}) {
     // const [isOpen, setIsOpen] = useState(false);
     const [userName, setUserName] = useState(loginUser.name);
+    const dispatch = useDispatch();
+    
 
     const nameHandler = (e) => {
         setUserName(e.target.value);
     }
 
     const editHandler = () => {
-
+        axios.patch(`${process.env.REACT_APP_API_URL}/members/${loginUser.id}`,{
+            name: userName
+        }, {
+            headers: getAccessToken()
+        })
+        .then(res => {
+            dispatch(setLoginUser({
+                ...loginUser,
+                name: userName
+            }))
+        })
     }
 
     return (
         <>
         {isOpen ? (
-            <EditContainer>
-                <EditBackdrop onClick={setIsOpen}>
-                    <EditView>
+                <EditBackdrop onClick={modalHandler}>
+                    <EditView onClick={(e) => {
+                        e.stopPropagation();
+                    }}>
                         <Title>Edit your profile</Title>
                         <hr/>
                         <SubTitle>Public information</SubTitle>
-                        Display name
-                        <input type="text" value={userName} onChange={(e)=>nameHandler(e)}/>
-                        <button onClick={editHandler}>수정하기</button>
+                        <section>
+                            Display name
+                            <input type="text" value={userName} onChange={(e)=>nameHandler(e)}/>
+                            <button onClick={editHandler}>수정하기</button>
+                        </section>
                     </EditView>
                 </EditBackdrop>
-                </EditContainer>
             ) : null}
          </>
     )

@@ -9,7 +9,8 @@ import { MdSearch, MdInbox } from "react-icons/md";
 import Logo from "../../icons/Logo.svg";
 import defaultProfile from "../../icons/defaultProfile.png";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setLoginUser } from "../../store/store";
 
 // ----- CSS 영역
 const HeaderBox = styled.div` // 헤더 전체 박스
@@ -94,6 +95,9 @@ const SignupButton = styled(Button)` // Sign up 버튼 CSS, 위의 Button 컴포
 const UserBox = styled.div` // 로그인 후 : 유저사진, 아이콘 영역
   height: 100%;
 `
+const LogOut = styled.button`
+  margin: 20px;
+`
 
 // ----- 컴포넌트 영역
 function Header() {
@@ -101,6 +105,7 @@ function Header() {
   const navigate = useNavigate();
   const isLogin = useSelector(state => state.isLogin);
   const loginUser = useSelector(state => state.loginUser);
+  const dispatch = useDispatch();
 
   return (
     <HeaderBox>
@@ -125,7 +130,10 @@ function Header() {
           ? // 로그인을 했을 때는 유저 프로필 사진과 아이콘들이 보임
           <UserBox>
             <img src={defaultProfile} alt="user profile img" onClick={() => navigate(`/users/${loginUser.id}/${loginUser.name}`)} height="24px" />
-            {/* <MdInbox /> */}
+            <LogOut onClick={() => {
+              dispatch(setLoginUser(null));
+              navigate("/");
+            }}>Log out</LogOut>
           </UserBox> 
           : // 로그인 하지 않았을 때는 login과 signup 버튼이 보임
           <LoginBox>

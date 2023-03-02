@@ -7,6 +7,7 @@ import UserProfile from "./Profile/UserProfile";
 import queryString from 'query-string';
 import axios from "axios";
 import { getAccessToken } from "../../storage/cookie";
+import UserEdit from "./Edit/UserEdit";
 
 
 export const UsersPage = styled.div`
@@ -116,7 +117,7 @@ function UserDetail() {
     const modalHandler = () => {
         setIsOpen(!isOpen);
     }
-    
+
     return (
         <UsersPage>
             <ContentsContainer>
@@ -143,6 +144,7 @@ function UserDetail() {
                     {currentTab === "profile" && <UserProfile userData={userData}/>}
                 </UsersMain>
             </ContentsContainer>
+            <UserEdit isOpen={isOpen} modalHandler={modalHandler} loginUser={loginUser}/>
         </UsersPage>
     );
 }
