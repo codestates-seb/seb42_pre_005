@@ -58,6 +58,17 @@ public class QuestionController {
 //        return ResponseEntity.created(location).build();
 //    }
 
+    @PostMapping
+    public ResponseEntity postQuestion(@Valid @RequestBody QuestionDto.Post requestBody,
+                                               HttpServletRequest request) {
+        Long memberId = Checker.getMemberId();
+        requestBody.addMemberId(memberId);
+        Question createdQuestion = questionService.createQuestion(questionMapper.questionPostToQuestion(requestBody), requestBody.getTagNames());
+        URI location = UriCreator.createUri(QUESTION_DEFAULT_URL, createdQuestion.getQuestionId());
+
+        return ResponseEntity.created(location).build();
+    }
+
     // 질문 수정
     @PatchMapping("/{question-id}")
     public ResponseEntity patchQuestion(@PathVariable("question-id") @Positive Long questionId,

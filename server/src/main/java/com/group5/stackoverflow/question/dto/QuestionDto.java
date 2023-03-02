@@ -25,6 +25,7 @@ public class QuestionDto {
 
         private Long memberId;
 
+
         private List<String> tagNames;
 
         public void addMemberId(Long memberId) {

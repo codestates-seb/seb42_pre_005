@@ -281,7 +281,7 @@ include::{snippets}/post-answer/request-fields.adoc[]
 include::{snippets}/post-answer/http-response.adoc[]
 
 .response-headers
-include::{snippets}/post-answer/response-headers.adoc[]
+include::{snippets}/post-answer/request-headers.adoc[]
 
 === 답변 수정
 .curl-request
@@ -355,8 +355,8 @@ include::{snippets}/delete-answer/path-parameters.adoc[]
 .http-response
 include::{snippets}/delete-answer/http-response.adoc[]
 
-.response-fields
-include::{snippets}/delete-answer/response-fields.adoc[]
+// .response-fields
+// include::{snippets}/delete-answer/response-fields.adoc[]
 
 == TagController
 === 태그 목록 찾기

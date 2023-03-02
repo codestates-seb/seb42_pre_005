@@ -29,6 +29,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -41,6 +42,7 @@ import java.util.List;
 import static com.group5.stackoverflow.utils.ApiDocumentUtils.getRequestPreProcessor;
 import static com.group5.stackoverflow.utils.ApiDocumentUtils.getResponsePreProcessor;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.startsWith;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
@@ -139,6 +141,63 @@ public class QuestionControllerRestDocsTest {
 //                        )
 //                ));
 //    }
+
+    @Test
+    public void postQuestionTest() throws Exception {
+
+        QuestionDto.Post post = new QuestionDto.Post("타이틀 입니다.", "이곳은 질문을 적는 곳입니다.", 1L,
+                List.of("Java", "Spring"));
+        long memberId = post.getMemberId();
+
+        String content = gson.toJson(post);
+
+        given(questionMapper.questionPostToQuestion(Mockito.any(QuestionDto.Post.class))).willReturn(new Question());
+
+        given(tagService.findTagsElseCreateTags(Mockito.anyList())).willReturn(new ArrayList<>());
+
+        Question mockResultQuestion = new Question();
+        mockResultQuestion.setQuestionId(1L);
+
+        given(questionService.createQuestion(Mockito.any(Question.class), Mockito.anyList())).willReturn(mockResultQuestion);
+
+
+
+        ResultActions actions =
+                mockMvc.perform(
+                        post("/questions")
+                                .header("Authorization", "Bearer ".concat(accessTokenForAdmin))
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(content)
+                );
+
+        actions
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", is(startsWith("/questions"))))
+                .andDo(document(
+                        "post-question",
+                        getRequestPreProcessor(),
+                        getResponsePreProcessor(),
+                        requestHeaders(
+                                headerWithName("Authorization").description("USER|ADMIN JWT token")
+                        ),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("title").type(JsonFieldType.STRING).description("제목")
+                                                .attributes(key("validation").value("Not Null")),
+                                        fieldWithPath("content").type(JsonFieldType.STRING).description("질문 내용")
+                                                .attributes(key("validation").value("Not Null")),
+                                        fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("회원 식별자")
+                                                .attributes(key("validation").value("Not Null")),
+                                        fieldWithPath("tagNames").type(JsonFieldType.ARRAY).description("태그")
+                                                .attributes(key("validation").value("Not Null"))
+                                )
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.LOCATION).description("Location header. 등록된 리소스의 URI")
+                        )
+                ));
+    }
 
     @Test
     public void patchQuestionTest() throws Exception {

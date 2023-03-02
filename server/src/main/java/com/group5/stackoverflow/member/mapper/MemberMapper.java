@@ -36,11 +36,10 @@ public interface MemberMapper {
         response.setEmail(member.getEmail());
         response.setVoteCount(member.getVoteCount());
         response.setMemberStatus(member.getMemberStatus());
-
+        response.setMemberId(member.getMemberId());
 
         // todo 멤버 설정에 따라 변환가능
         response.setAge(-1);
-        response.setMemberId(-1L);
 
         return response;
 
