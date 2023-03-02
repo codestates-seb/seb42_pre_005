@@ -15,7 +15,7 @@ CodeStates 42기 Pre-Project 005
 <br>
 
 ## 📝 주요 문서 
-- [SEB 42 Pre-Project] (https://docs.google.com/spreadsheets/d/1eTkYkR4RLvfX5-c2vrL4z2g6rqssCqnolPLYB3wVSNQ/edit#gid=951514399)
+- [SEB 42 Pre-Project](https://docs.google.com/spreadsheets/d/1eTkYkR4RLvfX5-c2vrL4z2g6rqssCqnolPLYB3wVSNQ/edit#gid=951514399)
 
 ## 📌 기술 스택
 ### 공용 기술 스택
