@@ -2,7 +2,7 @@
 
 // ----- 필요 라이브러리
 import styled from "styled-components";
-import Article from "./Article_temp";
+import Article from "./Article";
 import Answer from "./Answer";
 import RightSideBar from "../../components/Main/RightSideBar";
 import ArticleHeader from "./ArticleHeader";
@@ -24,11 +24,12 @@ const ContentsBox = styled.div`
 const Contents = styled.div`
 `
 
-
 // ----- 컴포넌트 영역
 function QuestionView() {
   const [QuestionData, setQuestionData] = useState("");
   const { id } = useParams();
+  const [isPending, setIsPending] = useState(true);
+  const [isUpdated, setIsUpdated] = useState(false);
 
   useEffect(() => {
       axios.get(`${process.env.REACT_APP_API_URL}/questions/${id}`,{
@@ -37,23 +38,32 @@ function QuestionView() {
         }
       })
       .then((res) => {
-        setQuestionData(res.data);
+        const { data } = res;
+        setIsPending(false);
+        setQuestionData(data);
+        // console.log(QuestionData)
       });
-  }, []);
-  console.log(QuestionData)
+  }, [isUpdated]);
+  // console.log(QuestionData)
 
   return (
-    <ViewBox>
-      <ArticleHeader QuestionData={QuestionData} />
-      <ContentsBox>
-        <Contents>
-          <Article QuestionData={QuestionData} />
-          <Answer QuestionData={QuestionData.answers} />
-        </Contents>
-        <RightSideBar />
-      </ContentsBox>
-    </ViewBox>
-  )
+      <ViewBox>
+          {!isPending && (
+              <>
+                  <ArticleHeader QuestionData={QuestionData} />
+                  <ContentsBox>
+                      <Contents>
+                          <Article QuestionData={QuestionData} setIsUpdated={setIsUpdated}/>
+                          <Answer
+                              AnswerData={QuestionData.data.answerResponseDtos}
+                          />
+                      </Contents>
+                      <RightSideBar />
+                  </ContentsBox>
+              </>
+          )}
+      </ViewBox>
+  );
 }
 
 export default QuestionView

@@ -7,6 +7,8 @@ import UserProfile from "./Profile/UserProfile";
 import queryString from 'query-string';
 import axios from "axios";
 import { getAccessToken } from "../../storage/cookie";
+import UserEdit from "./Edit/UserEdit";
+import UserDelete from "./Delete/UserDelete";
 
 
 export const UsersPage = styled.div`
@@ -41,6 +43,9 @@ const UserInfo = styled.div`
     }
 `
 const EditButton = styled.button`
+`
+
+const DeleteButton = styled.button`
 `
 
 export const UsersMain = styled.div`
@@ -90,6 +95,9 @@ function UserDetail() {
     const [userData, setUserData] = useState();
     const [isPending, setIsPending] = useState(true);
 
+    const [isEditOpen, setIsEditOpen] = useState(false);
+    const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+
     const navigate = useNavigate();
     const [currentTab, setCurrentTab] = useState('activity');
     const location = useLocation();
@@ -111,6 +119,14 @@ function UserDetail() {
         if(!(tab === "" || tab === undefined)) setCurrentTab(tab);
     },[location.search, params])
 
+    const editModalHandler = () => {
+        setIsEditOpen(!isEditOpen);
+    }
+
+    const deleteModalHandler = () => {
+        setIsDeleteOpen(!isDeleteOpen);
+    }
+
     return (
         <UsersPage>
             <ContentsContainer>
@@ -121,7 +137,11 @@ function UserDetail() {
                     { !isPending &&
                     <UserInfo>
                         {loginUser.id === userData.memberId 
-                        ? <EditButton>Edit Profile</EditButton>
+                        ?
+                        <>
+                            <EditButton onClick={editModalHandler}>Edit Profile</EditButton>
+                            <DeleteButton onClick={deleteModalHandler}>Delete Profile</DeleteButton>
+                        </>
                         : null }
                         <h1>{userData.name}</h1>
                     </UserInfo>
@@ -130,12 +150,15 @@ function UserDetail() {
                 <UsersMenu>
                     <li onClick={() => navigate(`/users/${userData.memberId}/${userData.name}?tab=profile`)} className={currentTab === "profile" ? "current-tab" : null }>Profile</li>
                     <li onClick={() => navigate(`/users/${userData.memberId}/${userData.name}?tab=activity`)} className={currentTab !== "profile" ? "current-tab" : null }>Activity</li>
+                    {/* <li onClick={() => navigate(`/users/edit/${userData.memberId}`)} className={currentTab !== "profile" ? "current-tab" : null }>Settings</li> */}
                 </UsersMenu>
                 <UsersMain>
                     {activityTabList.includes(currentTab) && <UserActivity userData={userData} currentTab={ currentTab === "activity" ? "summary" : currentTab}/>}
                     {currentTab === "profile" && <UserProfile userData={userData}/>}
                 </UsersMain>
             </ContentsContainer>
+            <UserEdit isOpen={isEditOpen} modalHandler={editModalHandler} loginUser={loginUser}/>
+            <UserDelete isOpen={isDeleteOpen} modalHandler={deleteModalHandler} loginUser={loginUser}/>
         </UsersPage>
     );
 }

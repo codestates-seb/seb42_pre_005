@@ -4,8 +4,7 @@
 import styled from "styled-components";
 import { TiArrowSortedUp,TiArrowSortedDown } from "react-icons/ti"
 import { RxBookmark, RxCounterClockwiseClock } from "react-icons/rx"
-import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { getAccessToken } from "../../storage/cookie";
 
@@ -89,33 +88,38 @@ const UserProfile = styled.div` // 유저사진, 이름
 `
 
 // ----- 컴포넌트 영역
-function Article({QuestionData}) {
+function Article({QuestionData, setIsUpdated}) {
   const navigate = useNavigate();
   const DeleteAction = () => {
     return axios.delete(`${process.env.REACT_APP_API_URL}/questions/${QuestionData.data.questionId}`)
   }
 
   const voteHandler = (type) => {
+    console.log(type);
     if(type === "voteUp"){
       axios.patch(`${process.env.REACT_APP_API_URL}/questions/${QuestionData.data.questionId}/vote?updown=up`, {},{
         headers: {
           Authorization: getAccessToken()
         }
+      }).then(()=>{
+        setIsUpdated(true);
       })
     }else{
       axios.patch(`${process.env.REACT_APP_API_URL}/questions/${QuestionData.data.questionId}/vote?updown=down`, {},{
         headers: {
           Authorization: getAccessToken()
         }
+      }).then(()=>{
+        setIsUpdated(true);
       })
     }
   }
   return (
     <ArticleBox>
       <VoteBox>
-        <TiArrowSortedUp className="counticon" name="voteUp" onClick={(e)=>voteHandler(e.target.name)} />
+        <TiArrowSortedUp className="counticon" data-name="voteUp" onClick={(e)=>voteHandler(e.target.dataset.name)} />
         {QuestionData.data.voteCount}
-        <TiArrowSortedDown className="counticon" name="voteDown" onClick={(e)=>voteHandler(e.target.name)}/>
+        <TiArrowSortedDown className="counticon" data-name="voteDown" onClick={(e)=>voteHandler(e.target.dataset.name)}/>
         <RxBookmark className="markicon" />
         <RxCounterClockwiseClock className="markicon" />
       </VoteBox>

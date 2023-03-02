@@ -91,8 +91,9 @@ const FilterItem = styled.span`
 
 function Users() {
     const [userDatas, setUserDatas] = useState(null);
-    const [page, setPage] = useState(1); // 페이지 정보 가져오기
     const [isPending, setIsPending] = useState(true);
+    
+    const [page, setPage] = useState(1); // 페이지 정보 가져오기
     const [size, setSize] = useState(36); //  한 페이지에 보여줄 아이템 수
     const [total, setTotal] = useState(); // 전체 아이템 수
 

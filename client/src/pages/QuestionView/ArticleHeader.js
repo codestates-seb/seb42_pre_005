@@ -48,13 +48,13 @@ function ArticleHeader ( {QuestionData} ) {
   return (
     <HeaderBox>
       <HeaderTitle>
-        <h1>{QuestionData.title}</h1>
+        <h1>{QuestionData.data.title}</h1>
         <Link to="/ask"><button>Ask Question</button></Link>
       </HeaderTitle>
       <ArticleInfoBox>
         <ArticleInfo>
           <span className="title">Asked </span>
-          <span className="text">today</span>
+          <span className="text">{QuestionData.data.createdAt}</span>
         </ArticleInfo>
         <ArticleInfo>
           <span className="title">Modified </span>
@@ -62,7 +62,7 @@ function ArticleHeader ( {QuestionData} ) {
         </ArticleInfo>
         <ArticleInfo>
           <span className="title">Viewed </span>
-          <span className="text">{QuestionData.views} times</span>
+          <span className="text">{QuestionData.data.views} times</span>
         </ArticleInfo>
       </ArticleInfoBox>
     </HeaderBox>

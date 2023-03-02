@@ -2,7 +2,7 @@
 
 // ----- 필요 라이브러리
 import styled from "styled-components";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -74,6 +74,18 @@ const EditInput = styled.input` // 각 입력칸 인풋 형식
   border: 1px solid #bbbfc3;
   border-radius: 3px;
 `
+const TagBox = styled.div`
+  margin-top: 20px;
+`
+const Tag = styled.span`
+  padding: 5px 6px;
+  margin: 5px;
+  margin-top: 20px;
+  font-size: 13px;
+  border-radius: 5px;
+  background-color: #EDF4FA;
+
+`
 const ReviewButton = styled.button` // 질문 등록 버튼
   margin-top: 20px;
   padding: 10px 13px;
@@ -114,18 +126,29 @@ function AskQuestion() {
   const [title, setTitle] = useState(""); // 질문 제목 입력칸의 상태 관리창
   const [value, setValue] = useState(""); // 질문 내용 입력칸의 상태 관리창
   const [tags, setTags] = useState("") // 태그 내용 입력칸의 상태 관리창, 만들긴 했지만 요청 가지는 않음
+  const [tagsArr, setTagsArr] = useState([]);
 
   const askTitle = (e) => { // 질문 제목 입력칸 상태 함수
     setTitle(e.target.value)
-  }
+  };
   const editTag = (e) => { // 태그 내용 입력칸 상태 함수
     setTags(e.target.value)
+  };
+
+  const tagsOnKeyUp = (e) => { // 엔터키 누를 때마다 태그 업데이트
+    if((e.keyCode === 13) && tags.length > 0) {
+      setTagsArr([...tagsArr, tags.slice()]);
+      setTags('')
+    }
   }
+  
+
   const ReviewButtonSubmit = (e) => { // 다 쓴 질문 제출 버튼 함수
     e.preventDefault();
-    axios.post(`${process.env.REACT_APP_API_URL}/members/questions`, {
+    axios.post(`${process.env.REACT_APP_API_URL}/questions`, {
       title : title,
       content : value,
+      tagNames : tagsArr,
     },{
       headers: {
         Authorization: getAccessToken()
@@ -133,14 +156,14 @@ function AskQuestion() {
     })
     .then(res => {
         console.log(res)
-        navigate(`/questions`);
+        navigate("/questions");
         // 게시하고 나면 해당 게시물 페이지로 넘어가기
       })
       .catch((err) => {
         console.log(err);
         alert("Failed to write. Try again.");
       });
-  }
+  };
 
   return (
     <AskBox>
@@ -178,13 +201,23 @@ function AskQuestion() {
         <EditInput 
           value={tags}
           onChange={editTag}
-          placeholder="e.g. (angular sql-server string)"
+          onKeyUp={tagsOnKeyUp}
+          placeholder="Enter 키를 누르면 태그가 등록됩니다."
           />
+        <TagBox>
+          {tagsArr.map((tag, index) => {
+                return (             
+                <Tag key={index}>
+                  {tag}
+                </Tag>
+                )
+              })}
+        </TagBox>
       </EditBox>
       <ReviewButton onClick={ReviewButtonSubmit}>Review your question</ReviewButton>
       <DiscardButton onClick={() => navigate("/questions")}>Discard draft</DiscardButton>
     </AskBox>
-  )
+  );
 }
 
 export default AskQuestion;
