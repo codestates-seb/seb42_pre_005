@@ -90,36 +90,36 @@ const UserProfile = styled.div` // 유저사진, 이름
 `
 
 // ----- 컴포넌트 영역
-function Answer( {QuestionData} ) {
+function Answer( {AnswerData} ) {
   const navigate = useNavigate();
   const DeleteAction = () => {
-    return axios.delete(`${process.env.REACT_APP_API_URL}/answers/${QuestionData.answerId}`)
+    return axios.delete(`${process.env.REACT_APP_API_URL}/answers/${AnswerData.answerId}`)
   }
 
   return (
     <>
-      {QuestionData && QuestionData.map((e)=> 
-      <AnswerBox key={e.answerId}>
+      {AnswerData && AnswerData.map((AnswerItem)=> 
+      <AnswerBox key={AnswerItem.answerId}>
         <VoteBox>
           <TiArrowSortedUp className="counticon" />
-            {e.voteCount}
+            {AnswerItem.voteCount}
           <TiArrowSortedDown className="counticon" />
           <RxBookmark className="markicon" />
           <RxCounterClockwiseClock className="markicon" />
         </VoteBox>
         <IndexBox>
-          <div className="contents">{e.content}</div>
+          <div className="contents">{AnswerItem.content}</div>
             <InfoBox>
               <Info>
-                <div onClick={() => navigate(`/answers/${QuestionData.answerId}/edit`)}>Edit</div>
+                <div onClick={() => navigate(`/answers/${AnswerData.answerId}/edit`)}>Edit</div>
                 <div onClick={() => DeleteAction()}>Delete</div>
               </Info>
               <UserBox>
-                <div className="creatday">asked Feb 23, 2018 at 14:32</div>
+                <div className="creatday">asked today</div>
                 <UserProfile>
-                  <div className="img">{e.name}</div>
+                  <div className="img">{AnswerItem.name}</div>
                   <div className="info">
-                    <p>{e.name}</p>
+                    <p>{AnswerItem.name}</p>
                     <div>유저정보</div>
                   </div>
                 </UserProfile>

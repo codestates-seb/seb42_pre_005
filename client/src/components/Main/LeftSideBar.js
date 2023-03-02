@@ -7,7 +7,9 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 // ----- 필요 컴포넌트
 
 const LeftSideBarBox = styled.div` // 전체 박스 스타일
-  width: 170px; 
+  min-width: 180px;
+  max-width: 180px;
+  height: 95vh;
   padding-top: 40px;
   padding-left: 15px;
   border-right: 1px solid #c5c5c5;
@@ -47,7 +49,9 @@ function LeftSideBar() {
   return (
     <LeftSideBarBox>
       <TitleBox>
-        <Link to="/"><SmallTitle>Home</SmallTitle></Link>
+        <BigTitle 
+              className={curruntPath === "/" ? "current-page" : null} 
+              onClick={() => navigate("/")}>Home</BigTitle>
       </TitleBox>
       <TitleBox>
         <SmallTitle>PUBLIC</SmallTitle>

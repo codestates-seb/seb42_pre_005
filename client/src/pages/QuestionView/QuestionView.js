@@ -24,7 +24,6 @@ const ContentsBox = styled.div`
 const Contents = styled.div`
 `
 
-
 // ----- 컴포넌트 영역
 function QuestionView() {
   const [QuestionData, setQuestionData] = useState("");
@@ -37,10 +36,12 @@ function QuestionView() {
         }
       })
       .then((res) => {
-        setQuestionData(res.data);
+        const {data} = res;
+        setQuestionData(data);
+        console.log(QuestionData)
       });
-  }, []);
-  console.log(QuestionData)
+  }, [id]);
+  
 
   return (
     <ViewBox>
@@ -48,7 +49,7 @@ function QuestionView() {
       <ContentsBox>
         <Contents>
           <Article QuestionData={QuestionData} />
-          <Answer QuestionData={QuestionData.answers} />
+          <Answer AnswerData={QuestionData.answerResponseDtos} />
         </Contents>
         <RightSideBar />
       </ContentsBox>

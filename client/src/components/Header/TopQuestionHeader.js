@@ -34,7 +34,7 @@ const AskButton = styled.button` // 질문 버튼
 const SubBox = styled.div` // 전체 글 목록 및 sort
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   padding-left: 20px;
   padding-bottom: 15px;
   border-bottom: 1px solid #c5c5c5;

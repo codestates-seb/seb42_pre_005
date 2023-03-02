@@ -23,6 +23,7 @@ import EditQuestion from './pages/Questions/EditQustions';
 import { useEffect } from 'react';
 import { getAccessToken } from './storage/cookie';
 import EditAnswer from './pages/QuestionView/EditAnswer';
+import VisitorMain from './pages/Main/VisitorMain';
 
 
 
@@ -70,6 +71,7 @@ function App() {
         <Route path="/ask" element={<AskQuestion />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path='/visitormain' element={<VisitorMain />} />
       </Routes>
     </div>
   );

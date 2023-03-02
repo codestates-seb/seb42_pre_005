@@ -4,8 +4,7 @@
 import styled from "styled-components";
 import { TiArrowSortedUp,TiArrowSortedDown } from "react-icons/ti"
 import { RxBookmark, RxCounterClockwiseClock } from "react-icons/rx"
-import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { getAccessToken } from "../../storage/cookie";
 
@@ -92,18 +91,18 @@ const UserProfile = styled.div` // 유저사진, 이름
 function Article({QuestionData}) {
   const navigate = useNavigate();
   const DeleteAction = () => {
-    return axios.delete(`${process.env.REACT_APP_API_URL}/questions/${QuestionData.data.questionId}`)
+    return axios.delete(`${process.env.REACT_APP_API_URL}/questions/${QuestionData.questionId}`)
   }
 
   const voteHandler = (type) => {
     if(type === "voteUp"){
-      axios.patch(`${process.env.REACT_APP_API_URL}/questions/${QuestionData.data.questionId}/vote?updown=up`, {},{
+      axios.patch(`${process.env.REACT_APP_API_URL}/questions/${QuestionData.questionId}/vote?updown=up`, {},{
         headers: {
           Authorization: getAccessToken()
         }
       })
     }else{
-      axios.patch(`${process.env.REACT_APP_API_URL}/questions/${QuestionData.data.questionId}/vote?updown=down`, {},{
+      axios.patch(`${process.env.REACT_APP_API_URL}/questions/${QuestionData.questionId}/vote?updown=down`, {},{
         headers: {
           Authorization: getAccessToken()
         }
@@ -114,26 +113,26 @@ function Article({QuestionData}) {
     <ArticleBox>
       <VoteBox>
         <TiArrowSortedUp className="counticon" name="voteUp" onClick={(e)=>voteHandler(e.target.name)} />
-        {QuestionData.data.voteCount}
+        {QuestionData.voteCount}
         <TiArrowSortedDown className="counticon" name="voteDown" onClick={(e)=>voteHandler(e.target.name)}/>
         <RxBookmark className="markicon" />
         <RxCounterClockwiseClock className="markicon" />
       </VoteBox>
       <IndexBox>
-        <Markdown className="contents" markdown={QuestionData.data.content} />
-        <button className="tags">{QuestionData.data.tagName}</button>
+        <Markdown className="contents" markdown={QuestionData.content} />
+        <button className="tags">{QuestionData.tagName}</button>
         <InfoBox>
           <Info>
-            <div onClick={() => navigate(`/questions/${QuestionData.data.questionId}/edit`)}>Edit</div>
+            <div onClick={() => navigate(`/questions/${QuestionData.questionId}/edit`)}>Edit</div>
             <div onClick={() => DeleteAction()}>Delete</div>
           </Info>
           <UserBox>
             <div className="creatday">asked Feb 23, 2018 at 14:32</div>
             <UserProfile>
-              <div className="img">{QuestionData.data.name}</div>
+              <div className="img">{QuestionData.name}</div>
               <div className="info">
-                <div onClick={() => navigate(`/users/${QuestionData.data.memberId}/${QuestionData.data.name}`)}>{QuestionData.data.name}</div>
-                <div>{QuestionData.data.questionId}</div>
+                <div onClick={() => navigate(`/users/${QuestionData.memberId}/${QuestionData.name}`)}>{QuestionData.name}</div>
+                <div>{QuestionData.questionId}</div>
               </div>
             </UserProfile>
           </UserBox>

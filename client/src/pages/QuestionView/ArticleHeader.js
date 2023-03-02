@@ -54,7 +54,7 @@ function ArticleHeader ( {QuestionData} ) {
       <ArticleInfoBox>
         <ArticleInfo>
           <span className="title">Asked </span>
-          <span className="text">today</span>
+          <span className="text">{QuestionData.createdAt}</span>
         </ArticleInfo>
         <ArticleInfo>
           <span className="title">Modified </span>
