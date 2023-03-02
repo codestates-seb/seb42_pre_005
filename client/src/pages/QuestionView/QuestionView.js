@@ -36,12 +36,12 @@ function QuestionView() {
         }
       })
       .then((res) => {
-        const {data} = res;
+        const { data } = res;
         setQuestionData(data);
         console.log(QuestionData)
       });
-  }, [id]);
-  
+  }, []);
+  console.log(QuestionData)
 
   return (
     <ViewBox>
