@@ -64,11 +64,11 @@ public class AnswerController {
         requestBody.addMemberId(memberId);
         requestBody.addQuestionId(questionId);
 
-        // 헤더에 담겨서 넘어온 JWT토큰을 해독하여 email 정보를 가져옴
-        String jwtEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        if (memberService.findMemberByEmail(jwtEmail).getMemberId() != requestBody.getMemberId()) {
-            throw new BusinessLogicException(ExceptionCode.REQUEST_FORBIDDEN);
-        }
+//        // 헤더에 담겨서 넘어온 JWT토큰을 해독하여 email 정보를 가져옴
+//        String jwtEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+//        if (memberService.findMemberByEmail(jwtEmail).getMemberId() != requestBody.getMemberId()) {
+//            throw new BusinessLogicException(ExceptionCode.REQUEST_FORBIDDEN);
+//        }
 
         Answer answer = mapper.answerPostDtoToAnswer(requestBody);
         Answer response = answerService.createAnswer(answer, questionId);
