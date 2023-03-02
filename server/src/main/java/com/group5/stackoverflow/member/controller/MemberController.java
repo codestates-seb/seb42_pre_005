@@ -3,6 +3,8 @@ package com.group5.stackoverflow.member.controller;
 import com.group5.stackoverflow.auth.tokenizer.JwtTokenizer;
 import com.group5.stackoverflow.dto.MultiResponseDto;
 import com.group5.stackoverflow.dto.SingleResponseDto;
+import com.group5.stackoverflow.exception.BusinessLogicException;
+import com.group5.stackoverflow.exception.ExceptionCode;
 import com.group5.stackoverflow.member.dto.MemberDto;
 import com.group5.stackoverflow.member.entity.Member;
 import com.group5.stackoverflow.member.mapper.MemberMapper;
@@ -65,7 +67,10 @@ public class MemberController {
             @Valid @RequestBody MemberDto.Patch requestBody,
                                 HttpServletRequest request) throws IllegalAccessException {
 
-        Checker.checkVerificationResult(request);
+        if(!Checker.checkVerificationResult(request)){
+            throw new BusinessLogicException(ExceptionCode.ACCESS_DENIED);
+        };
+
         requestBody.setMemberId(memberId);
         Member member = memberService.updateMember(mapper.memberPatchToMember(requestBody));
 
