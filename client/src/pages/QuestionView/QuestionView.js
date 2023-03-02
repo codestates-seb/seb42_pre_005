@@ -28,6 +28,8 @@ const Contents = styled.div`
 function QuestionView() {
   const [QuestionData, setQuestionData] = useState("");
   const { id } = useParams();
+  const [isPending, setIsPending] = useState(true);
+  const [isUpdated, setIsUpdated] = useState(false);
 
   useEffect(() => {
       axios.get(`${process.env.REACT_APP_API_URL}/questions/${id}`,{
@@ -37,24 +39,31 @@ function QuestionView() {
       })
       .then((res) => {
         const { data } = res;
+        setIsPending(false);
         setQuestionData(data);
-        console.log(QuestionData)
+        // console.log(QuestionData)
       });
-  }, []);
-  console.log(QuestionData)
+  }, [isUpdated]);
+  // console.log(QuestionData)
 
   return (
-    <ViewBox>
-      <ArticleHeader QuestionData={QuestionData} />
-      <ContentsBox>
-        <Contents>
-          <Article QuestionData={QuestionData} />
-          <Answer AnswerData={QuestionData.answerResponseDtos} />
-        </Contents>
-        <RightSideBar />
-      </ContentsBox>
-    </ViewBox>
-  )
+      <ViewBox>
+          {!isPending && (
+              <>
+                  <ArticleHeader QuestionData={QuestionData} />
+                  <ContentsBox>
+                      <Contents>
+                          <Article QuestionData={QuestionData} setIsUpdated={setIsUpdated}/>
+                          <Answer
+                              AnswerData={QuestionData.data.answerResponseDtos}
+                          />
+                      </Contents>
+                      <RightSideBar />
+                  </ContentsBox>
+              </>
+          )}
+      </ViewBox>
+  );
 }
 
 export default QuestionView

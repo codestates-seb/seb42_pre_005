@@ -71,7 +71,7 @@ function AnswerCreate() {
           value={value} 
           onChange={setValue}
           />
-      <CreateButton onClick={Answerpost()}>Post Your Answer</CreateButton>
+      <CreateButton onClick={Answerpost}>Post Your Answer</CreateButton>
     </CreateBox>
   )
 }
