@@ -14,7 +14,7 @@ public class WebConfig implements WebMvcConfigurer {
 //                .allowedOrigins("*")
                 .allowedOrigins("http://bucket-stackoverflow.s3-website.ap-northeast-2.amazonaws.com")
                 .allowedOrigins("http://seb42-pre5.s3-website.ap-northeast-2.amazonaws.com")
-                .allowedMethods("GET","DELETE", "POST", "OPTIONS").allowCredentials(true)
+                .allowedMethods("GET","DELETE", "POST", "PATCH", "OPTIONS").allowCredentials(true)
                 .exposedHeaders("authorization");
     }
 }
