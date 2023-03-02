@@ -1,5 +1,8 @@
-import { useEffect } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
+import Paging from "../../../components/Pagination";
+import { getAccessToken } from "../../../storage/cookie";
 
 export const SummaryContainer = styled.div`
 
@@ -68,10 +71,26 @@ export const ReputationContent = styled(CardContent)`
 `
 
 function UserSummary() {
+    const [myQuestions, setMyQuestions] = useState(null);
+    const [isPending, setIsPending] = useState(true);
+    
+    const [page, setPage] = useState(1); // 페이지 정보 가져오기
+    const [size, setSize] = useState(5); //  한 페이지에 보여줄 아이템 수
+    const [total, setTotal] = useState(); // 전체 아이템 수
 
     useEffect(() => {
+        axios.get(`${process.env.REACT_APP_API_URL}/questions/my?page=${page}&size=${size}`,{
+            headers: {
+                Authorization: getAccessToken()
+            }
+        })
+        .then((res) => {
+            setMyQuestions(res.data.data);
+            setTotal(res.data.data.length);
+            setIsPending(false);
+        })
 
-    })
+    }, [])
     
     return (
         <SummaryContainer>
@@ -90,7 +109,16 @@ function UserSummary() {
                 </AnswerCard>
                 <QuestionCard>
                     <Title>Questions</Title>
-                    <QuestionContent></QuestionContent>
+                    <QuestionContent>
+                        {!isPending && (myQuestions.length ? myQuestions.map(question => {
+                            return (
+                                <>
+                                    <span>{question.title}</span>
+                                    <Paging total={total} size={size} page={page} setPage={setPage}/>
+                                </>
+                            )
+                        }): <span>질문한 내역이 없습니다.</span>)}
+                    </QuestionContent>
                 </QuestionCard>
             </SecondSection>
             <ThirdSection>

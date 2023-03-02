@@ -10,7 +10,7 @@ import Logo from "../../icons/Logo.svg";
 import defaultProfile from "../../icons/defaultProfile.png";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { setLoginUser } from "../../store/store";
+import { setIsLogin, setLoginUser } from "../../store/store";
 
 // ----- CSS 영역
 const HeaderBox = styled.div` // 헤더 전체 박스
@@ -132,6 +132,7 @@ function Header() {
             <img src={defaultProfile} alt="user profile img" onClick={() => navigate(`/users/${loginUser.id}/${loginUser.name}`)} height="24px" />
             <LogOut onClick={() => {
               dispatch(setLoginUser(null));
+              dispatch(setIsLogin(false));
               navigate("/");
             }}>Log out</LogOut>
           </UserBox> 
