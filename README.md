@@ -46,3 +46,6 @@ CodeStates 42기 Pre-Project 005
 |🚚 rename| 파일 혹은 폴더명을 수정하거나 옮김|
 |🚑 !HOTFIX| 급하게 치명적인 버그 고침|
 |💥 !BREAKING CHANGE| 커다란 API 변경|
+
+
+webhook 연습
